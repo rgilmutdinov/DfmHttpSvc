@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27004.2009
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DfmHttpSvc", "DfmHttpSvc\DfmHttpSvc.csproj", "{F4C94062-36C0-4707-9D6F-0B14C6547AB9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DfmCore", "DfmCore\DfmCore.csproj", "{4B758F10-0E08-4C2E-8C4A-29C88178836B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DfmHttpCore", "DfmHttpCore\DfmHttpCore.csproj", "{B5570C08-49F4-477E-BF09-9B555C62ABA2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F4C94062-36C0-4707-9D6F-0B14C6547AB9}.Debug|x86.ActiveCfg = Debug|x86
+		{F4C94062-36C0-4707-9D6F-0B14C6547AB9}.Debug|x86.Build.0 = Debug|x86
+		{F4C94062-36C0-4707-9D6F-0B14C6547AB9}.Release|x86.ActiveCfg = Release|x86
+		{F4C94062-36C0-4707-9D6F-0B14C6547AB9}.Release|x86.Build.0 = Release|x86
+		{4B758F10-0E08-4C2E-8C4A-29C88178836B}.Debug|x86.ActiveCfg = Debug|x86
+		{4B758F10-0E08-4C2E-8C4A-29C88178836B}.Debug|x86.Build.0 = Debug|x86
+		{4B758F10-0E08-4C2E-8C4A-29C88178836B}.Release|x86.ActiveCfg = Release|x86
+		{4B758F10-0E08-4C2E-8C4A-29C88178836B}.Release|x86.Build.0 = Release|x86
+		{B5570C08-49F4-477E-BF09-9B555C62ABA2}.Debug|x86.ActiveCfg = Debug|x86
+		{B5570C08-49F4-477E-BF09-9B555C62ABA2}.Debug|x86.Build.0 = Debug|x86
+		{B5570C08-49F4-477E-BF09-9B555C62ABA2}.Release|x86.ActiveCfg = Release|x86
+		{B5570C08-49F4-477E-BF09-9B555C62ABA2}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BA88373F-761F-4F64-BCC0-80E57CC322CF}
+	EndGlobalSection
+EndGlobal

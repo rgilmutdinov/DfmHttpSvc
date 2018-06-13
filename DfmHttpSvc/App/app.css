@@ -1,0 +1,22 @@
+﻿html, body
+{
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.vcenter {
+    display: inline-block;
+    vertical-align: middle;
+    float: none;
+}
+
+.headline {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
