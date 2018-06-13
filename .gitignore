@@ -249,3 +249,6 @@ _Pvt_Extensions
 .fake/
 
 .vscode/
+
+# Exclude interops from ingore
+!Interops/*

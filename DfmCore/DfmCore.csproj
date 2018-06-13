@@ -32,7 +32,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Interop.DFMServer">
-      <HintPath>..\..\!Interops\Interop.DFMServer.dll</HintPath>
+      <HintPath>..\Interops\Interop.DFMServer.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="System" />
