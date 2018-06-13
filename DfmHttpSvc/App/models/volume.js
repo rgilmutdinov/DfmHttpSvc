@@ -19,7 +19,12 @@ export default class Volume extends Unit {
         return { name: 'volume', params: { volume: this.name } };
     }
 
-    get icon() {
-        return 'fa'
+    get iconLayers() {
+        return [
+            {
+                class: 'fas fa-folder li-md',
+                style: 'color: goldenrod'
+            }
+        ];
     }
 }

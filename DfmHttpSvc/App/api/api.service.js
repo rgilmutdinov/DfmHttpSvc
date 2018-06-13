@@ -3,7 +3,7 @@
 const ApiService = {
     fetchVolumes(areaPath) {
         if (areaPath) {
-            // areaPath is already escaped, use simple contatination
+            // areaPath is already escaped, use simple concatination
             return Vue.axios.get('/api/volumes?area=' + areaPath);
         }
 
@@ -12,7 +12,7 @@ const ApiService = {
 
     fetchAreas(areaPath) {
         if (areaPath) {
-            // areaPath is already escaped, use simple contatination
+            // areaPath is already escaped, use simple concatination
             return Vue.axios.get('/api/areas?area=' + areaPath);
         }
 

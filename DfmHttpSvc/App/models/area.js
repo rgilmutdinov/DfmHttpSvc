@@ -18,4 +18,13 @@ export default class Area extends Unit {
     get route() {
         return { name: 'area', params: { area: this.path } };
     }
+
+    get iconLayers() {
+        return [
+            {
+                class: 'far fa-folder li-md',
+                style: 'color: cornflowerblue'
+            }
+        ];
+    }
 }

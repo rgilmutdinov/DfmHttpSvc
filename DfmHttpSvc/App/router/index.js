@@ -8,6 +8,7 @@ import { AUTO_LOGIN, LOAD_DICTIONARY } from '@/store/actions.type';
 import { TOGGLE_SIDEBAR } from '@/store/mutations.type';
 
 import Datatable from '@/components/datatable/DataTable.vue'
+import LayerIcon from '@/components/LayerIcon.vue'
 import ToggleIcon from '@/components/ToggleIcon.vue'
 import AppHeader from '@/components/AppHeader.vue'
 import AppFooter from '@/components/AppFooter.vue'
@@ -23,6 +24,7 @@ import PageVolume from '@/pages/PageVolume.vue'
 Vue.use(VueRouter);
 
 Vue.component('data-table', Datatable);
+Vue.component('layer-icon', LayerIcon);
 Vue.component('toggle-icon', ToggleIcon);
 Vue.component('app-header', AppHeader);
 Vue.component('app-footer', AppFooter);

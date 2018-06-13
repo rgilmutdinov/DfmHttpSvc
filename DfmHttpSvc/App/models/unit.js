@@ -26,7 +26,7 @@ export class Unit {
         }
     }
 
-    get icon() {
+    get iconLayers() {
         if (this.method === undefined) {
             throw new TypeError("Must override method");
         }

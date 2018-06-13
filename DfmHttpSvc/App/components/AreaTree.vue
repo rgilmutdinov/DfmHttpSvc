@@ -4,14 +4,20 @@
             <span v-on:click="toggleArea()">
                 <toggle-icon :isExpanded="isExpanded" :isVisible="(areas && areas.length > 0) || (volumes && volumes.length > 0)"></toggle-icon>
             </span>
-            <router-link :to="area.route"><span data-toggle="tooltip" :title="area.name">{{ area.name }}</span></router-link>
+            <router-link :to="area.route">
+                <layer-icon :layers="area.iconLayers" />
+                <span data-toggle="tooltip" :title="area.name">{{ area.name }}</span>
+            </router-link>
         </div>
         <div class="headline ml-3" v-show="isExpanded" v-for="childArea in areas">
             <area-tree :area="childArea" :key="childArea.path"></area-tree>
         </div>
         <div class="headline ml-3 my-1" v-show="isExpanded" v-for="volume in volumes">
             <toggle-icon :isVisible="false" />
-            <router-link :to="volume.route"><span data-toggle="tooltip" :title="volume.name">{{ volume.name }}</span></router-link>
+            <router-link :to="volume.route">
+                <layer-icon :layers="volume.iconLayers" />
+                <span data-toggle="tooltip" :title="volume.name">{{ volume.name }}</span>
+            </router-link>
         </div>
     </div>
 </template>
@@ -25,7 +31,6 @@
             default: () => null
         },
         computed: {
-
             volumes() {
                 return this.area.volumes;
             },
