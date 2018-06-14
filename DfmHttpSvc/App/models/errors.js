@@ -14,16 +14,29 @@
     }
 }
 
-class Error {
+function parseDetails(error) {
+    if (error.response) {
+        return {
+            data:       error.response.data,
+            status:     error.response.status,
+            statusText: error.response.statusText,
+            headers:    error.response.headers
+        }
+    }
+
+    return null;
+}
+
+export class Error {
     constructor() {
         this.message = '';
         this.details = '';
     }
 
-    static parse(e) {
+    static fromApiException(e) {
         let error = new Error();
         error.message = parseMessage(e) || 'Error';
-        error.details = e;
+        error.details = parseDetails(e);
         return error;
     }
 }

@@ -1,7 +1,7 @@
 ﻿import AuthService from '@/api/auth.service'
 
 import Account from '@/models/account'
-import Error from '@/models/error'
+import Error from '@/models/errors'
 
 import { ACCESS_TOKEN, USERNAME } from '@/common/storage.keys'
 import { LOGIN, LOGOUT, AUTO_LOGIN, PING } from '../actions.type'
@@ -29,7 +29,7 @@ const actions = {
                     context.commit(SET_AUTH, new Account(data.accessToken, credentials.username));
                     resolve(data);
                 })
-                .catch((e) => reject(Error.parse(e)));
+                .catch((e) => reject(Error.fromApiException(e)));
         });
     },
 
@@ -43,7 +43,7 @@ const actions = {
                 })
                 .catch((e) => {
                     context.commit(PURGE_AUTH);
-                    reject(Error.parse(e));
+                    reject(Error.fromApiException(e));
                 });
         });
     },

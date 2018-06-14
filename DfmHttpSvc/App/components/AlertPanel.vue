@@ -1,18 +1,18 @@
 ﻿<template>
-    <div v-if="visible" class="alert alert-danger" role="alert">
+    <div v-if="error && visible" class="alert alert-danger" role="alert">
         <span>{{ message }}</span>
         <button type="button" class="close" data-dismiss="alert" aria-label="Close" @click="hide"> 
             <span aria-hidden="true">&times;</span>
         </button>
         <div v-if="showDetails && hasDetails">
             Click <a class="alert-link" style="cursor: pointer" v-on:click="toggleDetails">here</a> for details.
-            <pre v-if="detailsVisible" class="bg-danger">{{ details }}</pre>
+            <pre v-if="detailsVisible">{{ details }}</pre>
         </div>
     </div>
 </template>
 
 <script>
-    import Error from '@/models/error.js'
+    import Error from '@/models/errors.js'
 
     export default {
         props: {

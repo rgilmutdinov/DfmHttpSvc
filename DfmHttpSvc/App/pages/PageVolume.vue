@@ -1,5 +1,6 @@
 ﻿<template>
     <div>
+        <alert-panel :error="error"></alert-panel>
         <h1>Volume {{ volume }}</h1>
         <div v-show="loading" class="loading-box p-3">
             <i class="fas fa-spinner fa-pulse fa-2x fa-fw" style="color: lightslategray;"></i>
@@ -12,6 +13,7 @@
 
 <script>
     import delay from '@/utils/delay'
+    import Error from '@/models/errors'
     import ApiService from '@/api/api.service'
 
     export default {
@@ -28,7 +30,8 @@
                 query: {},
                 columns: [],
                 showTable: false,
-                loading: false
+                loading: false,
+                error: null
             }
         },
         watch: {
@@ -72,10 +75,12 @@
                                 this.hideLoading(delayId);
                             })
                             .catch((e) => {
+                                this.error = Error.fromApiException(e);
                                 this.hideLoading(delayId);
                             });
                     })
                     .catch((e) => {
+                        this.error = Error.fromApiException(e);
                         this.hideLoading(delayId);
                     });
             },

@@ -3,7 +3,7 @@
 import Volume from '@/models/volume'
 import Area from '@/models/area'
 import Dictionary from '@/models/dictionary'
-import Error from '@/models/error'
+import Error from '@/models/errors'
 
 import { LOAD_VOLUMES, LOAD_AREA, LOAD_DICTIONARY } from '@/store/actions.type'
 import { SET_VOLUMES, SET_AREAS, TOGGLE_AREA } from '@/store/mutations.type'
@@ -41,7 +41,7 @@ const actions = {
                     resolve(data);
                 })
                 .catch((e) => {
-                    reject(Error.parse(e));
+                    reject(Error.fromApiException(e));
                 });
         });
     },
@@ -69,7 +69,7 @@ const actions = {
                     }
                     resolve({ areas, volumes });
                 })
-                .catch(e => reject(Error.parse(e)));
+                .catch(e => reject(Error.fromApiException(e)));
         });
     },
 

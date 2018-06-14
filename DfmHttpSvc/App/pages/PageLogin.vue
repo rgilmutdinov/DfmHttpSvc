@@ -39,7 +39,7 @@
     import { LOGIN, LOAD_DICTIONARY } from '@/store/actions.type'
     import { routes } from '@/router/routes'
     import Credentials from '@/models/credentials'
-    import Error from '@/models/error'
+    import Error from '@/models/errors'
 
     export default {
         data() {
