@@ -24,11 +24,11 @@ namespace DfmHttpSvc.Controllers
         /// <response code="400">Username is null or whitespace</response>
         /// <response code="500">Exception message</response>
         [ProducesResponseType(typeof(List<string>), 200)]
-        [ProducesResponseType(typeof(string), 400)]
-        [ProducesResponseType(typeof(string), 500)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
         [AllowAnonymous]
         [HttpGet("{username}")]
-        public IActionResult Get(string username)
+        public IActionResult GetDatasources(string username)
         {
             if (string.IsNullOrWhiteSpace(username))
             {

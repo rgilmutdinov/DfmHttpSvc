@@ -280,5 +280,10 @@ namespace DfmHttpCore
                 volume.DeleteAttachment(attachmentName);
             }
         }
+
+        public DictionaryInfo GetDictionaryInfo()
+        {
+            return Dictionary.Info;
+        }
     }
 }

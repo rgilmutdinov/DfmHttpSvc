@@ -72,6 +72,17 @@ namespace DfmCore
             }
         }
 
+        public DictionaryInfo Info
+        {
+            get
+            {
+                lock (this._dictObj)
+                {
+                    return new DictionaryInfo(this._dictObj);
+                }
+            }
+        }
+
         public void Logout()
         {
             CheckDisposed();

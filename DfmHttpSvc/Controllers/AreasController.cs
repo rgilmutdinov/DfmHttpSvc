@@ -25,7 +25,7 @@ namespace DfmHttpSvc.Controllers
         /// <response code="401">Unauthorized access</response>
         [ProducesResponseType(typeof(List<AreaItem>), 200)]
         [ProducesResponseType(401)]
-        [ProducesResponseType(typeof(string), 500)]
+        [ProducesResponseType(500)]
         [ArrayInput("area", typeof(string), AreaItem.PathSeparator)]
         [Authorize]
         [HttpGet]
@@ -35,6 +35,7 @@ namespace DfmHttpSvc.Controllers
             {
                 return Unauthorized();
             }
+
             List<AreaItem> areas = session.GetAreaList(area);
 
             return Ok(areas);
