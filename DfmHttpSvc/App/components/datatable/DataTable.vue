@@ -16,7 +16,7 @@
             </div>
         </div>
         <div class="table-responsive">
-            <table class="table table-striped" style="white-space: nowrap">
+            <table class="table table-striped table-sm" style="white-space: nowrap">
                 <thead class="thead-light">
                     <tr>
                         <th v-for="col in columns" :class="computeThClass(col)" :style="computeThStyle(col)">
