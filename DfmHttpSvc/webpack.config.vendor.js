@@ -34,7 +34,7 @@ module.exports = (env) => {
                 'vuex',
                 'vuex-router-sync',
                 'nprogress'
-            ],
+            ]
         },
         output: {
             path: path.join(__dirname, 'wwwroot', 'dist'),

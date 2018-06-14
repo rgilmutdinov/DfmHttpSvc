@@ -6,8 +6,6 @@ import dictionary from './modules/dictionary'
 import window from './modules/window'
 import navtree from './modules/navtree'
 
-import { SET_ERROR } from './mutations.type'
-
 Vue.use(Vuex);
 
 export default new Vuex.Store({
@@ -16,13 +14,5 @@ export default new Vuex.Store({
         dictionary,
         window,
         navtree
-    },
-    state: {
-        error: null
-    }, 
-    mutations: {
-        [SET_ERROR](state, error) {
-            state.error = error;
-        }
     }
 });

@@ -6,7 +6,7 @@
                     <b>Authentication</b>
                 </div>
                 <div class="card-body">
-                    <error-view :error="error" :showDetails="false" />
+                    <alert-panel :error="error" :showDetails="false" />
 
                     <form @submit.prevent="onSubmit">
                         <div class="form-group">

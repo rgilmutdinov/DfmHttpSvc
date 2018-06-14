@@ -5,7 +5,7 @@ import Error from '@/models/error'
 
 import { ACCESS_TOKEN, USERNAME } from '@/common/storage.keys'
 import { LOGIN, LOGOUT, AUTO_LOGIN, PING } from '../actions.type'
-import { SET_AUTH, PURGE_AUTH, SET_ERROR } from '../mutations.type'
+import { SET_AUTH, PURGE_AUTH } from '../mutations.type'
 
 const state = {
     account: null
@@ -34,7 +34,6 @@ const actions = {
     },
 
     [LOGOUT](context) {
-        context.commit(SET_ERROR); // remove error if any
         return new Promise((resolve, reject) => {
             AuthService
                 .logout()

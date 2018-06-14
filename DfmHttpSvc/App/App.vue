@@ -6,7 +6,6 @@
                 <nav-tree class="p-2" />
             </div>
             <div class="content-panel" slot="panel-right">
-                <!-- add error view here -->
                 <router-view class="p-3" :key="$route.fullPath" />
             </div>
         </split-panel>
@@ -50,7 +49,7 @@
             },
             isSidebarOpen() {
                 return this.$store.getters.isSidebarOpen;
-            },
+            }
         },
 
         methods: {

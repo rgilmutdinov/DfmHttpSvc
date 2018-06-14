@@ -14,7 +14,7 @@ import AppHeader from '@/components/AppHeader.vue'
 import AppFooter from '@/components/AppFooter.vue'
 import AreaTree from '@/components/AreaTree.vue'
 import NavTree from '@/components/NavTree.vue'
-import ErrorView from '@/components/ErrorView.vue'
+import AlertPanel from '@/components/AlertPanel.vue'
 
 import PageHome from '@/pages/PageHome.vue'
 import PageLogin from '@/pages/PageLogin.vue'
@@ -30,7 +30,7 @@ Vue.component('app-header', AppHeader);
 Vue.component('app-footer', AppFooter);
 Vue.component('area-tree', AreaTree);
 Vue.component('nav-tree', NavTree);
-Vue.component('error-view', ErrorView);
+Vue.component('alert-panel', AlertPanel);
 
 var router = new VueRouter({
     mode: 'history',

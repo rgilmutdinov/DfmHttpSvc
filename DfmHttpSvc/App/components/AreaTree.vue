@@ -4,7 +4,7 @@
             <span v-on:click="toggleArea()">
                 <toggle-icon :isExpanded="isExpanded" :isVisible="(areas && areas.length > 0) || (volumes && volumes.length > 0)"></toggle-icon>
             </span>
-            <router-link :to="area.route">
+            <router-link class="route-link" :to="area.route">
                 <layer-icon :layers="area.iconLayers" />
                 <span data-toggle="tooltip" :title="area.name">{{ area.name }}</span>
             </router-link>
@@ -14,7 +14,7 @@
         </div>
         <div class="headline ml-3 my-1" v-show="isExpanded" v-for="volume in volumes">
             <toggle-icon :isVisible="false" />
-            <router-link :to="volume.route">
+            <router-link class="route-link" :to="volume.route">
                 <layer-icon :layers="volume.iconLayers" />
                 <span data-toggle="tooltip" :title="volume.name">{{ volume.name }}</span>
             </router-link>

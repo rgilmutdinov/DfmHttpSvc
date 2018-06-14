@@ -1,6 +1,5 @@
 ﻿export const PURGE_AUTH = 'PURGE_AUTH';
 export const SET_AUTH = 'SET_AUTH';
-export const SET_ERROR = 'SET_ERROR';
 export const TOGGLE_SIDEBAR = 'TOGGLE_SIDEBAR';
 
 export const SET_VOLUMES = 'SET_VOLUMES';
