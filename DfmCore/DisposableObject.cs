@@ -4,10 +4,9 @@ namespace DfmCore
 {
     public abstract class DisposableObject : IDisposable
     {
-        private bool _disposed;
         private readonly object _lock = new object();
 
-        public bool IsDisposed => this._disposed;
+        public bool IsDisposed { get; private set; }
 
         public void Dispose()
         {
@@ -24,12 +23,12 @@ namespace DfmCore
         {
             lock (this._lock)
             {
-                if (this._disposed)
+                if (this.IsDisposed)
                 {
                     return;
                 }
 
-                this._disposed = true;
+                this.IsDisposed = true;
             }
 
             DisposeUnmanagedResources();

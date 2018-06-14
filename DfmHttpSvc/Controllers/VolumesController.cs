@@ -47,8 +47,12 @@ namespace DfmHttpSvc.Controllers
             }
 
             IEnumerable<VolumeSpecDto> volumes = session
-                    .GetVolumeInfoList(new Area(area).Name)
-                    .Select(volInfo => new VolumeSpecDto(volInfo));
+                .GetVolumeInfoList(new Area(area).Name)
+                .Select(volInfo => {
+                    using (volInfo) {
+                        return new VolumeSpecDto(volInfo);
+                    }
+                });
 
             return Ok(volumes);
         }
@@ -81,9 +85,10 @@ namespace DfmHttpSvc.Controllers
                 return Unauthorized();
             }
 
-            VolumeInfo vInfo = session.Dictionary.GetVolumeInfo(volumeName);
-
-            return Ok(new VolumeInfoDto(vInfo));
+            using (VolumeInfo vInfo = session.Dictionary.GetVolumeInfo(volumeName))
+            {
+                return Ok(new VolumeInfoDto(vInfo));
+            }
         }
     }
 }
