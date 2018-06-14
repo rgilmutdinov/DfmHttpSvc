@@ -20,11 +20,41 @@ export default class Volume extends Unit {
     }
 
     get iconLayers() {
-        return [
+        if (this.isVirtual) {
+            return [
+                {
+                    class: 'fas fa-folder li-md',
+                    style: 'color: cornflowerblue'
+                }
+            ];
+        }
+
+        let layers = [
             {
                 class: 'fas fa-folder li-md',
                 style: 'color: goldenrod'
             }
         ];
+
+        if (this.isExternal) {
+            layers.unshift({
+                class: 'fas fa-compact-disc li-layer li-sm li-r-2 li-t-2',
+                style: 'color: gray'
+            });
+        }
+
+        if (this.isConserved) {
+            layers.push({
+                class: 'fas fa-certificate li-layer li-xs li-r-3 li-b-3',
+                style: 'color: red'
+            });
+        } else if (this.isClosed) {
+            layers.push({
+                class: 'fas fa-lock li-layer li-xs li-r-3 li-b-3',
+                style: 'color: gray'
+            });
+        }
+
+        return layers;
     }
 }

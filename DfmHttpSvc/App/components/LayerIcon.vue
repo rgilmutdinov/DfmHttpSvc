@@ -48,6 +48,10 @@
         font-size: 1.5em;
     }
 
+    .li-xs {
+        font-size: 0.5em;
+    }
+
     .li-sm {
         font-size: 0.75em;
     }

@@ -18,6 +18,8 @@ namespace DfmHttpSvc.Dto
             Created     = volInfo.CreationDate;
             IsClosed    = volInfo.IsClosed;
             IsConserved = volInfo.IsConserved;
+            IsVirtual   = volInfo.IsVirtual;
+            IsExternal  = volInfo.IsExternal;
         }
 
         public string   Name        { get; set; }
@@ -26,5 +28,7 @@ namespace DfmHttpSvc.Dto
         public int      VolumeType  { get; set; }
         public bool     IsConserved { get; set; }
         public bool     IsClosed    { get; set; }
+        public bool     IsVirtual   { get; set; }
+        public bool     IsExternal  { get; set; }
     }
 }

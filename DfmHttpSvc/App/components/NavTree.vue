@@ -37,21 +37,25 @@
             return {
                 areasIconLayers: [
                     {
-                        class: 'far fa-folder li-md li-b-1 li-r-1',
-                        style: 'color: cornflowerblue'
+                        class: 'fas fa-database li-layer li-md li-l-1 li-t-1',
+                        style: 'color: royalblue '
                     },
                     {
-                        class: 'fas fa-folder li-md li-t-1 li-l-1',
+                        class: 'fas fa-folder li-layer li-md li-r-1 li-b-1',
+                        style: 'color: white'
+                    },
+                    {
+                        class: 'far fa-folder li-layer li-md li-r-1 li-b-1',
                         style: 'color: cornflowerblue'
                     }
                 ],
                 volumesIconLayers: [
                     {
-                        class: 'far fa-folder li-md li-b-1 li-r-1',
-                        style: 'color: goldenrod'
+                        class: 'fas fa-database li-layer li-md li-l-1 li-t-1',
+                        style: 'color: royalblue '
                     },
                     {
-                        class: 'fas fa-folder li-md li-t-1 li-l-1',
+                        class: 'fas fa-folder li-md li-r-1 li-b-1',
                         style: 'color: goldenrod'
                     }
                 ]
