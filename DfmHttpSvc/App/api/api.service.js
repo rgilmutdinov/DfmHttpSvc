@@ -19,6 +19,10 @@ const ApiService = {
         return Vue.axios.get('/api/areas');
     },
 
+    fetchDictionaryInfo() {
+        return Vue.axios.get('/api/dictionary');
+    },
+
     fetchVolumeInfo(volumeName) {
         volumeName = encodeURIComponent(volumeName);
         return Vue.axios.get(`/api/volumes/${volumeName}`);

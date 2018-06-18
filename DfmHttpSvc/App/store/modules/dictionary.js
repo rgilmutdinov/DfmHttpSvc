@@ -3,10 +3,22 @@
 import Volume from '@/models/volume'
 import Area from '@/models/area'
 import Dictionary from '@/models/dictionary'
+import DictionaryInfo from '@/models/dictionaryInfo'
 import Error from '@/models/errors'
 
-import { LOAD_VOLUMES, LOAD_AREA, LOAD_DICTIONARY } from '@/store/actions.type'
-import { SET_VOLUMES, SET_AREAS, TOGGLE_AREA } from '@/store/mutations.type'
+import {
+    LOAD_VOLUMES,
+    LOAD_AREA,
+    LOAD_DICTIONARY,
+    LOAD_DICTIONARY_INFO
+} from '@/store/actions.type'
+
+import {
+    SET_VOLUMES,
+    SET_AREAS,
+    SET_DICTIONARY_INFO,
+    TOGGLE_AREA
+} from '@/store/mutations.type'
 
 const state = {
     dictionary: new Dictionary()
@@ -23,6 +35,10 @@ const getters = {
 
     dictionary(state) {
         return state.dictionary;
+    },
+
+    dictionaryInfo(state) {
+        return state.dictionary.info;
     },
 
     getArea: state => path => {
@@ -73,9 +89,29 @@ const actions = {
         });
     },
 
+    [LOAD_DICTIONARY_INFO](context) {
+        return new Promise((resolve, reject) => {
+            ApiService
+                .fetchDictionaryInfo()
+                .then(({ data }) => {
+                    let info = new DictionaryInfo(data);
+                    context.commit(SET_DICTIONARY_INFO, info);
+                    resolve(data);
+                })
+                .catch((e) => {
+                    reject(Error.fromApiException(e));
+                });
+        });
+    },
+
     [LOAD_DICTIONARY](context) {
-        // fetch root area
-        return context.dispatch(LOAD_AREA);
+        return Promise.all([
+            // fetch root area
+            context.dispatch(LOAD_AREA),
+
+            // fetch dictionary info
+            context.dispatch(LOAD_DICTIONARY_INFO),
+        ]);
     }
 }
 
@@ -90,7 +126,8 @@ const mutations = {
             }
         }
     },
-    [SET_AREAS](state, { areas, path } ) {
+
+    [SET_AREAS](state, { areas, path }) {
         if (!path) {
             state.dictionary.areas = areas;
         } else {
@@ -100,6 +137,11 @@ const mutations = {
             }
         }
     },
+
+    [SET_DICTIONARY_INFO](state, dictionaryInfo) {
+        state.dictionary.info = dictionaryInfo;
+    },
+
     [TOGGLE_AREA](state, area) {
         let foundArea = state.dictionary.searchArea(area.path);
         if (foundArea) {

@@ -4,7 +4,7 @@
             <span v-on:click="toggleAreas()">
                 <toggle-icon :isExpanded="isAreasExpanded" :isVisible="areas && areas.length > 0"/>
             </span>
-            <router-link class="route-link" :to="{ name: 'areas' }">
+            <router-link class="route-link p-1" :to="{ name: 'areas' }">
                 <layer-icon class="mr-1" :layers="areasIconLayers" />Areas
             </router-link>
         </div>
@@ -15,13 +15,13 @@
             <span v-on:click="toggleVolumes()">
                 <toggle-icon :isExpanded="isVolumesExpanded" :isVisible ="volumes && volumes.length > 0" />
             </span>
-            <router-link class="route-link" :to="{ name: 'volumes' }">
+            <router-link class="route-link p-1" :to="{ name: 'volumes' }">
                 <layer-icon class="mr-1" :layers="volumesIconLayers" />Volumes
             </router-link>
         </div>
-        <div class="headline ml-3 my-1" v-show="isVolumesExpanded" v-for="volume in volumes" :key="volume.name">
+        <div class="headline ml-3" v-show="isVolumesExpanded" v-for="volume in volumes" :key="volume.name">
             <toggle-icon :isVisible="false"/>
-            <router-link class="route-link" :to="volume.route">
+            <router-link class="route-link p-1" :to="volume.route">
                 <layer-icon :layers="volume.iconLayers" />
                 <span data-toggle="tooltip" :title="volume.name">{{ volume.name }}</span>
             </router-link>
@@ -31,37 +31,21 @@
 <script>
     import Area from '@/models/area'
     import { TOGGLE_VOLUMES, TOGGLE_AREAS } from '@/store/mutations.type'
+    import { volumesIcon, areasIcon } from '@/common/icons'
 
     export default {
         data() {
             return {
-                areasIconLayers: [
-                    {
-                        class: 'fas fa-database li-layer li-md li-l-1 li-t-1',
-                        style: 'color: royalblue '
-                    },
-                    {
-                        class: 'fas fa-folder li-layer li-md li-r-1 li-b-1',
-                        style: 'color: white'
-                    },
-                    {
-                        class: 'far fa-folder li-layer li-md li-r-1 li-b-1',
-                        style: 'color: cornflowerblue'
-                    }
-                ],
-                volumesIconLayers: [
-                    {
-                        class: 'fas fa-database li-layer li-md li-l-1 li-t-1',
-                        style: 'color: royalblue '
-                    },
-                    {
-                        class: 'fas fa-folder li-md li-r-1 li-b-1',
-                        style: 'color: goldenrod'
-                    }
-                ]
+                
             }
         },
         computed: {
+            volumesIconLayers() {
+                return volumesIcon();
+            },
+            areasIconLayers() {
+                return areasIcon();
+            },
             volumes() {
                 return this.$store.getters.volumes;
             },

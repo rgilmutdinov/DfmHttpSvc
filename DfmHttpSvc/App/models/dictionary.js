@@ -1,5 +1,8 @@
-﻿export default class Dictionary {
+﻿import DictionaryInfo from './dictionaryInfo'
+
+export default class Dictionary {
     constructor() {
+        this.info = new DictionaryInfo();
         this.areas = [];
         this.volumes = [];
     }
@@ -18,7 +21,7 @@
             return area;
         } else if (area.areas && area.areas.length > 0) {
             let result = null;
-            for (let i = 0; result == null && i < area.areas.length; i++) {
+            for (let i = 0; result === null && i < area.areas.length; i++) {
                 result = this.findArea(area.areas[i], path.slice(1));
             }
             return result;
@@ -31,7 +34,7 @@
         let result = null;
 
         if (this.areas.length > 0) {
-            for (let i = 0; result == null && i < this.areas.length; i++) {
+            for (let i = 0; result === null && i < this.areas.length; i++) {
                 result = this.findArea(this.areas[i], pathParts);
             }
         }

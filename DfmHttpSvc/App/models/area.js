@@ -1,4 +1,5 @@
 ﻿import { UnitType, Unit } from './unit'
+import { areaIcon } from '@/common/icons'
 
 export default class Area extends Unit {
     constructor(obj) {
@@ -20,11 +21,6 @@ export default class Area extends Unit {
     }
 
     get iconLayers() {
-        return [
-            {
-                class: 'far fa-folder li-md',
-                style: 'color: cornflowerblue'
-            }
-        ];
+        return areaIcon();
     }
 }
