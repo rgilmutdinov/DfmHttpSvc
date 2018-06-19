@@ -15,3 +15,6 @@ export const SET_DICTIONARY_INFO = 'SET_DICTIONARY_INFO';
 export const TOGGLE_VOLUMES = 'TOGGLE_VOLUMES';
 export const TOGGLE_AREAS = 'TOGGLE_AREAS';
 export const TOGGLE_AREA = 'TOGGLE_AREA';
+
+// localization
+export const SET_LOCALE = 'SET_LOCALE';

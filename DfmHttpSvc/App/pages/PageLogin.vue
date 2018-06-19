@@ -3,30 +3,30 @@
         <div id="login">
             <div class="card border-primary bg-light mb-3">
                 <div class="card-header">
-                    <b>Authentication</b>
+                    <b>{{ $t('authentication') }}</b>
                 </div>
                 <div class="card-body">
                     <alert-panel :error="error" :showDetails="false" />
 
                     <form @submit.prevent="onSubmit">
                         <div class="form-group">
-                            <label for="username">Username:</label>
+                            <label for="username">{{ $t('username') }}:</label>
                             <input type="text" id="username" class="form-control" v-model="username">
                         </div>
 
                         <div class="form-group">
-                            <label for="password">Password:</label>
+                            <label for="password">{{ $t('password') }}:</label>
                             <input type="password" id="password" class="form-control" v-model="password">
                         </div>
 
                         <div class="form-group">
-                            <label for="datasource">Datasource:</label>
+                            <label for="datasource">{{ $t('dataDictionary') }}:</label>
                             <input type="text" id="datasource" class="form-control" v-model="datasource">
                         </div>
 
                         <div class="form-group">
                             <button class="btn btn-primary" :class="[{'disabled': loading}]" @click.prevent="login">
-                                <i class="fas fa-sign-in-alt"></i>&nbsp;Login
+                                <i class="fas fa-sign-in-alt"></i>&nbsp;{{ $t('login') }}
                             </button>
                         </div>
                     </form>

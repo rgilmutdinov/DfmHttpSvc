@@ -13,6 +13,7 @@ import App from './App.vue'
 import router from '@/router'
 import store from '@/store'
 import axios from '@/api/axios'
+import i18n from '@/i18n';
 
 import { sync } from 'vuex-router-sync';
 sync(store, router); // "Sync vue-router's current $route as part of vuex store's state."
@@ -25,6 +26,7 @@ export default new Vue({
     el: '#app',
     router,
     store,
+    i18n,
     template: '<App/>',
     components: { App }
 });

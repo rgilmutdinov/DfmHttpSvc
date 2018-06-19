@@ -11,16 +11,29 @@
         </button>
         <div class="navbar-collapse collapse" id="navbar">
             <ul class="navbar-nav mr-auto"></ul>
-            <form v-show="isAuthenticated" class="form-inline">
-                <span class="mx-2">{{ currentUser }}</span>
-                <button class="btn btn-outline-secondary btn-sm mx-2" @click.prevent="logout"><i class="fa fa-sign-out-alt" />&nbsp;Logout</button>
+
+            <ul class="navbar-nav mx-2">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="localeSelect" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {{ language.toUpperCase() }}
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="localeSelect">
+                        <button type="button" class="dropdown-item" @click="changeLocale('en')">English</button>
+                        <button type="button" class="dropdown-item" @click="changeLocale('it')">Italiano</button>
+                    </div>
+                </li>
+            </ul>
+
+            <form v-if="isAuthenticated" class="form-inline mx-2">
+                <span>{{ currentUser }}</span>
+                <button class="btn btn-outline-secondary btn-sm mx-2" @click.prevent="logout"><i class="fa fa-sign-out-alt" />&nbsp;{{ $t('logout') }}</button>
             </form>
         </div>
     </nav>
 </template>
 <script>
     import { LOGOUT } from '@/store/actions.type'
-    import { TOGGLE_SIDEBAR } from '@/store/mutations.type'
+    import { TOGGLE_SIDEBAR, SET_LOCALE } from '@/store/mutations.type'
     import { routes } from '@/router/routes'
 
     export default {
@@ -31,6 +44,9 @@
             },
             currentUser() {
                 return this.$store.getters.currentUser;
+            },
+            language: function () {
+                return this.$i18n.locale;
             }
         },
         methods: {
@@ -44,9 +60,16 @@
             },
             toggleSidebar() {
                 this.$store.commit(TOGGLE_SIDEBAR);
+            },
+            changeLocale(locale) {
+                this.$store.commit(SET_LOCALE, locale);
+                this.$root.$i18n.locale = locale;
             }
         }
     }
 </script>
 <style scoped>
+    .dropdown-menu > button {
+        cursor: pointer;
+    }
 </style>

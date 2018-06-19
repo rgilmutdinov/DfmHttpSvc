@@ -109,7 +109,7 @@
 
 <style scoped>
     .split-container {
-        height: 100%;
+        flex-grow: 1;
         position: relative;
     }
 

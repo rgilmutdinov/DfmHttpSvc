@@ -11,7 +11,8 @@
   "author": "CompEd Software Design",
   "dependencies": {
     "@fortawesome/fontawesome-free-webfonts": "^1.0.9",
-    "nprogress": "^0.2.0"
+    "nprogress": "^0.2.0",
+    "vue-i18n": "^7.8.1"
   },
   "devDependencies": {
     "aspnet-webpack": "^2.0.3",
