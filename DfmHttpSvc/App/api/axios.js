@@ -39,10 +39,14 @@ instance.interceptors.response.use((response) => {
     // handle unauthorized access
     if (error.response.status === 401) {
         store.commit(PURGE_AUTH);
-        router.replace({
-            path: routes.LOGIN,
-            query: { redirect: router.currentRoute.fullPath }
-        });
+
+        // avoid multiple redirections to login page
+        if (!router.currentRoute || (router.currentRoute && router.currentRoute.path !== routes.LOGIN)) {
+            router.replace({
+                path: routes.LOGIN,
+                query: { redirect: router.currentRoute.fullPath }
+            });
+        }
 
         return Promise.reject('Unauthorized access');
     }
