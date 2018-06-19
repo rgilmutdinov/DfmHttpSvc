@@ -31,7 +31,7 @@
 <script>
     import Area from '@/models/area'
     import { TOGGLE_VOLUMES, TOGGLE_AREAS } from '@/store/mutations.type'
-    import { volumesIcon, areasIcon } from '@/common/icons'
+    import Icons from '@/common/icons'
 
     export default {
         data() {
@@ -41,10 +41,10 @@
         },
         computed: {
             volumesIconLayers() {
-                return volumesIcon();
+                return Icons.volumes();
             },
             areasIconLayers() {
-                return areasIcon();
+                return Icons.areas();
             },
             volumes() {
                 return this.$store.getters.volumes;

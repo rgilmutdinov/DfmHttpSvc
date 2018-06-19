@@ -1,5 +1,5 @@
 ﻿import { UnitType, Unit } from './unit'
-import { areaIcon } from '@/common/icons'
+import Icons from '@/common/icons'
 
 export default class Area extends Unit {
     constructor(obj) {
@@ -21,6 +21,6 @@ export default class Area extends Unit {
     }
 
     get iconLayers() {
-        return areaIcon();
+        return Icons.area();
     }
 }

@@ -1,26 +1,59 @@
 ﻿<template>
     <div>
-        <h4>Welcome, {{ username }}</h4>
+        <div class="my-3">
+            <h4>Welcome, {{ fullUsername || username }}</h4>
+        </div>
         <expand-card class="my-3" :title="'Information about data dictionary'">
-            <div>{{ totalVolumes }}</div>
+            <table class="table-data table-2-cols">
+                <tr>
+                    <td>DSN:</td>
+                    <td>{{ dsn }}</td>
+                </tr>
+                <tr>
+                    <td>Registered volumes:</td>
+                    <td>{{ totalVolumes }}</td>
+                </tr>
+            </table>
+        </expand-card>
+        <expand-card class="my-3" :title="'Information about the current user'">
+            <table class="table-data table-2-cols">
+                <tr>
+                    <td>Username:</td>
+                    <td>{{ username }}</td>
+                </tr>
+                <tr>
+                    <td>Full name:</td>
+                    <td>{{ fullUsername }}</td>
+                </tr>
+                <tr>
+                    <td>User group:</td>
+                    <td>{{ userGroup }}</td>
+                </tr>
+            </table>
         </expand-card>
         <expand-card class="my-3" :title="'Go to'">
-            <div>
-                <router-link :to="{ name: 'areas' }">
-                    <layer-icon class="mr-1" :layers="areasIconLayers" />All areas
-                </router-link>
-            </div>
-            <div>
-                <router-link :to="{ name: 'volumes' }">
-                    <layer-icon class="mr-1" :layers="volumesIconLayers" />All volumes
-                </router-link>
-            </div>
+            <table class="table-data">
+                <tr>
+                    <td>
+                        <router-link :to="{ name: 'areas' }">
+                            <layer-icon class="mr-1" :layers="areasIconLayers" />All areas
+                        </router-link>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <router-link :to="{ name: 'volumes' }">
+                            <layer-icon class="mr-1" :layers="volumesIconLayers" />All volumes
+                        </router-link>
+                    </td>
+                </tr>
+            </table>
         </expand-card>
     </div>
 </template>
 
 <script>
-    import { volumesIcon, areasIcon } from '@/common/icons'
+    import Icons from '@/common/icons'
 
     export default {
         data() {
@@ -29,25 +62,38 @@
         },
         computed: {
             username() {
-                let info = this.$store.getters.dictionaryInfo;
-                if (info) {
-                    return info.userFullName || info.userName;
-                }
-
-                return '';
+                return this.$store.getters.dictionaryInfo.userName || '';
+            },
+            fullUsername() {
+                return this.$store.getters.dictionaryInfo.userFullName || '';
+            },
+            userGroup() {
+                return this.$store.getters.dictionaryInfo.userGroup || '';
+            },
+            dsn() {
+                return this.$store.getters.dictionaryInfo.dsn || '';
             },
             totalVolumes() {
                 return this.$store.getters.volumes.length;
             },
             volumesIconLayers() {
-                return volumesIcon();
+                return Icons.volumes();
             },
             areasIconLayers() {
-                return areasIcon();
+                return Icons.areas();
             },
         }
     }
 </script>
 
 <style scoped>
+    .table-data > tr > td {
+        padding: 5px;
+    }
+
+    .table-2-cols > tr > td:first-child {
+        font-weight: bold;
+        min-width: 180px;
+        text-align: right;
+    }
 </style>

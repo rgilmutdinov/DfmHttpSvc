@@ -1,5 +1,5 @@
 ﻿import { UnitType, Unit } from './unit'
-import { volumeIcon } from '@/common/icons'
+import Icons from '@/common/icons'
 
 export default class Volume extends Unit {
     constructor(obj) {
@@ -21,6 +21,6 @@ export default class Volume extends Unit {
     }
 
     get iconLayers() {
-        return volumeIcon(this);
+        return Icons.volume(this);
     }
 }
