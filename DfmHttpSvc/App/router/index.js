@@ -60,10 +60,8 @@ router.beforeEach((to, from, next) => {
     // this route requires auth, check if logged in
     // if not, redirect to login page.
     if (to.matched.some(record => record.meta.requiresAuth) && !store.getters.isAuthenticated) {
-        store.commit(TOGGLE_SIDEBAR, false);
         store.dispatch(AUTO_LOGIN);
         if (store.getters.isAuthenticated) {
-            store.commit(TOGGLE_SIDEBAR, true);
             store.dispatch(LOAD_DICTIONARY);
             next();
         } else {

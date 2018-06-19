@@ -1,7 +1,7 @@
 ﻿<template>
     <div id="app" class="app-container">
         <app-header />
-        <split-panel v-on:resize="resize" :showLeft="isAuthenticated && isSidebarOpen" :sizeLeft="300" :minSizeLeft="200" :maxSizeLeft="600">
+        <split-panel @resize="resize" :showLeft="isAuthenticated && isSidebarOpen" :sizeLeft="sidebarWidth" :minSizeLeft="200" :maxSizeLeft="600">
             <div class="content-panel sidebar" slot="panel-left">
                 <nav-tree class="p-2" />
             </div>
@@ -35,6 +35,9 @@
     import AppFooter from '@/components/AppFooter'
     import SplitPanel from '@/components/SplitPanel'
 
+    import { LOAD_SIDEBAR_STATE } from '@/store/actions.type'
+    import { SET_SIDEBAR_WIDTH } from '@/store/mutations.type'
+
     export default {
         name: 'App',
 
@@ -49,13 +52,20 @@
             },
             isSidebarOpen() {
                 return this.$store.getters.isSidebarOpen;
-            }
+            },
+            sidebarWidth() {
+                return this.$store.getters.sidebarWidth;
+            },
         },
 
         methods: {
-            resize() {
-                console.log('resize')
+            resize(value) {
+                this.$store.commit(SET_SIDEBAR_WIDTH, value);
             }
+        },
+
+        created() {
+            this.$store.dispatch(LOAD_SIDEBAR_STATE);
         },
 
         components: {

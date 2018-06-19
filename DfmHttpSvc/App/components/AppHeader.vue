@@ -31,9 +31,6 @@
             },
             currentUser() {
                 return this.$store.getters.currentUser;
-            },
-            isSidebarOpen() {
-                return this.$store.getters.isSidebarOpen;
             }
         },
         methods: {

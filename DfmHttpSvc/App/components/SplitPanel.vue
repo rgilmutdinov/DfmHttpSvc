@@ -6,7 +6,7 @@
                 <slot name="panel-left"></slot>
             </div>
 
-            <div class="splitter" ref="splitter" :style="styleSplitter" @mousedown="onMouseDown" @click="onClick"></div>
+            <div class="splitter" :style="styleSplitter" @mousedown="onMouseDown" @click="onClick"></div>
         </div>
 
         <div class="panel panel-right" :style="styleRight">
@@ -52,7 +52,7 @@
             },
             styleRight() {
                 if (this.showLeft) {
-                    return { 'left': (this.size + this.splitterWidth) + 'px' }
+                    return { 'left': (this.size + 1) + 'px' }
                 }
                 return { 'left': '0px' }
             }
@@ -61,13 +61,11 @@
             return {
                 active: false,
                 hasMoved: false,
-                size: 0,
-                splitterWidth: 0
+                size: 0
             }
         },
         mounted: function () {
             this.size = this.sizeLeft;
-            this.splitterWidth = this.$refs.splitter.clientWidth;
         },
         methods: {
             onClick() {
@@ -101,7 +99,7 @@
                     newSize = Math.min(newSize, this.maxSizeLeft);
                     this.size = newSize;
 
-                    this.$emit('resize');
+                    this.$emit('resize', this.size);
                     this.hasMoved = true;
                 }
             }
