@@ -28,14 +28,18 @@ const ApiService = {
         return Vue.axios.get(`/api/volumes/${volumeName}`);
     },
 
-    fetchDocuments(volumeName, start, count) {
+    fetchDocuments(volumeName, start, count, sort) {
         volumeName = encodeURIComponent(volumeName);
-        return Vue.axios.get(`/api/volumes/${volumeName}/documents`, {
-            params: {
-                "start": start,
-                "count": count
-            }
-        });
+        let params = {
+            "start": start,
+            "count": count
+        };
+
+        if (sort) {
+            params.sort = sort;
+        }
+
+        return Vue.axios.get(`/api/volumes/${volumeName}/documents`, { params });
     }
 }
 

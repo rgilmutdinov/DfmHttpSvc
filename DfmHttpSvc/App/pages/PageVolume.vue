@@ -54,12 +54,18 @@
                         let newColumns = data.fields.map(f => (
                             {
                                 name: f.name,
-                                title: f.name
+                                title: f.name,
+                                sortable: true
                             }
                         ));
 
+                        let sort = '';
+                        if (this.query.sort) {
+                            sort = this.query.sort + ' ' + this.query.order;
+                        }
+
                         // query documents page
-                        ApiService.fetchDocuments(this.volume, this.query.offset, this.query.limit)
+                        ApiService.fetchDocuments(this.volume, this.query.offset, this.query.limit, sort)
                             .then(({ data }) => {
                                 this.columns.splice(0, this.columns.length, ...newColumns);
 

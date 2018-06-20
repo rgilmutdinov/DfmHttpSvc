@@ -12,6 +12,8 @@
 </template>
 
 <script>
+    import { compareStrings } from '@/utils/compare';
+
     export default {
         props: {
             areaPath: {
@@ -132,13 +134,10 @@
                 let orderedUnits;
                 if (this.query.sort) {
                     let q = this.query;
-                    orderedUnits = this.allUnits.concat().sort(function (a, b) {
-                        if (q.order === 'asc') {
-                            return (a[q.sort] > b[q.sort] ? 1 : -1);
-                        } else {
-                            return (a[q.sort] < b[q.sort] ? 1 : -1);
-                        }
-                    });
+                    let order = q.order == 'asc' ? 1 : -1;
+
+                    orderedUnits = this.allUnits.slice()
+                        .sort((a, b) => compareStrings(a[q.sort], b[q.sort]) * order);
                 } else {
                     orderedUnits = this.allUnits;
                 }
