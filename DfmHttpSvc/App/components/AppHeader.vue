@@ -25,8 +25,8 @@
             </ul>
 
             <form v-if="isAuthenticated" class="form-inline mx-2">
-                <span>{{ currentUser }}</span>
-                <button class="btn btn-outline-secondary btn-sm mx-2" @click.prevent="logout"><i class="fa fa-sign-out-alt" />&nbsp;{{ $t('logout') }}</button>
+                <span class="mr-2">{{ currentUser }}</span>
+                <button class="btn btn-outline-secondary btn-sm mx-2" @click.prevent="logout"><i class="fa fa-sign-out-alt" />&nbsp;{{ $t('header.logout') }}</button>
             </form>
         </div>
     </nav>

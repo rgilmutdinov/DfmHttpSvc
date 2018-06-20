@@ -3,30 +3,30 @@
         <div id="login">
             <div class="card border-primary bg-light mb-3">
                 <div class="card-header">
-                    <b>{{ $t('authentication') }}</b>
+                    <b>{{ $t('pageLogin.authentication') }}</b>
                 </div>
                 <div class="card-body">
                     <alert-panel :error="error" :showDetails="false" />
 
                     <form @submit.prevent="onSubmit">
                         <div class="form-group">
-                            <label for="username">{{ $t('username') }}:</label>
+                            <label for="username">{{ $t('pageLogin.username') }}:</label>
                             <input type="text" id="username" class="form-control" v-model="username">
                         </div>
 
                         <div class="form-group">
-                            <label for="password">{{ $t('password') }}:</label>
+                            <label for="password">{{ $t('pageLogin.password') }}:</label>
                             <input type="password" id="password" class="form-control" v-model="password">
                         </div>
 
                         <div class="form-group">
-                            <label for="datasource">{{ $t('dataDictionary') }}:</label>
+                            <label for="datasource">{{ $t('pageLogin.dataDictionary') }}:</label>
                             <input type="text" id="datasource" class="form-control" v-model="datasource">
                         </div>
 
                         <div class="form-group">
                             <button class="btn btn-primary" :class="[{'disabled': loading}]" @click.prevent="login">
-                                <i class="fas fa-sign-in-alt"></i>&nbsp;{{ $t('login') }}
+                                <i class="fas fa-sign-in-alt"></i>&nbsp;{{ $t('pageLogin.login') }}
                             </button>
                         </div>
                     </form>

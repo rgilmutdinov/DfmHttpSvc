@@ -5,7 +5,9 @@
             <span aria-hidden="true">&times;</span>
         </button>
         <div v-if="showDetails && hasDetails">
-            Click <a class="alert-link" style="cursor: pointer" v-on:click="toggleDetails">here</a> for details.
+            <i18n path="alertPanel.details" tag="span">
+                <a place="link" class="alert-link" style="cursor: pointer" @click="toggleDetails">{{ $t('alertPanel.here') }}</a>
+            </i18n>
             <pre v-if="detailsVisible">{{ details }}</pre>
         </div>
     </div>
@@ -25,28 +27,28 @@
                 default: true
             }
         },
-        data: function () {
+        data() {
             return {
                 visible: false,
                 detailsVisible: false
             }
         },
         computed: {
-            message: function () {
+            message() {
                 return this.error.message || '';
             },
-            details: function () {
+            details() {
                 return this.error.details || '';
             },
-            hasDetails: function () {
+            hasDetails() {
                 return !!this.error.details;
             }
         },
         methods: {
-            toggleDetails: function () {
+            toggleDetails() {
                 this.detailsVisible = !this.detailsVisible;
             },
-            hide: function () {
+            hide() {
                 this.detailsVisible = false;
                 this.visible = false;
             }

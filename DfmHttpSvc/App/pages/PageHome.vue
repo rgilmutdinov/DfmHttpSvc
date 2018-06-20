@@ -1,12 +1,12 @@
 ﻿<template>
     <div>
         <div class="my-3">
-            <h4>Welcome, {{ fullUsername || username }}</h4>
+            <h4>{{ $t('pageHome.welcome') }}, {{ fullUsername || username }}</h4>
         </div>
-        <expand-card class="my-3" :title="'Information about data dictionary'">
+        <expand-card class="my-3" :title="$t('pageHome.dataDictionaryInfo')">
             <table class="table-data table-2-cols">
                 <tr>
-                    <td>DSN:</td>
+                    <td>{{ $t('pageHome.dsn') }}:</td>
                     <td>{{ dsn }}</td>
                 </tr>
                 <tr>
@@ -15,35 +15,35 @@
                 </tr>
             </table>
         </expand-card>
-        <expand-card class="my-3" :title="'Information about the current user'">
+        <expand-card class="my-3" :title="$t('pageHome.userInfo')">
             <table class="table-data table-2-cols">
                 <tr>
-                    <td>Username:</td>
+                    <td>{{ $t('pageHome.username') }}:</td>
                     <td>{{ username }}</td>
                 </tr>
                 <tr>
-                    <td>Full name:</td>
+                    <td>{{ $t('pageHome.userFullName') }}:</td>
                     <td>{{ fullUsername }}</td>
                 </tr>
                 <tr>
-                    <td>User group:</td>
+                    <td>{{ $t('pageHome.userGroup') }}:</td>
                     <td>{{ userGroup }}</td>
                 </tr>
             </table>
         </expand-card>
-        <expand-card class="my-3" :title="'Go to'">
+        <expand-card class="my-3" :title="$t('pageHome.goTo')">
             <table class="table-data">
                 <tr>
                     <td>
                         <router-link :to="{ name: 'areas' }">
-                            <layer-icon class="mr-1" :layers="areasIconLayers" />All areas
+                            <layer-icon class="mr-1" :layers="areasIconLayers" />{{ $t('pageHome.allAreas') }}
                         </router-link>
                     </td>
                 </tr>
                 <tr>
                     <td>
                         <router-link :to="{ name: 'volumes' }">
-                            <layer-icon class="mr-1" :layers="volumesIconLayers" />All volumes
+                            <layer-icon class="mr-1" :layers="volumesIconLayers" />{{ $t('pageHome.allVolumes') }}
                         </router-link>
                     </td>
                 </tr>

@@ -5,7 +5,7 @@
                 <toggle-icon :isExpanded="isAreasExpanded" :isVisible="areas && areas.length > 0"/>
             </span>
             <router-link class="route-link p-1" :to="{ name: 'areas' }">
-                <layer-icon class="mr-1" :layers="areasIconLayers" />Areas
+                <layer-icon class="mr-1" :layers="areasIconLayers" />{{ $t('navTree.allAreas') }}
             </router-link>
         </div>
         <div class="headline ml-3" v-show="isAreasExpanded" v-for="area in areas">
@@ -16,7 +16,7 @@
                 <toggle-icon :isExpanded="isVolumesExpanded" :isVisible ="volumes && volumes.length > 0" />
             </span>
             <router-link class="route-link p-1" :to="{ name: 'volumes' }">
-                <layer-icon class="mr-1" :layers="volumesIconLayers" />Volumes
+                <layer-icon class="mr-1" :layers="volumesIconLayers" />{{ $t('navTree.allVolumes') }}
             </router-link>
         </div>
         <div class="headline ml-3" v-show="isVolumesExpanded" v-for="volume in volumes" :key="volume.name">

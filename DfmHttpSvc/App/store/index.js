@@ -3,7 +3,7 @@ import Vuex from 'vuex';
 
 import auth from './modules/auth'
 import dictionary from './modules/dictionary'
-import settings from './modules/settings'
+import uisettings from './modules/ui.settings'
 
 Vue.use(Vuex);
 
@@ -11,6 +11,6 @@ export default new Vuex.Store({
     modules: {
         auth,
         dictionary,
-        settings
+        uisettings
     }
 });

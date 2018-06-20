@@ -7,7 +7,7 @@
             <div>
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
-                        <label class="input-group-text" for="pageSizeSelect">Rows per page</label>
+                        <label class="input-group-text" for="pageSizeSelect">{{ $t('datatable.rowsPerPage') }}</label>
                     </div>
                     <select class="custom-select" id="pageSizeSelect" v-model="query.limit" @change="query.offset = 0">
                         <option v-for="pageSize in pageSizeOptions" :value="pageSize">{{ pageSize }}</option>
@@ -35,14 +35,14 @@
                         </td>
                     </tr>
                     <tr v-show="rows.length == 0">
-                        <td :colspan="totalColumns" class="text-center text-muted">No data.</td>
+                        <td :colspan="totalColumns" class="text-center text-muted">{{ $t('datatable.noData') }}</td>
                     </tr>
                 </tbody>
             </table>
         </div>
         <div v-if="pagination && total > rows.length" class="flex-row my-2" style="align-items: center">
             <div class="pr-2 text-nowrap py-2">
-                Showing {{ query.offset + 1 }} to {{ query.offset + rows.length }} of {{ total }} records
+                {{ $t('datatable.showingRecords', {start: query.offset + 1, end: query.offset + rows.length, total: total}) }}
             </div>
             <pagination :total="total" :query="query"></pagination>
         </div>
