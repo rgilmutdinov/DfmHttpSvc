@@ -61,15 +61,18 @@
                         name: 'name',
                         style: 'width: 20em; max-width: 20em;',
                         tdStyle: 'overflow: hidden;',
+                        sortable: true
                     },
                     {
                         title: this.$t('pageDirectory.description'),
-                        name: 'description'
+                        name: 'description',
+                        sortable: true
                     },
                     {
                         title: this.$t('pageDirectory.dateCreated'),
                         name: 'created',
-                        style: 'width: 12em;'
+                        style: 'width: 12em;',
+                        sortable: true
                     }
                 ];
             },
@@ -126,8 +129,22 @@
         },
         methods: {
             handleQueryChange() {
-                this.units = this.allUnits.slice(this.query.offset, this.query.offset + this.query.limit);
-                this.total = this.allUnits.length;
+                let orderedUnits;
+                if (this.query.sort) {
+                    let q = this.query;
+                    orderedUnits = this.allUnits.concat().sort(function (a, b) {
+                        if (q.order === 'asc') {
+                            return (a[q.sort] > b[q.sort] ? 1 : -1);
+                        } else {
+                            return (a[q.sort] < b[q.sort] ? 1 : -1);
+                        }
+                    });
+                } else {
+                    orderedUnits = this.allUnits;
+                }
+
+                this.units = orderedUnits.slice(this.query.offset, this.query.offset + this.query.limit);
+                this.total = orderedUnits.length;
             }
         }
     }

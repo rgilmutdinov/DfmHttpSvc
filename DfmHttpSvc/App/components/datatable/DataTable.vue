@@ -23,6 +23,7 @@
                             <slot :name="'th_' + col.name" :column="col">
                                 <span class="column-title" data-toggle="tooltip" :title="col.title">{{ col.title }}</span>
                             </slot>
+                            <head-sort v-if="col.sortable" :column="col.name" :query="query" />
                         </th>
                     </tr>
                 </thead>
@@ -53,11 +54,12 @@
     import props from './mixins/props'
     import { mergeStyles, mergeClasses } from './css'
     import Pagination from './Pagination.vue'
+    import HeadSort from './HeadSort.vue'
 
     export default {
         name: 'DataTable',
         mixins: [props],
-        components: { Pagination },
+        components: { HeadSort, Pagination },
         created() {
             const q = { limit: 10, offset: 0, sort: '', order: '', ...this.query }
             Object.keys(q).forEach(key => { this.$set(this.query, key, q[key]) })
