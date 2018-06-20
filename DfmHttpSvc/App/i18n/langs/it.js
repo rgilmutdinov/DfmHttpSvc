@@ -39,5 +39,11 @@
         userGroup: 'Gruppo utenti',
         allAreas: 'Tutte le aree',
         allVolumes: 'Tutti i volumi'
+    },
+
+    pageDirectory: {
+        name: 'Nome',
+        description: 'Descrizione',
+        dateCreated: 'Data creazione'
     }
 }
