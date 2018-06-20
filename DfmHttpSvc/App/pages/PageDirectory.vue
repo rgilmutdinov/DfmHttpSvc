@@ -1,6 +1,9 @@
 ﻿<template>
     <div>
         <data-table :rows="units" :query="query" :total="total" :columns="columns">
+            <template slot="td_icon" slot-scope="{ row }">
+                <layer-icon :layers="row.iconLayers"></layer-icon>                
+            </template>
             <template slot="td_name" slot-scope="{ row }">
                 <router-link :to="row.route">{{ row.name }}</router-link>
             </template>
@@ -31,24 +34,7 @@
             return {
                 units: [],
                 total: 0,
-                query: {},
-                columns: [
-                    {
-                        title: 'Name',
-                        name: 'name',
-                        style: 'width: 20em; max-width: 20em;',
-                        tdStyle: 'overflow: hidden;',
-                    },
-                    {
-                        title: 'Description',
-                        name: 'description'
-                    },
-                    {
-                        title: 'Date created',
-                        name: 'created',
-                        style: 'width: 12em;'
-                    }
-                ]
+                query: {}
             }
         },
         watch: {
@@ -63,6 +49,31 @@
             }
         },
         computed: {
+            columns() {
+                return [
+                    {
+                        title: '',
+                        name: 'icon',
+                        style: 'width: 2em; max-width: 2em;'
+                    },
+                    {
+                        title: this.$t('pageDirectory.name'),
+                        name: 'name',
+                        style: 'width: 20em; max-width: 20em;',
+                        tdStyle: 'overflow: hidden;',
+                    },
+                    {
+                        title: this.$t('pageDirectory.description'),
+                        name: 'description'
+                    },
+                    {
+                        title: this.$t('pageDirectory.dateCreated'),
+                        name: 'created',
+                        style: 'width: 12em;'
+                    }
+                ];
+            },
+
             dictionary() {
                 return this.$store.getters.dictionary;
             },
