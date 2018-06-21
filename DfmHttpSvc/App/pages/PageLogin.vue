@@ -8,7 +8,7 @@
                 <div class="card-body">
                     <alert-panel :error="error" :showDetails="false" />
 
-                    <form @submit.prevent="onSubmit">
+                    <form>
                         <div class="form-group">
                             <label for="username">{{ $t('pageLogin.username') }}:</label>
                             <input type="text" id="username" class="form-control" v-model="username">
@@ -21,11 +21,13 @@
 
                         <div class="form-group">
                             <label for="datasource">{{ $t('pageLogin.dataDictionary') }}:</label>
-                            <input type="text" id="datasource" class="form-control" v-model="datasource">
+                            <select class="form-control" v-model="datasource">
+                                <option v-for="dsn in datasources">{{ dsn }}</option>
+                            </select>
                         </div>
 
                         <div class="form-group">
-                            <button class="btn btn-primary" :class="[{'disabled': loading}]" @click.prevent="login">
+                            <button class="btn btn-primary" :class="[{'disabled': !canLogin }]" @click.prevent="login">
                                 <i class="fas fa-sign-in-alt"></i>&nbsp;{{ $t('pageLogin.login') }}
                             </button>
                         </div>
@@ -40,6 +42,8 @@
     import { routes } from '@/router/routes'
     import Credentials from '@/models/credentials'
     import Error from '@/models/errors'
+    import ApiService from '@/api/api.service';
+    import debounce from '@/utils/debounce';
 
     export default {
         data() {
@@ -47,10 +51,24 @@
                 username: '',
                 password: '',
                 datasource: '',
+                datasources: [],
                 error: null,
                 loading: false
             }
         },
+
+        watch: {
+            username() {
+                this.loadDatasources();
+            }
+        },
+
+        computed: {
+            canLogin() {
+                return !this.loading && this.datasource;
+            }
+        },
+
         methods: {
             login() {
                 this.error = null;
@@ -68,7 +86,27 @@
                         this.loading = false;
                         this.error = err;
                     });
-            }
+            },
+
+            loadDatasources: debounce(function (e) {
+                this.datasource = '';
+                if (!this.username) {
+                    this.datasources = [];
+                    return;
+                }
+
+                ApiService.fetchDatasources(this.username)
+                    .then(({ data }) => {
+                        this.datasources = data;
+
+                        if (!this.datasource && this.datasources && this.datasources.length > 0) {
+                            this.datasource = this.datasources[0];
+                        }
+                    })
+                    .catch (err => {
+                        this.error = err;
+                    });
+            }, 300)
         }
     }
 </script>

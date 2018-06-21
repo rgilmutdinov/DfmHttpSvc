@@ -1,6 +1,11 @@
 ﻿import Vue from 'vue'
 
 const ApiService = {
+    fetchDatasources(username) {
+        username = encodeURIComponent(username);
+        return Vue.axios.get(`/api/datasources/${username}`);
+    },
+
     fetchVolumes(areaPath) {
         if (areaPath) {
             // areaPath is already escaped, use simple concatination

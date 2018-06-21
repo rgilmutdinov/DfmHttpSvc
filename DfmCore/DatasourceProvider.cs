@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
+using DfmCore.Extensions;
 using DFMServer;
 
 namespace DfmCore
@@ -12,7 +14,7 @@ namespace DfmCore
             try
             {
                 string[] datasources = dictionary.GetUserDSNs(username);
-                return new List<string>(datasources);
+                return datasources.Sanitize().ToList();
             }
             finally
             {
