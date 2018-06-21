@@ -6,7 +6,11 @@
             <i class="fas fa-spinner fa-pulse fa-2x fa-fw" style="color: lightslategray;"></i>
         </div>
         <div v-show="!loading && showTable">
-            <data-table :rows="documents" :query="query" :total="total" :columns="columns" :loading="loading"></data-table>
+            <data-table :rows="documents" :query="query" :total="total" :columns="columns" :loading="loading">
+                <template slot="td_extension" slot-scope="{ row }">
+                    <file-icon :extension="row.extension"></file-icon>
+                </template>
+            </data-table>
         </div>
     </div>
 </template>
@@ -46,18 +50,35 @@
 
         },
         methods: {
+            defaultColumns() {
+                let defCols = [];
+
+                defCols.push({
+                    name: 'extension',
+                    title: '',
+                    sortable: false,
+                    style: 'width: 2em; max-width: 2em'
+                });
+
+                return defCols;
+            },
+
             handleQueryChange() {
                 let delayId = this.showLoading();
                 // get volume info
                 ApiService.fetchVolumeInfo(this.volume)
                     .then(({ data }) => {
-                        let newColumns = data.fields.map(f => (
+                        let newColumns = this.defaultColumns();
+
+                        let volColumns = data.fields.map(f => (
                             {
                                 name: f.name,
                                 title: f.name,
                                 sortable: true
                             }
                         ));
+
+                        newColumns.push(...volColumns);
 
                         let sort = '';
                         if (this.query.sort) {
@@ -72,6 +93,7 @@
                                 this.total = data.totalDocuments;
                                 let newDocs = data.documents.map(doc => {
                                     let newDoc = {};
+                                    newDoc['extension'] = doc.extension;
                                     for (let i = 0; i < doc.fields.length; i++) {
                                         newDoc[doc.fields[i].name] = doc.fields[i].value;
                                     }

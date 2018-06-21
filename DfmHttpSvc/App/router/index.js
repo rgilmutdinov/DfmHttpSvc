@@ -11,6 +11,7 @@ import ExpandCard from '@/components/ExpandCard.vue'
 import Datatable from '@/components/datatable/DataTable.vue'
 import LayerIcon from '@/components/LayerIcon.vue'
 import ToggleIcon from '@/components/ToggleIcon.vue'
+import FileIcon from '@/components/FileIcon.vue'
 import AppHeader from '@/components/AppHeader.vue'
 import AppFooter from '@/components/AppFooter.vue'
 import AreaTree from '@/components/AreaTree.vue'
@@ -28,6 +29,7 @@ Vue.component('expand-card', ExpandCard);
 Vue.component('data-table', Datatable);
 Vue.component('layer-icon', LayerIcon);
 Vue.component('toggle-icon', ToggleIcon);
+Vue.component('file-icon', FileIcon);
 Vue.component('app-header', AppHeader);
 Vue.component('app-footer', AppFooter);
 Vue.component('area-tree', AreaTree);
