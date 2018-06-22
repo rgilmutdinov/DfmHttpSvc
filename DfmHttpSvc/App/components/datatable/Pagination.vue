@@ -2,7 +2,7 @@
     <ul class="pagination" style="margin: 0" name="Pagination">
         <li v-if="!isFirstPage" class="page-item" @click="turnPage(-1)">
             <a href="#" class="page-link" @click.prevent>
-                <i class="fas fa-angle-double-left"></i>
+                <i class="fas fa-angle-left"></i>
             </a>
         </li>
         <li v-for="i in dspBtns" :class="['page-item', { 'active': i === curPage }, {'disabled': !i}]">
@@ -15,7 +15,7 @@
         </li>
         <li v-if="!isLastPage" class="page-item" @click="turnPage(1)">
             <a href="#" class="page-link" @click.prevent>
-                <i class="fas fa-angle-double-right"></i>
+                <i class="fas fa-angle-right"></i>
             </a>
         </li>
     </ul>

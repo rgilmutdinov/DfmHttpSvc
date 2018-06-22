@@ -79,10 +79,10 @@
                 return mergeStyles(col.style, col.tdStyle);
             },
             computeThClass(col) {
-                return (col.class || '') + ' ' + (col.thClass || '');
+                return [(col.class || ''), (col.thClass || '')].join(' ').trim();
             },
             computeTdClass(col) {
-                return (col.class || '') + ' ' + (col.tdClass || '');
+                return [(col.class || ''), (col.tdClass || '')].join(' ').trim();
             }
         },
         computed: {
