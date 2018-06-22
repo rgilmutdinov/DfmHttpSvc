@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Mime;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using DfmHttpCore;
@@ -129,27 +128,20 @@ namespace DfmHttpSvc.Controllers
         [DeleteFile]
         public IActionResult GetDocument(string volume, ulong documentId)
         {
-            if (!TryGetSession(User, out Session session))
-            {
-                return Unauthorized();
-            }
-
-            DocIdentity identity = new DocIdentity(documentId);
-
-            string filePath = session.ExtractDocument(volume, identity);
-            string contentType = MimeMapping.GetMimeMapping(filePath);
-
-            ContentDisposition cd = new ContentDisposition
-            {
-                FileName = Path.GetFileName(filePath),
-                Inline   = true  // true = browser to try to show the file inline; false = prompt the user for downloading
-            };
-
-            Response.Headers.Add("Content-Disposition", cd.ToString());
-
-            return PhysicalFile(filePath, contentType);
+            return GetDocument(volume, documentId, true);
         }
 
+        /// <summary>
+        /// Retrieves a document (file) with the specified id
+        /// Accepts the access token from the body of a POST
+        /// </summary>
+        /// <param name="volume">Volume name</param>
+        /// <param name="documentId">Document id</param>
+        /// <returns>The requested document file</returns>
+        /// <response code="200">Returns the requested document file</response>
+        /// <response code="404">Volume with requested name not found</response>
+        /// <response code="401">Unauthorized access</response>
+        /// <response code="500">Internal server error</response>
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
         [ProducesResponseType(401)]
@@ -159,25 +151,7 @@ namespace DfmHttpSvc.Controllers
         [DeleteFile]
         public IActionResult DownloadDocument(string volume, ulong documentId)
         {
-            if (!TryGetSession(User, out Session session))
-            {
-                return Unauthorized();
-            }
-
-            DocIdentity identity = new DocIdentity(documentId);
-
-            string filePath = session.ExtractDocument(volume, identity);
-            string contentType = MimeMapping.GetMimeMapping(filePath);
-
-            ContentDisposition cd = new ContentDisposition
-            {
-                FileName = Path.GetFileName(filePath),
-                Inline   = true // true = browser to try to show the file inline; false = prompt the user for downloading
-            };
-
-            Response.Headers.Add("Content-Disposition", cd.ToString());
-
-            return PhysicalFile(filePath, contentType);
+            return GetDocument(volume, documentId, false);
         }
 
         /// <summary>
@@ -333,6 +307,29 @@ namespace DfmHttpSvc.Controllers
                 }
             }
             return Ok(deleted);
+        }
+
+        private IActionResult GetDocument(string volume, ulong documentId, bool inline)
+        {
+            if (!TryGetSession(User, out Session session))
+            {
+                return Unauthorized();
+            }
+
+            DocIdentity identity = new DocIdentity(documentId);
+
+            string filePath = session.ExtractDocument(volume, identity);
+            string contentType = MimeMapping.GetMimeMapping(filePath);
+
+            ContentDisposition cd = new ContentDisposition
+            {
+                FileName = Path.GetFileName(filePath),
+                Inline   = inline // true = browser to try to show the file inline; false = prompt the user for downloading
+            };
+
+            Response.Headers.Add("Content-Disposition", cd.ToString());
+
+            return PhysicalFile(filePath, contentType);
         }
     }
 }

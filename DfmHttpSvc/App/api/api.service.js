@@ -47,9 +47,9 @@ const ApiService = {
         return Vue.axios.get(`/api/volumes/${volumeName}/documents`, { params });
     },
 
-    documentLink(volumeName, docId, accessToken) {
+    documentLink(volumeName, docId) {
         volumeName = encodeURIComponent(volumeName);
-        return `/api/volumes/${volumeName}/documents/${docId}?accessToken=${accessToken}`;
+        return `/api/volumes/${volumeName}/documents/${docId}/download`;
     },
 
     downloadDocument(volumeName, docId) {

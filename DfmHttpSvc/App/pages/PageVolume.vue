@@ -5,10 +5,16 @@
         <div v-show="loading" class="loading-box p-3">
             <i class="fas fa-spinner fa-pulse fa-2x fa-fw" style="color: lightslategray;"></i>
         </div>
+        <div v-show="false">
+            <iframe width="0" height="0" border="0" name="downloadFrame" id="downloadFrame" style="display:none"></iframe>
+            <form ref="downloadForm" target="downloadFrame" method="POST">
+                <input type="hidden" name="accessToken" :value="accessToken" />
+            </form>
+        </div>
         <div v-show="!loading && showTable">
             <data-table :rows="documents" :query="query" :total="total" :columns="columns" :loading="loading">
                 <template slot="td_extension" slot-scope="{ row }">
-                    <a v-file-download="{ accessToken: accessToken, url: documentLink(row) }" target="_blank" href="">
+                    <a target="_blank" href="" @click.prevent="downloadDocument(row)">
                         <file-icon :extension="row.extension"></file-icon>
                     </a>
                 </template>
@@ -132,13 +138,12 @@
             },
 
             documentLink(document) {
-                return `/api/volumes/${this.volume}/documents/${document.compositeId}/download`;
-                //let token = this.$store.getters.accessToken;
-                //return ApiService.documentLink(this.volume, document.compositeId, token);
+                return ApiService.documentLink(this.volume, document.compositeId);
             },
 
-            downloadDocument() {
-                let form = this.$refs.download;
+            downloadDocument(document) {
+                let form = this.$refs.downloadForm;
+                form.action = this.documentLink(document);
                 form.submit();
             }
         }
