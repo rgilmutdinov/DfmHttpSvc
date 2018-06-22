@@ -1,8 +1,12 @@
+using System.Collections.Generic;
 using System.Text;
 using DfmHttpSvc.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Primitives;
 using Microsoft.IdentityModel.Tokens;
 
 namespace DfmHttpSvc.Configuration
@@ -23,6 +27,32 @@ namespace DfmHttpSvc.Configuration
                 });
 
             return services;
+        }
+
+        public static void UseQueryStringTokenValidation(this IApplicationBuilder app)
+        {
+            // get access token (bearer) from query string parameters
+            // it needs for file downloads
+            app.Use(async (context, next) =>
+            {
+                if (context.Request.QueryString.HasValue)
+                {
+                    if (string.IsNullOrWhiteSpace(context.Request.Headers["Authorization"].ToString()))
+                    {
+                        Dictionary<string, StringValues> queryString = 
+                            QueryHelpers.ParseQuery(context.Request.QueryString.Value);
+
+                        string token = queryString["accessToken"].ToString();
+
+                        if (!string.IsNullOrWhiteSpace(token))
+                        {
+                            context.Request.Headers.Add("Authorization", new[] { $"Bearer {token}" });
+                        }
+                    }
+                }
+
+                await next();
+            });
         }
 
         private static TokenValidationParameters CreateTokenValidationParameters(AuthOptions authOptions)

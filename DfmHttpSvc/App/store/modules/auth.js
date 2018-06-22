@@ -17,6 +17,9 @@ const getters = {
     },
     isAuthenticated(state) {
         return !!state.account;
+    },
+    accessToken(state) {
+        return state.account && state.account.accessToken;
     }
 }
 

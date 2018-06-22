@@ -8,7 +8,9 @@
         <div v-show="!loading && showTable">
             <data-table :rows="documents" :query="query" :total="total" :columns="columns" :loading="loading">
                 <template slot="td_extension" slot-scope="{ row }">
-                    <file-icon :extension="row.extension"></file-icon>
+                    <a :href="documentLink(row)" target="_blank">
+                        <file-icon :extension="row.extension"></file-icon>
+                    </a>
                 </template>
             </data-table>
         </div>
@@ -92,8 +94,11 @@
 
                                 this.total = data.totalDocuments;
                                 let newDocs = data.documents.map(doc => {
-                                    let newDoc = {};
-                                    newDoc['extension'] = doc.extension;
+                                    let newDoc = {
+                                        extension: doc.extension,
+                                        compositeId: doc.compositeId
+                                    };
+
                                     for (let i = 0; i < doc.fields.length; i++) {
                                         newDoc[doc.fields[i].name] = doc.fields[i].value;
                                     }
@@ -112,14 +117,21 @@
                         this.hideLoading(delayId);
                     });
             },
+
             showLoading() {
                 // wait a bit before showing loading indicator
                 return delay(() => { this.loading = true; }, 200);
             },
+
             hideLoading(delayId) {
                 clearTimeout(delayId);
                 this.loading = false;
                 this.showTable = true;
+            },
+
+            documentLink(document) {
+                let token = this.$store.getters.accessToken;
+                return ApiService.documentLink(this.volume, document.compositeId, token);
             }
         }
     }

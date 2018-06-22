@@ -1,6 +1,6 @@
 ﻿export default function debounce(func, wait, immediate) {
     var timeout, args, context, timestamp, result;
-    if (null == wait) {
+    if (wait === null) {
         wait = 100;
     }
 

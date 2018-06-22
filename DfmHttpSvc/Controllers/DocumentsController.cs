@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Net.Mime;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
@@ -137,6 +138,14 @@ namespace DfmHttpSvc.Controllers
 
             string filePath = session.ExtractDocument(volume, identity);
             string contentType = MimeMapping.GetMimeMapping(filePath);
+
+            ContentDisposition cd = new ContentDisposition
+            {
+                FileName = Path.GetFileName(filePath),
+                Inline   = true  // true = browser to try to show the file inline; false = prompt the user for downloading
+            };
+
+            Response.Headers.Add("Content-Disposition", cd.ToString());
 
             return PhysicalFile(filePath, contentType);
         }

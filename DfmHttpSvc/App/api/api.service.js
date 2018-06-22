@@ -45,6 +45,16 @@ const ApiService = {
         }
 
         return Vue.axios.get(`/api/volumes/${volumeName}/documents`, { params });
+    },
+
+    documentLink(volumeName, docId, accessToken) {
+        volumeName = encodeURIComponent(volumeName);
+        return `/api/volumes/${volumeName}/documents/${docId}?accessToken=${accessToken}`;
+    },
+
+    downloadDocument(volumeName, docId) {
+        volumeName = encodeURIComponent(volumeName);
+        return Vue.axios.get(`/api/volumes/${volumeName}/documents/${docId}`, { responseType: 'blob' });
     }
 }
 
