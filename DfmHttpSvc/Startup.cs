@@ -54,7 +54,6 @@ namespace DfmHttpSvc
                 app.UseExceptionHandler("/Home/Error");
             }
 
-            app.UseQueryStringTokenValidation();
             app.UseAuthentication();
             app.UseStaticFiles();
 

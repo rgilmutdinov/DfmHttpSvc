@@ -5,6 +5,7 @@ using System.Linq;
 using DfmHttpSvc.Configuration.Swagger;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Net.Http.Headers;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace DfmHttpSvc.Configuration
@@ -44,7 +45,7 @@ namespace DfmHttpSvc.Configuration
                     {
                         Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
                         In = "header",
-                        Name = "Authorization",
+                        Name = HeaderNames.Authorization,
                         Type = "apiKey"
                     }
                 );
