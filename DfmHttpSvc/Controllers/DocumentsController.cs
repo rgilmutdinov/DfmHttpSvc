@@ -150,6 +150,36 @@ namespace DfmHttpSvc.Controllers
             return PhysicalFile(filePath, contentType);
         }
 
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(500)]
+        [Authorize]
+        [HttpPost("{documentId}/download", Name = Routes.DownloadDocumentPost)]
+        [DeleteFile]
+        public IActionResult DownloadDocument(string volume, ulong documentId)
+        {
+            if (!TryGetSession(User, out Session session))
+            {
+                return Unauthorized();
+            }
+
+            DocIdentity identity = new DocIdentity(documentId);
+
+            string filePath = session.ExtractDocument(volume, identity);
+            string contentType = MimeMapping.GetMimeMapping(filePath);
+
+            ContentDisposition cd = new ContentDisposition
+            {
+                FileName = Path.GetFileName(filePath),
+                Inline   = true // true = browser to try to show the file inline; false = prompt the user for downloading
+            };
+
+            Response.Headers.Add("Content-Disposition", cd.ToString());
+
+            return PhysicalFile(filePath, contentType);
+        }
+
         /// <summary>
         /// Adds new document (file) to the volume
         /// </summary>

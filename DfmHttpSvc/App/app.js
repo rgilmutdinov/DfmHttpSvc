@@ -14,9 +14,12 @@ import router from '@/router'
 import store from '@/store'
 import axios from '@/api/axios'
 import i18n from '@/i18n';
+import FileDownload from '@/directives/file.download'
 
 import { sync } from 'vuex-router-sync';
 sync(store, router); // "Sync vue-router's current $route as part of vuex store's state."
+
+Vue.directive('file-download', FileDownload);
 
 Vue.use(VueAxios, axios);
 

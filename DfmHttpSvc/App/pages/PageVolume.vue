@@ -8,7 +8,7 @@
         <div v-show="!loading && showTable">
             <data-table :rows="documents" :query="query" :total="total" :columns="columns" :loading="loading">
                 <template slot="td_extension" slot-scope="{ row }">
-                    <a :href="documentLink(row)" target="_blank">
+                    <a v-file-download="{ accessToken: accessToken, url: documentLink(row) }" target="_blank" href="">
                         <file-icon :extension="row.extension"></file-icon>
                     </a>
                 </template>
@@ -49,7 +49,9 @@
             }
         },
         computed: {
-
+            accessToken() {
+                return this.$store.getters.accessToken;
+            }
         },
         methods: {
             defaultColumns() {
@@ -130,8 +132,14 @@
             },
 
             documentLink(document) {
-                let token = this.$store.getters.accessToken;
-                return ApiService.documentLink(this.volume, document.compositeId, token);
+                return `/api/volumes/${this.volume}/documents/${document.compositeId}/download`;
+                //let token = this.$store.getters.accessToken;
+                //return ApiService.documentLink(this.volume, document.compositeId, token);
+            },
+
+            downloadDocument() {
+                let form = this.$refs.download;
+                form.submit();
             }
         }
     }

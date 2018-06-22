@@ -1,7 +1,9 @@
 using System.Text;
 using System.Threading.Tasks;
+using DfmHttpCore.Utils;
 using DfmHttpSvc.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -29,16 +31,21 @@ namespace DfmHttpSvc.Configuration
                     {
                         OnMessageReceived = context =>
                         {
-                            if (context.Request.Headers.ContainsKey(HeaderNames.Authorization))
+                            HttpRequest request = context.Request;
+                            if (!request.Headers.ContainsKey(HeaderNames.Authorization))
                             {
-                                return Task.CompletedTask;
-                            }
+                                string method = request.Method;
 
-                            if (context.Request.Method.Equals("GET") && context.Request.Query.ContainsKey("accessToken"))
-                            {
-                                context.Token = context.Request.Query["accessToken"];
+                                if (Strings.EqualsNoCase(method, "GET") && request.Query.ContainsKey("accessToken"))
+                                {
+                                    context.Token = request.Query["accessToken"];
+                                }
+                                else if (Strings.EqualsNoCase(method, "POST") && request.HasFormContentType && request.Form.ContainsKey("accessToken"))
+                                {
+                                    context.Token = request.Form["accessToken"];
+                                }
                             }
-
+                            
                             return Task.CompletedTask;
                         }
                     };
