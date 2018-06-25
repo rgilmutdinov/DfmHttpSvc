@@ -8,9 +8,9 @@
         <div v-show="!loading && showTable">
             <data-table :rows="documents" :query="query" :total="total" :columns="columns" :loading="loading">
                 <template slot="td_extension" slot-scope="{ row }">
-                    <a :href="documentLink(row)" target="_blank">
+                    <div @click.prevent="downloadDocument(row)" style="cursor: pointer">
                         <file-icon :extension="row.extension"></file-icon>
-                    </a>
+                    </div>
                 </template>
             </data-table>
         </div>
@@ -19,9 +19,10 @@
 
 <script>
     import delay from '@/utils/delay'
+    import openLink from '@/utils/openLink'
     import Error from '@/models/errors'
     import ApiService from '@/api/api.service'
-
+    
     export default {
         props: {
             volume: {
@@ -132,6 +133,16 @@
             documentLink(document) {
                 let token = this.$store.getters.accessToken;
                 return ApiService.documentLink(this.volume, document.compositeId, token);
+            },
+
+            downloadDocument(doc) {
+                ApiService.fetchDownloadToken(this.volume, doc.compositeId)
+                    .then(({ data }) => {
+                        let link = ApiService.downloadLink(data.token); 
+                        setTimeout(function () {
+                            openLink(link);
+                        }, 0);
+                    });
             }
         }
     }

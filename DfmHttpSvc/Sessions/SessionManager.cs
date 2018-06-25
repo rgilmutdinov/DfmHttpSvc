@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Caching;
 using DfmCore;
 using DfmHttpCore;
+using DfmHttpCore.Entities;
 using Microsoft.Extensions.Configuration;
 
 namespace DfmHttpSvc.Sessions
@@ -12,6 +14,8 @@ namespace DfmHttpSvc.Sessions
     {
         private readonly Dictionary<string, Session> _sessions = new Dictionary<string, Session>();
         private readonly object _sessionsLock = new object();
+
+        private readonly MemoryCache _downloadTickets = new MemoryCache("DownloadTickets");
 
         public SessionManager(IConfiguration configuration)
         {
@@ -93,6 +97,28 @@ namespace DfmHttpSvc.Sessions
                     }
                 );
             }
+        }
+
+        public DownloadTicket CreateDownloadTicket(string sessionId, string volumeName, DocIdentity docIdentity)
+        {
+            DownloadTicket ticket = new DownloadTicket(
+                sessionId,
+                docIdentity.CompositeId,
+                volumeName);
+
+            this._downloadTickets.Add(ticket.Token, ticket,
+                new CacheItemPolicy
+                {
+                    AbsoluteExpiration = DateTime.UtcNow.AddMinutes(1)
+                }
+            );
+
+            return ticket;
+        }
+
+        public DownloadTicket GetDownloadTicket(string token)
+        {
+            return this._downloadTickets.Get(token) as DownloadTicket;
         }
     }
 }

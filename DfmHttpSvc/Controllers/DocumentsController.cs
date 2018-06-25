@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Mime;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using DfmHttpCore;
@@ -111,6 +110,70 @@ namespace DfmHttpSvc.Controllers
         }
 
         /// <summary>
+        /// Generates temporary token to download a document
+        /// </summary>
+        /// <param name="volume">Volume name</param>
+        /// <param name="documentId">Document id</param>
+        /// <returns>Temporary token</returns>
+        /// <response code="200">Returns temporary token for download a document</response>
+        /// <response code="401">Unauthorized access</response>
+        /// <response code="500">Internal server error</response>
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(500)]
+        [Authorize]
+        [HttpGet("{documentId}/token")]
+        public IActionResult GetDocumentDownloadToken(string volume, ulong documentId)
+        {
+            if (!TryGetSession(User, out Session _))
+            {
+                return Unauthorized();
+            }
+
+            DocIdentity identity = new DocIdentity(documentId);
+
+            string sessionId = GetSessionId(User);
+            DownloadTicket ticket = SessionManager.CreateDownloadTicket(sessionId, volume, identity);
+
+            return Ok(new
+            {
+                ticket.Token
+            });
+        }
+
+        /// <summary>
+        /// Downloads document by temporary token
+        /// </summary>
+        /// <param name="token">temporary token</param>
+        /// <returns>A document (file), associated with the temporary token</returns>
+        /// <response code="200">A document (file)</response>
+        /// <response code="404">Token is not valid or expired</response>
+        /// <response code="401">Unauthorized access</response>
+        /// <response code="500">Internal server error</response>        
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(500)]
+        [HttpGet("/api/downloads/{token}")]
+        public IActionResult DownloadByToken(string token)
+        {
+            DownloadTicket ticket = SessionManager.GetDownloadTicket(token);
+            if (ticket == null)
+            {
+                return NotFound("Token is not valid or expired.");
+            }
+
+            if (!TryGetSession(ticket.SessionId, out Session session))
+            {
+                return Unauthorized();
+            }
+
+            return DownloadDocument(
+                session, ticket.VolumeName, ticket.DocumentId);
+        }
+
+        /// <summary>
         /// Retrieves a document (file) with the specified id
         /// </summary>
         /// <param name="volume">Volume name</param>
@@ -134,20 +197,7 @@ namespace DfmHttpSvc.Controllers
                 return Unauthorized();
             }
 
-            DocIdentity identity = new DocIdentity(documentId);
-
-            string filePath = session.ExtractDocument(volume, identity);
-            string contentType = MimeMapping.GetMimeMapping(filePath);
-
-            ContentDisposition cd = new ContentDisposition
-            {
-                FileName = Path.GetFileName(filePath),
-                Inline   = true  // true = browser to try to show the file inline; false = prompt the user for downloading
-            };
-
-            Response.Headers.Add("Content-Disposition", cd.ToString());
-
-            return PhysicalFile(filePath, contentType);
+            return DownloadDocument(session, volume, documentId);
         }
 
         /// <summary>
@@ -303,6 +353,25 @@ namespace DfmHttpSvc.Controllers
                 }
             }
             return Ok(deleted);
+        }
+
+
+        private IActionResult DownloadDocument(Session session, string volume, ulong documentId)
+        {
+            DocIdentity identity = new DocIdentity(documentId);
+
+            string filePath = session.ExtractDocument(volume, identity);
+            string contentType = MimeMapping.GetMimeMapping(filePath);
+
+            ContentDisposition cd = new ContentDisposition
+            {
+                FileName = Path.GetFileName(filePath),
+                Inline   = true // true = browser to try to show the file inline; false = prompt the user for downloading
+            };
+
+            Response.Headers.Add("Content-Disposition", cd.ToString());
+
+            return PhysicalFile(filePath, contentType);
         }
     }
 }
