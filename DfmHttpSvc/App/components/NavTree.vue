@@ -1,29 +1,31 @@
 ﻿<template>
     <div class="m-0">
-        <div class="headline">
-            <span v-on:click="toggleAreas()">
-                <toggle-icon :isExpanded="isAreasExpanded" :isVisible="areas && areas.length > 0"/>
+        <router-link tag="div" class="route-link" :to="{ name: 'areas' }">
+            <span @click="toggleAreas()">
+                <toggle-icon :isExpanded="isAreasExpanded" :isVisible="areas && areas.length > 0" />
             </span>
-            <router-link class="route-link p-1" :to="{ name: 'areas' }">
+            <a class="headline">
                 <layer-icon class="mr-1" :layers="areasIconLayers" />{{ $t('navTree.allAreas') }}
-            </router-link>
+            </a>
+        </router-link>
+        <div v-show="isAreasExpanded" v-for="area in areas">
+            <area-tree :area="area" :key="area.path" :level="1"></area-tree>
         </div>
-        <div class="headline ml-3" v-show="isAreasExpanded" v-for="area in areas">
-            <area-tree :area="area" :key="area.path"></area-tree>
-        </div>
-        <div class="headline">
-            <span v-on:click="toggleVolumes()">
-                <toggle-icon :isExpanded="isVolumesExpanded" :isVisible ="volumes && volumes.length > 0" />
+        <router-link tag="div" class="route-link" :to="{ name: 'volumes' }">
+            <span @click="toggleVolumes()">
+                <toggle-icon :isExpanded="isVolumesExpanded" :isVisible="volumes && volumes.length > 0" />
             </span>
-            <router-link class="route-link p-1" :to="{ name: 'volumes' }">
+            <a class="headline">
                 <layer-icon class="mr-1" :layers="volumesIconLayers" />{{ $t('navTree.allVolumes') }}
-            </router-link>
-        </div>
-        <div class="headline ml-3" v-show="isVolumesExpanded" v-for="volume in volumes" :key="volume.name">
-            <toggle-icon :isVisible="false"/>
-            <router-link class="route-link p-1" :to="volume.route">
-                <layer-icon :layers="volume.iconLayers" />
-                <span data-toggle="tooltip" :title="volume.name">{{ volume.name }}</span>
+            </a>
+        </router-link>
+        <div class="headline" v-show="isVolumesExpanded" v-for="volume in volumes" :key="volume.name">
+            <router-link tag="div" class="route-link" :to="volume.route">
+                <toggle-icon :isVisible="false" />
+                <a class="headline offset">
+                    <layer-icon :layers="volume.iconLayers" />
+                    <span data-toggle="tooltip" :title="volume.name">{{ volume.name }}</span>
+                </a>
             </router-link>
         </div>
     </div>
@@ -72,5 +74,11 @@
 <style scoped>
     .router-link-exact-active {
         background-color: gainsboro;
+    }
+    .offset {
+        padding-left: 0.5rem;
+    }
+    .route-link {
+        padding: 0.15rem;
     }
 </style>
