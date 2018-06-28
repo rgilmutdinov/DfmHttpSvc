@@ -1,4 +1,6 @@
-﻿export default {
+﻿import Selection from '../selection'
+
+export default {
     props: {
         // columns
         columns: { type: Array, required: true },
@@ -17,6 +19,9 @@
 
         // pagination options
         pageSizeOptions: { type: Array, default: () => [10, 20, 50, 100] },
+
+        // selection, null if not applied
+        selection: { type: Selection },
 
         // classes for <table>
         tblClass: [String, Object, Array],

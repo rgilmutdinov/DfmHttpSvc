@@ -6,7 +6,7 @@
             <i class="fas fa-spinner fa-pulse fa-2x fa-fw" style="color: lightslategray;"></i>
         </div>
         <div v-show="!loading && showTable">
-            <data-table :rows="documents" :query="query" :total="total" :columns="columns" :loading="loading">
+            <data-table :rows="documents" :query="query" :total="total" :columns="columns" :selection="selection" :loading="loading">
                 <template slot="td_extension" slot-scope="{ row }">
                     <div @click.prevent="downloadDocument(row)" style="cursor: pointer">
                         <file-icon :extension="row.extension"></file-icon>
@@ -22,6 +22,7 @@
     import openLink from '@/utils/openLink'
     import Error from '@/models/errors'
     import ApiService from '@/api/api.service'
+    import Selection from '@/components/datatable/selection'
     
     export default {
         props: {
@@ -36,6 +37,7 @@
                 total: 0,
                 query: {},
                 columns: [],
+                selection: new Selection(),
                 showTable: false,
                 loading: false,
                 error: null
@@ -68,6 +70,7 @@
 
             handleQueryChange() {
                 let delayId = this.showLoading();
+
                 // get volume info
                 ApiService.fetchVolumeInfo(this.volume)
                     .then(({ data }) => {
@@ -97,7 +100,7 @@
                                 let newDocs = data.documents.map(doc => {
                                     let newDoc = {
                                         extension: doc.extension,
-                                        compositeId: doc.compositeId
+                                        id: doc.compositeId
                                     };
 
                                     for (let i = 0; i < doc.fields.length; i++) {
@@ -132,11 +135,11 @@
 
             documentLink(document) {
                 let token = this.$store.getters.accessToken;
-                return ApiService.documentLink(this.volume, document.compositeId, token);
+                return ApiService.documentLink(this.volume, document.id, token);
             },
 
             downloadDocument(doc) {
-                ApiService.fetchDownloadToken(this.volume, doc.compositeId)
+                ApiService.fetchDownloadToken(this.volume, doc.id)
                     .then(({ data }) => {
                         let link = ApiService.downloadLink(data.token); 
                         setTimeout(function () {

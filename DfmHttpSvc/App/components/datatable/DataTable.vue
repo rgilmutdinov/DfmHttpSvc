@@ -19,6 +19,13 @@
             <table class="table table-striped table-sm" style="white-space: nowrap">
                 <thead class="thead-light">
                     <tr>
+                        <th v-if="selection" key="--th-multi">
+                            <span @click="toggleSelectAll()" class="selection">
+                                <i v-show="!hasSelected && hasUnselected" class="far fa-square" />
+                                <i v-show="hasSelected && hasUnselected" class="fas fa-square" />
+                                <i v-show="hasSelected && !hasUnselected" class="far fa-check-square" />
+                            </span>
+                        </th>
                         <th v-for="col in columns" :class="computeThClass(col)" :style="computeThStyle(col)">
                             <slot :name="'th_' + col.name" :column="col">
                                 <span class="column-title" data-toggle="tooltip" :title="col.title">{{ col.title }}</span>
@@ -29,6 +36,12 @@
                 </thead>
                 <tbody>
                     <tr v-for="row in rows">
+                        <td v-if="selection">
+                            <span @click="toggleSelect(row)" class="selection">
+                                <i v-show="isSelected(row)" class="far fa-check-square" />
+                                <i v-show="!isSelected(row)" class="far fa-square" />
+                            </span>
+                        </td>
                         <td v-for="col in columns" :class="computeTdClass(col)" :style="computeTdStyle(col)">
                             <slot :name="'td_' + col.name" :row="row" :column="col">
                                 <span class="cell-text text-nowrap" data-toggle="tooltip" :title="row[col.name]">{{ row[col.name] }}</span>
@@ -72,6 +85,48 @@
             immediate: true
         },
         methods: {
+            toggleSelect(row) {
+                if (!this.selection || !row.id) {
+                    return;
+                }
+
+                if (this.selection.isSelected(row.id)) {
+                    this.selection.unselect(row.id);
+                } else {
+                    this.selection.select(row.id);
+                }
+            },
+            toggleSelectAll() {
+                if (!this.selection) {
+                    return;
+                }
+
+                if (this.hasUnselected) {
+                    this.selectAll();
+                } else {
+                    this.unselectAll();
+                }
+            },
+            selectAll() {
+                if (!this.selection) {
+                    return;
+                }
+
+                this.selection.selectAll();
+            },
+            unselectAll() {
+                if (!this.selection) {
+                    return;
+                }
+
+                this.selection.unselectAll();
+            },
+            isSelected(row) {
+                if (row.id) {
+                    return this.selection.isSelected(row.id);
+                }
+                return false;
+            },
             computeThStyle(col) {
                 return mergeStyles(col.style, col.thStyle);
             },
@@ -88,7 +143,30 @@
         computed: {
             totalColumns() {
                 return this.columns.length;
-            }
+            },
+            selectedCount() {
+                if (!this.selection) {
+                    return 0;
+                }
+
+                let total = this.rows.length;
+                let idsLen = this.selection.ids.length;
+                let selected = this.selection.inverse ? total - idsLen : idsLen;
+
+                return selected > 0 ? selected : 0;
+            },
+            hasSelected() {
+                if (this.selection) {
+                    return this.selectedCount > 0;
+                }
+                return false;
+            },
+            hasUnselected() {
+                if (this.selection) {
+                    return this.rows.length > this.selectedCount;
+                }
+                return false;
+            },
         }
     }
 </script>
@@ -112,5 +190,13 @@
         vertical-align: middle;
         overflow: hidden;
         text-overflow: ellipsis;
+    }
+
+    .selection {
+        cursor: pointer;
+        display: inline-block;
+        text-align: center;
+        vertical-align: middle;
+        width: 1em;
     }
 </style>
