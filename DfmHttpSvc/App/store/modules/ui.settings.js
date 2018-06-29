@@ -8,8 +8,6 @@ import {
 } from '../mutations.type';
 
 import {
-    SIDEBAR_WIDTH,
-    SIDEBAR_OPEN,
     SIDEBAR_STATE,
     LOCALE
 } from '@/common/storage.keys';

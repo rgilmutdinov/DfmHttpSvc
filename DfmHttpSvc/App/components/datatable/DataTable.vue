@@ -10,7 +10,7 @@
                         <label class="input-group-text" for="pageSizeSelect">{{ $t('datatable.rowsPerPage') }}</label>
                     </div>
                     <select class="custom-select" id="pageSizeSelect" v-model="query.limit" @change="query.offset = 0">
-                        <option v-for="pageSize in pageSizeOptions" :value="pageSize">{{ pageSize }}</option>
+                        <option v-for="pageSize in pageSizeOptions" :key="pageSize" :value="pageSize">{{ pageSize }}</option>
                     </select>
                 </div>
             </div>
@@ -26,7 +26,7 @@
                                 <i v-show="isAnySelected && !isAnyUnselected" class="far fa-check-square" />
                             </span>
                         </th>
-                        <th v-for="col in columns" :class="computeThClass(col)" :style="computeThStyle(col)">
+                        <th v-for="col in columns" :key="col.name" :class="computeThClass(col)" :style="computeThStyle(col)">
                             <slot :name="'th_' + col.name" :column="col">
                                 <span class="column-title" data-toggle="tooltip" :title="col.title">{{ col.title }}</span>
                             </slot>
@@ -42,7 +42,7 @@
                                 <i v-show="!isSelected(row)" class="far fa-square" />
                             </span>
                         </td>
-                        <td v-for="col in columns" :class="computeTdClass(col)" :style="computeTdStyle(col)">
+                        <td v-for="col in columns" :key="col.name" :class="computeTdClass(col)" :style="computeTdStyle(col)">
                             <slot :name="'td_' + col.name" :row="row" :column="col">
                                 <span class="cell-text text-nowrap" data-toggle="tooltip" :title="row[col.name]">{{ row[col.name] }}</span>
                             </slot>
@@ -65,7 +65,7 @@
 
 <script>
     import props from './mixins/props';
-    import { mergeStyles, mergeClasses } from './css';
+    import { mergeStyles } from './css';
     import Pagination from './Pagination.vue';
     import HeadSort from './HeadSort.vue';
 
@@ -78,10 +78,6 @@
             Object.keys(q).forEach(key => { this.$set(this.query, key, q[key]); });
         },
         watch: {
-            data: {
-                handler(data) {
-                }
-            },
             immediate: true
         },
         methods: {

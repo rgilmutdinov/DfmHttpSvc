@@ -5,7 +5,7 @@
                 <i class="fas fa-angle-left"></i>
             </a>
         </li>
-        <li v-for="i in dspBtns" :class="['page-item', { 'active': i === curPage }, {'disabled': !i}]">
+        <li v-for="i in dspBtns" :key="i" :class="['page-item', { 'active': i === curPage }, {'disabled': !i}]">
             <a v-if="i" href="#" class="page-link" @click.prevent="handleClick(i)">
                 {{ i }}
             </a>

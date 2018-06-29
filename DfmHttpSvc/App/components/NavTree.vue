@@ -8,7 +8,7 @@
                 <layer-icon class="mr-1" :layers="areasIconLayers" />{{ $t('navTree.allAreas') }}
             </a>
         </router-link>
-        <div v-show="isAreasExpanded" v-for="area in areas">
+        <div v-show="isAreasExpanded" v-for="area in areas" :key="area.path">
             <area-tree :area="area" :key="area.path" :level="1"></area-tree>
         </div>
         <router-link tag="div" class="route-link" :to="{ name: 'volumes' }">
@@ -31,7 +31,6 @@
     </div>
 </template>
 <script>
-    import Area from '@/models/area';
     import { TOGGLE_VOLUMES, TOGGLE_AREAS } from '@/store/mutations.type';
     import Icons from '@/common/icons';
 

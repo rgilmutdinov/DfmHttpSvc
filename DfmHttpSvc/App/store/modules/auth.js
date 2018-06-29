@@ -4,7 +4,7 @@ import Account from '@/models/account';
 import Error from '@/models/errors';
 
 import { ACCESS_TOKEN, USERNAME } from '@/common/storage.keys';
-import { LOGIN, LOGOUT, AUTO_LOGIN, PING } from '../actions.type';
+import { LOGIN, LOGOUT, AUTO_LOGIN } from '../actions.type';
 import { SET_AUTH, PURGE_AUTH } from '../mutations.type';
 
 const state = {

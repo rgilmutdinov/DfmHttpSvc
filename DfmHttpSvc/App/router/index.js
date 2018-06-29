@@ -5,7 +5,6 @@ import store from '../store';
 import { routes } from './routes.js';
 
 import { AUTO_LOGIN, LOAD_DICTIONARY } from '@/store/actions.type';
-import { TOGGLE_SIDEBAR } from '@/store/mutations.type';
 
 import ExpandCard from '@/components/ExpandCard.vue';
 import Datatable from '@/components/datatable/DataTable.vue';
@@ -45,8 +44,8 @@ var router = new VueRouter({
         { name: 'volume', path: routes.VOLUME, component: PageVolume, meta: { requiresAuth: true }, props: route => ({ volume: route.params.volume }) },
 
         { name: 'area', path: routes.AREA, component: PageDirectory, meta: { requiresAuth: true }, props: route => ({ areaPath: route.params.area }) },
-        { name: 'volumes', path: routes.VOLUMES, component: PageDirectory, meta: { requiresAuth: true }, props: route => ({ showAreas: false }) },
-        { name: 'areas', path: routes.AREAS, component: PageDirectory, meta: { requiresAuth: true }, props: route => ({ showVolumes: false }) },
+        { name: 'volumes', path: routes.VOLUMES, component: PageDirectory, meta: { requiresAuth: true }, props: () => ({ showAreas: false }) },
+        { name: 'areas', path: routes.AREAS, component: PageDirectory, meta: { requiresAuth: true }, props: () => ({ showVolumes: false }) },
 
         { path: '*', redirect: routes.EMPTY }
     ]

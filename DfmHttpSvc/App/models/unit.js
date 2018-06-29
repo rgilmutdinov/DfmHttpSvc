@@ -18,17 +18,23 @@ export class Unit {
         if (this.method === undefined) {
             throw new TypeError("Must override method");
         }
+
+        return null;
     }
 
     get route() {
         if (this.method === undefined) {
             throw new TypeError("Must override method");
         }
+
+        return null;
     }
 
     get iconLayers() {
         if (this.method === undefined) {
             throw new TypeError("Must override method");
         }
+
+        return null;
     }
 }

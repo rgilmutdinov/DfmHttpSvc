@@ -22,7 +22,7 @@
                         <div class="form-group">
                             <label for="datasource">{{ $t('pageLogin.dataDictionary') }}:</label>
                             <select class="form-control" v-model="datasource">
-                                <option v-for="dsn in datasources">{{ dsn }}</option>
+                                <option v-for="dsn in datasources" :key="dsn">{{ dsn }}</option>
                             </select>
                         </div>
 
@@ -41,7 +41,6 @@
     import { LOGIN, LOAD_DICTIONARY } from '@/store/actions.type';
     import { routes } from '@/router/routes';
     import Credentials from '@/models/credentials';
-    import Error from '@/models/errors';
     import ApiService from '@/api/api.service';
     import debounce from '@/utils/debounce';
 
@@ -88,7 +87,7 @@
                     });
             },
 
-            loadDatasources: debounce(function (e) {
+            loadDatasources: debounce(function() {
                 this.datasource = '';
                 if (!this.username) {
                     this.datasources = [];
