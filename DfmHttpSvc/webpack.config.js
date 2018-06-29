@@ -23,8 +23,15 @@ module.exports = (env) => {
         },
         module: {
             rules: [
-                { test: /\.vue$/, use: 'vue-loader' },
-                { test: /\.js$/, exclude: /(node_modules)/, loader: 'babel-loader' },
+                {
+                    test: /\.vue$/,
+                    use: [{ loader: 'vue-loader' }, { loader: 'eslint-loader', options: { fix: true } }]
+                },
+                {
+                    test: /\.js$/,
+                    exclude: /(node_modules)/,
+                    use: [{ loader: 'babel-loader' }, { loader: 'eslint-loader', options: { fix: true } }]
+                },
                 { test: /\.css$/, use: ExtractTextPlugin.extract({ use: isDevBuild ? 'css-loader' : 'css-loader?minimize' }) },
                 { test: /\.(png|jpg|jpeg|gif|svg)$/, use: 'url-loader?limit=25000' }
             ]
