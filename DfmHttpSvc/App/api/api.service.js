@@ -1,4 +1,4 @@
-﻿import Vue from 'vue'
+import Vue from 'vue';
 
 const ApiService = {
     fetchDatasources(username) {
@@ -67,6 +67,6 @@ const ApiService = {
     downloadLink(token) {
         return `/api/downloads/${token}`;
     }
-}
+};
 
 export default ApiService;

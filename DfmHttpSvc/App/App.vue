@@ -1,4 +1,4 @@
-﻿<template>
+<template>
     <div id="app" class="app-container">
         <app-header />
         <split-panel @resize="resize" :showLeft="isAuthenticated && isSidebarOpen" :sizeLeft="sidebarWidth" :minSizeLeft="200" :maxSizeLeft="600">
@@ -31,19 +31,19 @@
     }
 </style>
 <script>
-    import AppHeader from '@/components/AppHeader'
-    import AppFooter from '@/components/AppFooter'
-    import SplitPanel from '@/components/SplitPanel'
+    import AppHeader from '@/components/AppHeader';
+    import AppFooter from '@/components/AppFooter';
+    import SplitPanel from '@/components/SplitPanel';
 
-    import { LOAD_SIDEBAR_STATE } from '@/store/actions.type'
-    import { SET_SIDEBAR_WIDTH } from '@/store/mutations.type'
+    import { LOAD_SIDEBAR_STATE } from '@/store/actions.type';
+    import { SET_SIDEBAR_WIDTH } from '@/store/mutations.type';
 
     export default {
         name: 'App',
 
         data: function () {
             return {
-            }
+            };
         },
 
         computed: {
@@ -55,7 +55,7 @@
             },
             sidebarWidth() {
                 return this.$store.getters.sidebarWidth;
-            },
+            }
         },
 
         methods: {
@@ -73,7 +73,7 @@
             AppFooter,
             SplitPanel
         }
-    }
+    };
 </script>
 
 <style scoped>

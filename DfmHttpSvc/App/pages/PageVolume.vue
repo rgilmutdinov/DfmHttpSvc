@@ -1,4 +1,4 @@
-﻿<template>
+<template>
     <div>
         <alert-panel :error="error"></alert-panel>
         <h1>Volume {{ volume }}</h1>
@@ -19,11 +19,11 @@
 </template>
 
 <script>
-    import delay from '@/utils/delay'
-    import openLink from '@/utils/openLink'
-    import Error from '@/models/errors'
-    import ApiService from '@/api/api.service'
-    import Selection from '@/components/datatable/selection'
+    import delay from '@/utils/delay';
+    import openLink from '@/utils/openLink';
+    import Error from '@/models/errors';
+    import ApiService from '@/api/api.service';
+    import Selection from '@/components/datatable/selection';
     
     export default {
         props: {
@@ -42,7 +42,7 @@
                 showTable: false,
                 loading: false,
                 error: null
-            }
+            };
         },
         watch: {
             query: {
@@ -170,7 +170,7 @@
                     });
             }
         }
-    }
+    };
 </script>
 
 <style scoped>

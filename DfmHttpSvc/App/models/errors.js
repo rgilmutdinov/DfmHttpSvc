@@ -1,4 +1,4 @@
-﻿function parseMessage(error) {
+function parseMessage(error) {
     if (error.response) {
         // The request was made and the server responded with a status code
         // that falls out of the range of 2xx
@@ -21,7 +21,7 @@ function parseDetails(error) {
             status:     error.response.status,
             statusText: error.response.statusText,
             headers:    error.response.headers
-        }
+        };
     }
 
     return null;

@@ -1,4 +1,4 @@
-﻿import DictionaryInfo from './dictionaryInfo'
+import DictionaryInfo from './dictionaryInfo';
 
 export default class Dictionary {
     constructor() {

@@ -1,4 +1,4 @@
-﻿<template>
+<template>
     <nav class="navbar sticky-top navbar-expand-sm navbar-light bg-light">
         <a class="navbar-brand cursor-pointer" v-show="isAuthenticated" @click="toggleSidebar">
             <i class="fa fa-bars" />
@@ -32,9 +32,9 @@
     </nav>
 </template>
 <script>
-    import { LOGOUT } from '@/store/actions.type'
-    import { TOGGLE_SIDEBAR, SET_LOCALE } from '@/store/mutations.type'
-    import { routes } from '@/router/routes'
+    import { LOGOUT } from '@/store/actions.type';
+    import { TOGGLE_SIDEBAR, SET_LOCALE } from '@/store/mutations.type';
+    import { routes } from '@/router/routes';
 
     export default {
         name: 'AppHeader',
@@ -66,7 +66,7 @@
                 this.$root.$i18n.locale = locale;
             }
         }
-    }
+    };
 </script>
 <style scoped>
     .dropdown-menu > button {

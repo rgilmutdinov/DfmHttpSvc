@@ -1,4 +1,4 @@
-﻿<template>
+<template>
     <span class="toggle-container fa-fw">
         <i v-show="isVisible" :class="['fas', isExpanded ? 'fa-chevron-down' : 'fa-chevron-right']" aria-hidden="true" />
     </span>
@@ -16,7 +16,7 @@
                 default: true
             }
         }
-    }
+    };
 </script>
 
 <style scoped>

@@ -1,4 +1,4 @@
-﻿<template>
+<template>
     <i :class="extensionClass" :title="extension" data-toggle="tooltip" />
 </template>
 
@@ -44,7 +44,7 @@
                 return extClass + ' fa-fw';
             }
         }
-    }
+    };
 </script>
 
 <style scoped>

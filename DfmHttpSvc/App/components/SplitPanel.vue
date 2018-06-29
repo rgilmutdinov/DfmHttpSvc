@@ -1,4 +1,4 @@
-﻿<template>
+<template>
     <div :style="{ cursor, userSelect }" class="split-container" @mouseup="onMouseUp" @mousemove="onMouseMove">
 
         <div v-if="showLeft">
@@ -39,22 +39,22 @@
         },
         computed: {
             userSelect() {
-                return this.active ? 'none' : ''
+                return this.active ? 'none' : '';
             },
             cursor() {
-                return this.active ? 'col-resize' : ''
+                return this.active ? 'col-resize' : '';
             },
             styleLeft() {
-                return { 'width': this.size + 'px' }
+                return { 'width': this.size + 'px' };
             },
             styleSplitter() {
-                return { 'left': this.size + 'px' }
+                return { 'left': this.size + 'px' };
             },
             styleRight() {
                 if (this.showLeft) {
-                    return { 'left': (this.size + 1) + 'px' }
+                    return { 'left': (this.size + 1) + 'px' };
                 }
-                return { 'left': '0px' }
+                return { 'left': '0px' };
             }
         },
         data() {
@@ -62,7 +62,7 @@
                 active: false,
                 hasMoved: false,
                 size: 0
-            }
+            };
         },
         mounted: function () {
             this.size = this.sizeLeft;
@@ -104,7 +104,7 @@
                 }
             }
         }
-    }
+    };
 </script>
 
 <style scoped>

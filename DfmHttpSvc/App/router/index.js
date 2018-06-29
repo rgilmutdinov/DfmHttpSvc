@@ -1,27 +1,27 @@
-﻿import Vue from 'vue';
+import Vue from 'vue';
 import VueRouter from 'vue-router';
-import store from '../store'
+import store from '../store';
 
 import { routes } from './routes.js';
 
 import { AUTO_LOGIN, LOAD_DICTIONARY } from '@/store/actions.type';
 import { TOGGLE_SIDEBAR } from '@/store/mutations.type';
 
-import ExpandCard from '@/components/ExpandCard.vue'
-import Datatable from '@/components/datatable/DataTable.vue'
-import LayerIcon from '@/components/LayerIcon.vue'
-import ToggleIcon from '@/components/ToggleIcon.vue'
-import FileIcon from '@/components/FileIcon.vue'
-import AppHeader from '@/components/AppHeader.vue'
-import AppFooter from '@/components/AppFooter.vue'
-import AreaTree from '@/components/AreaTree.vue'
-import NavTree from '@/components/NavTree.vue'
-import AlertPanel from '@/components/AlertPanel.vue'
+import ExpandCard from '@/components/ExpandCard.vue';
+import Datatable from '@/components/datatable/DataTable.vue';
+import LayerIcon from '@/components/LayerIcon.vue';
+import ToggleIcon from '@/components/ToggleIcon.vue';
+import FileIcon from '@/components/FileIcon.vue';
+import AppHeader from '@/components/AppHeader.vue';
+import AppFooter from '@/components/AppFooter.vue';
+import AreaTree from '@/components/AreaTree.vue';
+import NavTree from '@/components/NavTree.vue';
+import AlertPanel from '@/components/AlertPanel.vue';
 
-import PageHome from '@/pages/PageHome.vue'
-import PageLogin from '@/pages/PageLogin.vue'
-import PageDirectory from '@/pages/PageDirectory.vue'
-import PageVolume from '@/pages/PageVolume.vue'
+import PageHome from '@/pages/PageHome.vue';
+import PageLogin from '@/pages/PageLogin.vue';
+import PageDirectory from '@/pages/PageDirectory.vue';
+import PageVolume from '@/pages/PageVolume.vue';
 
 Vue.use(VueRouter);
 

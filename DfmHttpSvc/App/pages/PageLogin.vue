@@ -1,4 +1,4 @@
-﻿<template>
+<template>
     <div class="login-container p-5">
         <div id="login">
             <div class="card border-primary bg-light mb-3">
@@ -38,10 +38,10 @@
     </div>
 </template>
 <script>
-    import { LOGIN, LOAD_DICTIONARY } from '@/store/actions.type'
-    import { routes } from '@/router/routes'
-    import Credentials from '@/models/credentials'
-    import Error from '@/models/errors'
+    import { LOGIN, LOAD_DICTIONARY } from '@/store/actions.type';
+    import { routes } from '@/router/routes';
+    import Credentials from '@/models/credentials';
+    import Error from '@/models/errors';
     import ApiService from '@/api/api.service';
     import debounce from '@/utils/debounce';
 
@@ -54,7 +54,7 @@
                 datasources: [],
                 error: null,
                 loading: false
-            }
+            };
         },
 
         watch: {
@@ -108,7 +108,7 @@
                     });
             }, 300)
         }
-    }
+    };
 </script>
 <style scoped>
     .login-container {

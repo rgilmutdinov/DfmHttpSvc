@@ -1,4 +1,4 @@
-﻿<template>
+<template>
     <div>
         <router-link tag="div" class="route-link" :to="area.route">
             <div :style="spacingStyle">
@@ -11,10 +11,10 @@
                 </a>
             </div>
         </router-link>
-        <div v-show="isExpanded" v-for="childArea in areas">
+        <div v-show="isExpanded" v-for="childArea in areas" :key="childArea.path">
             <area-tree :area="childArea" :key="childArea.path" :level="level + 1"></area-tree>
         </div>
-        <div class="headline" v-show="isExpanded" v-for="volume in volumes">
+        <div class="headline" v-show="isExpanded" v-for="volume in volumes" :key="volume.name">
             <router-link tag="div" class="route-link" :to="volume.route">
                 <div :style="spacingStyle">
                     <toggle-icon :isVisible="false" />
@@ -28,8 +28,7 @@
     </div>
 </template>
 <script>
-    import Area from '@/models/area'
-    import { TOGGLE_AREA } from '@/store/mutations.type'
+    import Area from '@/models/area';
 
     export default {
         props: {
@@ -58,7 +57,7 @@
                 this.area.isExpanded = !this.area.isExpanded;
             }
         }
-    }
+    };
 </script>
 <style scoped>
     .router-link-exact-active {

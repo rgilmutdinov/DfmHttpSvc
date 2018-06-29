@@ -1,28 +1,28 @@
-﻿import ApiService from '@/api/api.service'
+import ApiService from '@/api/api.service';
 
-import Volume from '@/models/volume'
-import Area from '@/models/area'
-import Dictionary from '@/models/dictionary'
-import DictionaryInfo from '@/models/dictionaryInfo'
-import Error from '@/models/errors'
+import Volume from '@/models/volume';
+import Area from '@/models/area';
+import Dictionary from '@/models/dictionary';
+import DictionaryInfo from '@/models/dictionaryInfo';
+import Error from '@/models/errors';
 
 import {
     LOAD_VOLUMES,
     LOAD_AREA,
     LOAD_DICTIONARY,
     LOAD_DICTIONARY_INFO
-} from '@/store/actions.type'
+} from '@/store/actions.type';
 
 import {
     SET_VOLUMES,
     SET_AREAS,
     SET_DICTIONARY_INFO,
     TOGGLE_AREA
-} from '@/store/mutations.type'
+} from '@/store/mutations.type';
 
 const state = {
     dictionary: new Dictionary()
-}
+};
 
 const getters = {
     areas(state) {
@@ -44,7 +44,7 @@ const getters = {
     getArea: state => path => {
         return state.dictionary.searchArea(path);
     }
-}
+};
 
 const actions = {
     [LOAD_VOLUMES](context) {
@@ -110,10 +110,10 @@ const actions = {
             context.dispatch(LOAD_AREA),
 
             // fetch dictionary info
-            context.dispatch(LOAD_DICTIONARY_INFO),
+            context.dispatch(LOAD_DICTIONARY_INFO)
         ]);
     }
-}
+};
 
 const mutations = {
     [SET_VOLUMES](state, { volumes, path }) {
@@ -148,11 +148,11 @@ const mutations = {
             foundArea.isExpanded = !foundArea.isExpanded;
         }
     }
-}
+};
 
 export default {
     state,
     actions,
     mutations,
     getters
-}
+};

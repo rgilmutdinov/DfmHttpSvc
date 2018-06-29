@@ -1,4 +1,4 @@
-﻿<template>
+<template>
     <div class="m-0">
         <router-link tag="div" class="route-link" :to="{ name: 'areas' }">
             <span @click="toggleAreas()">
@@ -31,15 +31,15 @@
     </div>
 </template>
 <script>
-    import Area from '@/models/area'
-    import { TOGGLE_VOLUMES, TOGGLE_AREAS } from '@/store/mutations.type'
-    import Icons from '@/common/icons'
+    import Area from '@/models/area';
+    import { TOGGLE_VOLUMES, TOGGLE_AREAS } from '@/store/mutations.type';
+    import Icons from '@/common/icons';
 
     export default {
         data() {
             return {
                 
-            }
+            };
         },
         computed: {
             volumesIconLayers() {
@@ -67,9 +67,9 @@
             },
             toggleAreas() {
                 this.$store.commit(TOGGLE_AREAS);
-            },
+            }
         }
-    }
+    };
 </script>
 <style scoped>
     .router-link-exact-active {

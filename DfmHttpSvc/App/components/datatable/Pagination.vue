@@ -1,4 +1,4 @@
-﻿<template>
+<template>
     <ul class="pagination" style="margin: 0" name="Pagination">
         <li v-if="!isFirstPage" class="page-item" @click="turnPage(-1)">
             <a href="#" class="page-link" @click.prevent>
@@ -29,20 +29,20 @@
         },
         computed: {
             isFirstPage() {
-                return +this.query.offset === 0 || +this.query.limit >= this.total
+                return +this.query.offset === 0 || +this.query.limit >= this.total;
             },
             isLastPage() {
-                return +this.query.offset + +this.query.limit >= this.total
+                return +this.query.offset + +this.query.limit >= this.total;
             },
             totalPage() {
-                return Math.ceil(this.total / +this.query.limit)
+                return Math.ceil(this.total / +this.query.limit);
             },
             curPage() {
-                return Math.ceil(+this.query.offset / +this.query.limit) + 1
+                return Math.ceil(+this.query.offset / +this.query.limit) + 1;
             },
             dspBtns() {
-                const n = this.totalPage
-                const i = this.curPage
+                const n = this.totalPage;
+                const i = this.curPage;
                 /* eslint-disable */
                 if (n <= 9) return ((n) => {
                     const arr = Array(n)
@@ -57,14 +57,14 @@
         },
         methods: {
             handleClick(n) {
-                this.query.offset = (n - 1) * +this.query.limit
+                this.query.offset = (n - 1) * +this.query.limit;
             },
             turnPage(i) {
-                if (i < 0 && this.isFirstPage || i > 0 && this.isLastPage) return
-                this.query.offset = +this.query.offset + i * +this.query.limit
+                if (i < 0 && this.isFirstPage || i > 0 && this.isLastPage) return;
+                this.query.offset = +this.query.offset + i * +this.query.limit;
             }
         }
-    }
+    };
 </script>
 
 <style scoped>

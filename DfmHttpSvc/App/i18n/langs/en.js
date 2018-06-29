@@ -1,4 +1,4 @@
-﻿export default {
+export default {
     header: {
         logout: 'Logout'
     },
@@ -46,4 +46,4 @@
         description: 'Description',
         dateCreated: 'Date created'
     }
-}
+};

@@ -1,4 +1,4 @@
-﻿<template>
+<template>
     <a class="mx-1" href="#" @click.prevent="handleClick" name="HeadSort">
         <i :class="iconClass"></i>
     </a>
@@ -42,7 +42,7 @@
                 query.order = this.order = order === 'desc' ? 'asc' : 'desc';
             }
         }
-    }
+    };
 </script>
 <style scoped>
     a {

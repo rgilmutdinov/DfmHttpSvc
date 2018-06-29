@@ -1,4 +1,4 @@
-﻿import Selection from '../selection'
+import Selection from '../selection';
 
 export default {
     props: {
@@ -29,4 +29,4 @@ export default {
         // inline styles for <table>
         tblStyle: [String, Object, Array]
     }
-}
+};

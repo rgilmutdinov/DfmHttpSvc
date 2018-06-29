@@ -1,4 +1,4 @@
-﻿<template>
+<template>
     <div>
         <div class="my-3">
             <h4>{{ $t('pageHome.welcome') }}, {{ fullUsername || username }}</h4>
@@ -53,12 +53,12 @@
 </template>
 
 <script>
-    import Icons from '@/common/icons'
+    import Icons from '@/common/icons';
 
     export default {
         data() {
             return {
-            }
+            };
         },
         computed: {
             username() {
@@ -81,9 +81,9 @@
             },
             areasIconLayers() {
                 return Icons.areas();
-            },
+            }
         }
-    }
+    };
 </script>
 
 <style scoped>

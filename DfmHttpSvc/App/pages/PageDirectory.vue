@@ -1,4 +1,4 @@
-﻿<template>
+<template>
     <div>
         <data-table :rows="units" :query="query" :total="total" :columns="columns">
             <template slot="td_icon" slot-scope="{ row }">
@@ -37,7 +37,7 @@
                 units: [],
                 total: 0,
                 query: {}
-            }
+            };
         },
         watch: {
             query: {
@@ -146,7 +146,7 @@
                 this.total = orderedUnits.length;
             }
         }
-    }
+    };
 </script>
 
 <style>

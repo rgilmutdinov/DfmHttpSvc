@@ -1,4 +1,4 @@
-﻿<template>
+<template>
     <div>
         <div class="flex-row my-2" style="align-items: center">
             <div>
@@ -64,18 +64,18 @@
 </template>
 
 <script>
-    import props from './mixins/props'
-    import { mergeStyles, mergeClasses } from './css'
-    import Pagination from './Pagination.vue'
-    import HeadSort from './HeadSort.vue'
+    import props from './mixins/props';
+    import { mergeStyles, mergeClasses } from './css';
+    import Pagination from './Pagination.vue';
+    import HeadSort from './HeadSort.vue';
 
     export default {
         name: 'DataTable',
         mixins: [props],
         components: { HeadSort, Pagination },
         created() {
-            const q = { limit: 10, offset: 0, sort: '', order: '', ...this.query }
-            Object.keys(q).forEach(key => { this.$set(this.query, key, q[key]) })
+            const q = { limit: 10, offset: 0, sort: '', order: '', ...this.query };
+            Object.keys(q).forEach(key => { this.$set(this.query, key, q[key]); });
         },
         watch: {
             data: {
@@ -166,9 +166,9 @@
                     return this.rows.length > this.selectedCount;
                 }
                 return false;
-            },
+            }
         }
-    }
+    };
 </script>
 
 <style scoped>

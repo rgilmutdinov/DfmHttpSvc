@@ -1,4 +1,4 @@
-﻿<template>
+<template>
     <div class="card border-0">
         <div class="card-header px-3 py-2" @click="toggle">
             <b>{{ title }}</b>
@@ -21,14 +21,14 @@
         data() {
             return {
                 expand: true
-            }
+            };
         },
         methods: {
             toggle: function () {
                 this.expand = !this.expand;
             }
         }
-    }
+    };
 </script>
 <style scoped>
     .card-header > i {

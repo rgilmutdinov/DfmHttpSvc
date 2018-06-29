@@ -1,15 +1,15 @@
-﻿import AuthService from '@/api/auth.service'
+import AuthService from '@/api/auth.service';
 
-import Account from '@/models/account'
-import Error from '@/models/errors'
+import Account from '@/models/account';
+import Error from '@/models/errors';
 
-import { ACCESS_TOKEN, USERNAME } from '@/common/storage.keys'
-import { LOGIN, LOGOUT, AUTO_LOGIN, PING } from '../actions.type'
-import { SET_AUTH, PURGE_AUTH } from '../mutations.type'
+import { ACCESS_TOKEN, USERNAME } from '@/common/storage.keys';
+import { LOGIN, LOGOUT, AUTO_LOGIN, PING } from '../actions.type';
+import { SET_AUTH, PURGE_AUTH } from '../mutations.type';
 
 const state = {
     account: null
-}
+};
 
 const getters = {
     currentUser(state) {
@@ -21,7 +21,7 @@ const getters = {
     accessToken(state) {
         return state.account && state.account.accessToken;
     }
-}
+};
 
 const actions = {
     [LOGIN](context, credentials) {
@@ -60,7 +60,7 @@ const actions = {
             context.commit(PURGE_AUTH);
         }
     }
-}
+};
 
 const mutations = {
     [SET_AUTH](state, account) {
@@ -81,11 +81,11 @@ const mutations = {
 
         state.account = null;
     }
-}
+};
 
 export default {
     state,
     actions,
     mutations,
     getters
-}
+};

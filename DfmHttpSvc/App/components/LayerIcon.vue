@@ -1,6 +1,6 @@
-﻿<template>
+<template>
     <span class="li-stack" :class="stackClass" :style="stackStyle">
-        <i v-for="layer in layers" class="li-layer" :class="layer.class" :style="layer.style"></i>
+        <i v-for="layer in layers" :key="layer.class" class="li-layer" :class="layer.class" :style="layer.style"></i>
     </span>
 </template>
 
@@ -23,9 +23,9 @@
         data: function () {
             return {
                 
-            }
+            };
         }
-    }
+    };
 </script>
 
 <style>

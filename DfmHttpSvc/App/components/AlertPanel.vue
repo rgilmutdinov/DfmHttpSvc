@@ -1,4 +1,4 @@
-﻿<template>
+<template>
     <div v-if="error && visible" class="alert alert-danger" role="alert">
         <span>{{ message }}</span>
         <button type="button" class="close" data-dismiss="alert" aria-label="Close" @click="hide"> 
@@ -14,7 +14,7 @@
 </template>
 
 <script>
-    import Error from '@/models/errors.js'
+    import Error from '@/models/errors.js';
 
     export default {
         props: {
@@ -31,7 +31,7 @@
             return {
                 visible: false,
                 detailsVisible: false
-            }
+            };
         },
         computed: {
             message() {
@@ -58,7 +58,7 @@
                 this.visible = !!this.error;
             }
         }
-    }
+    };
 </script>
 <style scoped>
 </style>

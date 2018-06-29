@@ -1,12 +1,12 @@
-﻿import axios from 'axios'
-import NProgress from 'nprogress'
+import axios from 'axios';
+import NProgress from 'nprogress';
 
-import { ACCESS_TOKEN } from '@/common/storage.keys'
-import { routes } from '@/router/routes.js'
-import { PURGE_AUTH } from '@/store/mutations.type'
+import { ACCESS_TOKEN } from '@/common/storage.keys';
+import { routes } from '@/router/routes.js';
+import { PURGE_AUTH } from '@/store/mutations.type';
 
-import router from '@/router'
-import store from '@/store'
+import router from '@/router';
+import store from '@/store';
 
 const instance = axios.create({
     headers: { 'Content-Type': 'application/json; charset=utf-8' }

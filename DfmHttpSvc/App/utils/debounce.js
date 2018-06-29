@@ -1,4 +1,4 @@
-﻿export default function debounce(func, wait, immediate) {
+export default function debounce(func, wait, immediate) {
     var timeout, args, context, timestamp, result;
     if (wait === null) {
         wait = 100;
@@ -16,7 +16,7 @@
                 context = args = null;
             }
         }
-    };
+    }
 
     var debounced = function () {
         context = this;
@@ -50,4 +50,4 @@
     };
 
     return debounced;
-};
+}
