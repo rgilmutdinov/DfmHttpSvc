@@ -1,11 +1,13 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Net.Mime;
 using System.Threading.Tasks;
 using System.Web;
 using DfmHttpCore;
 using DfmHttpCore.Entities;
 using DfmHttpSvc.Attributes;
+using DfmHttpSvc.Configuration.Swagger;
 using DfmHttpSvc.Controllers.Base;
 using DfmHttpSvc.Dto;
 using DfmHttpSvc.Properties;
@@ -150,7 +152,7 @@ namespace DfmHttpSvc.Controllers
         /// <response code="200">A document (file)</response>
         /// <response code="404">Token is not valid or expired</response>
         /// <response code="401">Unauthorized access</response>
-        /// <response code="500">Internal server error</response>        
+        /// <response code="500">Internal server error</response>
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
         [ProducesResponseType(401)]
@@ -169,7 +171,7 @@ namespace DfmHttpSvc.Controllers
                 return Unauthorized();
             }
 
-            return DownloadDocument(
+            return GetDocumentFile(
                 session, ticket.VolumeName, ticket.DocumentId);
         }
 
@@ -183,7 +185,7 @@ namespace DfmHttpSvc.Controllers
         /// <response code="404">Volume with requested name not found</response>
         /// <response code="401">Unauthorized access</response>
         /// <response code="500">Internal server error</response>
-        [ProducesResponseType(200)]
+        [ProducesResponseType(typeof(PhysicalFileResult), 200)]
         [ProducesResponseType(404)]
         [ProducesResponseType(401)]
         [ProducesResponseType(500)]
@@ -197,7 +199,34 @@ namespace DfmHttpSvc.Controllers
                 return Unauthorized();
             }
 
-            return DownloadDocument(session, volume, documentId);
+            return GetDocumentFile(session, volume, documentId);
+        }
+
+        /// <summary>
+        /// Retrieves an archive that contains documents (files) with the specified ids
+        /// </summary>
+        /// <param name="volume">Volume name</param>
+        /// <param name="selection">Documents selection</param>
+        /// <returns>The requested archive file</returns>
+        /// <response code="200">Returns the requested archive</response>
+        /// <response code="404">Volume with requested name not found</response>
+        /// <response code="401">Unauthorized access</response>
+        /// <response code="500">Internal server error</response>
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(500)]
+        [Authorize]
+        [HttpGet("/api/volume/{volume}/download")]
+        [DeleteFile]
+        public IActionResult GetDocumentsArchive(string volume, DocumentsSelection selection)
+        {
+            if (!TryGetSession(User, out Session session))
+            {
+                return Unauthorized();
+            }
+
+            return GetDocumentsArchive(session, volume, selection);
         }
 
         /// <summary>
@@ -264,7 +293,7 @@ namespace DfmHttpSvc.Controllers
         }
 
         /// <summary>
-        /// Deletes the document with specified id
+        /// Deletes a document with specified id
         /// </summary>
         /// <param name="volume">Volume name</param>
         /// <param name="documentId">Document id</param>
@@ -356,7 +385,7 @@ namespace DfmHttpSvc.Controllers
         }
 
 
-        private IActionResult DownloadDocument(Session session, string volume, ulong documentId)
+        private PhysicalFileResult GetDocumentFile(Session session, string volume, ulong documentId)
         {
             DocIdentity identity = new DocIdentity(documentId);
 
@@ -372,6 +401,14 @@ namespace DfmHttpSvc.Controllers
             Response.Headers.Add("Content-Disposition", cd.ToString());
 
             return PhysicalFile(filePath, contentType);
+        }
+
+        private PhysicalFileResult GetDocumentsArchive(Session session, string volume, DocumentsSelection selection)
+        {
+            string archiveFile = session.ExtractDocumentsToArchive(volume, selection);
+            string contentType = MimeMapping.GetMimeMapping(archiveFile);
+
+            return PhysicalFile(archiveFile, contentType);
         }
     }
 }

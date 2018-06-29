@@ -21,9 +21,9 @@
                     <tr>
                         <th v-if="selection" key="--th-multi">
                             <span @click="toggleSelectAll()" class="selection">
-                                <i v-show="!hasSelected && hasUnselected" class="far fa-square" />
-                                <i v-show="hasSelected && hasUnselected" class="fas fa-square" />
-                                <i v-show="hasSelected && !hasUnselected" class="far fa-check-square" />
+                                <i v-show="!isAnySelected && isAnyUnselected" class="far fa-square" />
+                                <i v-show="isAnySelected && isAnyUnselected" class="fas fa-square" />
+                                <i v-show="isAnySelected && !isAnyUnselected" class="far fa-check-square" />
                             </span>
                         </th>
                         <th v-for="col in columns" :class="computeThClass(col)" :style="computeThStyle(col)">
@@ -151,17 +151,17 @@
 
                 let total = this.rows.length;
                 let idsLen = this.selection.ids.length;
-                let selected = this.selection.inverse ? total - idsLen : idsLen;
+                let selected = this.selection.exclude ? total - idsLen : idsLen;
 
                 return selected > 0 ? selected : 0;
             },
-            hasSelected() {
+            isAnySelected() {
                 if (this.selection) {
                     return this.selectedCount > 0;
                 }
                 return false;
             },
-            hasUnselected() {
+            isAnyUnselected() {
                 if (this.selection) {
                     return this.rows.length > this.selectedCount;
                 }

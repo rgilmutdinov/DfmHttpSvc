@@ -64,11 +64,11 @@ namespace DfmHttpSvc.Controllers
         /// Sample request:
         ///
         ///     {
-        ///        "volumeName": "myVolume"
+        ///        "volume": "myVolume"
         ///     }
         ///
         /// </remarks>
-        /// <param name="volumeName">The name of a volume</param>
+        /// <param name="volume">The name of a volume</param>
         /// <returns>The volume info</returns>
         /// <response code="200">Return the volume info</response>
         /// <response code="401">Unauthorized access</response>
@@ -77,15 +77,15 @@ namespace DfmHttpSvc.Controllers
         [ProducesResponseType(401)]
         [ProducesResponseType(500)]
         [Authorize]
-        [HttpGet("{volumeName}")]
-        public IActionResult GetInfo(string volumeName)
+        [HttpGet("{volume}")]
+        public IActionResult GetInfo(string volume)
         {
             if (!TryGetSession(User, out Session session))
             {
                 return Unauthorized();
             }
 
-            using (VolumeInfo vInfo = session.Dictionary.GetVolumeInfo(volumeName))
+            using (VolumeInfo vInfo = session.Dictionary.GetVolumeInfo(volume))
             {
                 return Ok(new VolumeInfoDto(vInfo));
             }

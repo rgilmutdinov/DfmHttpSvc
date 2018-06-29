@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using DfmCore;
+using DfmCore.Tools;
 using DfmHttpCore.Entities;
 
 namespace DfmHttpCore
@@ -134,6 +136,21 @@ namespace DfmHttpCore
                 volume.ExtractDocumentToFile(filePath);
 
                 return filePath;
+            }
+        }
+
+        public string ExtractDocumentsToArchive(string volumeName, DocumentsSelection selection)
+        {
+            using (Volume volume = Dictionary.OpenVolume(volumeName, selection.GetFilterQuery()))
+            {
+                string archiveFile = RandomPath.GetFile("zip");
+                using (TempDirectory tempFolder = new TempDirectory())
+                {
+                    volume.ExtractDocumentsToFolder(tempFolder.Location);
+                    ZipFile.CreateFromDirectory(tempFolder.Location, archiveFile);
+
+                    return archiveFile;
+                }
             }
         }
 

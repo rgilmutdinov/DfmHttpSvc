@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using DfmCore.Extensions;
+using DfmCore.Tools;
 using DFMServer;
 
 namespace DfmCore
@@ -98,6 +99,20 @@ namespace DfmCore
         public void ExtractDocumentToFile(string filePath)
         {
             this._volObj.ExtractDocumentToFile(filePath);
+        }
+
+        public void ExtractDocumentsToFolder(string directory)
+        {
+            if (this._volObj.DocumentCount > 0)
+            {
+                this._volObj.MoveFirst();
+                while (!this._volObj.IsEOF)
+                {
+                    string tempFile = RandomPath.GetFile(directory, this._volObj.DocumentExtension);
+                    this._volObj.ExtractDocumentToFile(tempFile);
+                    this._volObj.MoveNext();
+                }
+            }
         }
 
         public void ExtractAttachmentToFile(string attachmentName, string filePath)

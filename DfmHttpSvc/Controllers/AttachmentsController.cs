@@ -64,7 +64,7 @@ namespace DfmHttpSvc.Controllers
         /// <response code="404">Volume with requested name not found</response>
         /// <response code="401">Unauthorized access</response>
         /// <response code="500">Internal server error</response>
-        [ProducesResponseType(200)]
+        [ProducesResponseType(typeof(PhysicalFileResult), 200)]
         [ProducesResponseType(404)]
         [ProducesResponseType(401)]
         [ProducesResponseType(500)]

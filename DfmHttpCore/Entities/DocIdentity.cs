@@ -1,3 +1,5 @@
+using DfmCore;
+
 namespace DfmHttpCore.Entities
 {
     public class DocIdentity
@@ -17,6 +19,6 @@ namespace DfmHttpCore.Entities
         internal int DocumentUid => (int) CompositeId << 32;
         internal int VolumeUid => (int) (CompositeId >> 32);
 
-        public string DocUidFilter => $"DOC_UID={DocumentUid} AND VOLUME_UID={VolumeUid}";
+        public string DocUidFilter => $"{ServiceFields.DocumentUid}={DocumentUid} AND {ServiceFields.VolumeUid}={VolumeUid}";
     }
 }

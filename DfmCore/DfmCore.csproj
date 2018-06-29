@@ -57,6 +57,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="ServiceFields.cs" />
+    <Compile Include="Tools\TempDirectory.cs" />
+    <Compile Include="Tools\TempFile.cs" />
+    <Compile Include="Tools\RandomPath.cs" />
     <Compile Include="Volume.cs" />
     <Compile Include="VolumeFilter.cs" />
     <Compile Include="VolumeInfo.cs" />
