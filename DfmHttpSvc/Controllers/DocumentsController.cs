@@ -1,13 +1,12 @@
 using System.Collections.Generic;
 using System.IO;
-using System.Net;
+using System.Linq;
 using System.Net.Mime;
 using System.Threading.Tasks;
 using System.Web;
 using DfmHttpCore;
 using DfmHttpCore.Entities;
 using DfmHttpSvc.Attributes;
-using DfmHttpSvc.Configuration.Swagger;
 using DfmHttpSvc.Controllers.Base;
 using DfmHttpSvc.Dto;
 using DfmHttpSvc.Properties;
@@ -126,7 +125,7 @@ namespace DfmHttpSvc.Controllers
         [ProducesResponseType(500)]
         [Authorize]
         [HttpGet("{documentId}/token")]
-        public IActionResult GetDocumentDownloadToken(string volume, ulong documentId)
+        public IActionResult GetDocumentToken(string volume, ulong documentId)
         {
             if (!TryGetSession(User, out Session _))
             {
@@ -136,12 +135,45 @@ namespace DfmHttpSvc.Controllers
             DocIdentity identity = new DocIdentity(documentId);
 
             string sessionId = GetSessionId(User);
-            DownloadTicket ticket = SessionManager.CreateDownloadTicket(sessionId, volume, identity);
+            DocumentsSelection selection = new DocumentsSelection(identity.CompositeId);
 
-            return Ok(new
+            DownloadTicket ticket = SessionManager
+                .CreateDownloadTicket(sessionId, volume, selection);
+
+            return Ok(new { ticket.Token });
+        }
+
+        /// <summary>
+        /// Generates temporary token to download an archive with a bunch of documents
+        /// </summary>
+        /// <param name="volume">Volume name</param>
+        /// <param name="selection">Documents selection</param>
+        /// <returns>Temporary token</returns>
+        /// <response code="200">Returns temporary token for download an archive with a bunch of documents</response>
+        /// <response code="401">Unauthorized access</response>
+        /// <response code="500">Internal server error</response>
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(500)]
+        [Authorize]
+        [HttpPost("/api/volumes/{volume}/token")]
+        public IActionResult GetDocumentsArchiveToken(string volume, [FromBody] DocumentsSelection selection)
+        {
+            if (!TryGetSession(User, out Session _))
             {
-                ticket.Token
-            });
+                return Unauthorized();
+            }
+
+            if (!selection.IsValid())
+            {
+                return BadRequest("Selection parameter is not valid");
+            }
+
+            string sessionId = GetSessionId(User);
+            DownloadTicket ticket = SessionManager.CreateDownloadTicket(sessionId, volume, selection);
+
+            return Ok(new { ticket.Token });
         }
 
         /// <summary>
@@ -171,8 +203,7 @@ namespace DfmHttpSvc.Controllers
                 return Unauthorized();
             }
 
-            return GetDocumentFile(
-                session, ticket.VolumeName, ticket.DocumentId);
+            return GetDocumentsSelection(session, ticket.VolumeName, ticket.Selection);
         }
 
         /// <summary>
@@ -219,7 +250,7 @@ namespace DfmHttpSvc.Controllers
         [Authorize]
         [HttpGet("/api/volume/{volume}/download")]
         [DeleteFile]
-        public IActionResult GetDocumentsArchive(string volume, DocumentsSelection selection)
+        public IActionResult GetDocumentsArchive(string volume, [FromBody] DocumentsSelection selection)
         {
             if (!TryGetSession(User, out Session session))
             {
@@ -384,6 +415,16 @@ namespace DfmHttpSvc.Controllers
             return Ok(deleted);
         }
 
+        private PhysicalFileResult GetDocumentsSelection(Session session, string volume, DocumentsSelection selection)
+        {
+            if (selection.DocumentIds.Count == 1)
+            {
+                // download single file
+                return GetDocumentFile(session, volume, selection.DocumentIds.First());
+            }
+
+            return GetDocumentsArchive(session, volume, selection);
+        }
 
         private PhysicalFileResult GetDocumentFile(Session session, string volume, ulong documentId)
         {

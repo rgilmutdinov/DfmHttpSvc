@@ -1,22 +1,24 @@
 ﻿using System;
+using DfmHttpCore.Entities;
 
 namespace DfmHttpSvc.Sessions
 {
     public class DownloadTicket
     {
-        public DownloadTicket(string sessionId, ulong documentId, string volumeName)
+        public DownloadTicket(string sessionId, string volumeName, DocumentsSelection selection)
         {
             SessionId  = sessionId;
-            DocumentId = documentId;
             VolumeName = volumeName;
+            Selection  = selection ?? throw new ArgumentNullException(nameof(selection));
 
             Token = Guid.NewGuid().ToString();
         }
 
-        public string SessionId  { get; set; }
-        public ulong  DocumentId { get; set; }
-        public string VolumeName { get; set; }
+        public string SessionId  { get; }
+        public string VolumeName { get; }
 
-        public string Token { get;  }
+        public DocumentsSelection Selection { get; }
+
+        public string Token { get; }
     }
 }

@@ -2,6 +2,7 @@
     <div>
         <alert-panel :error="error"></alert-panel>
         <h1>Volume {{ volume }}</h1>
+        <div class="btn btn-primary" @click="downloadSelection" v-show="isAnySelected">Download</div>
         <div v-show="loading" class="loading-box p-3">
             <i class="fas fa-spinner fa-pulse fa-2x fa-fw" style="color: lightslategray;"></i>
         </div>
@@ -52,7 +53,18 @@
             }
         },
         computed: {
+            isAnySelected() {
+                if (this.selection) {
 
+                    let { exclude, ids } = this.selection;
+                    if (!exclude) {
+                        return ids.length > 0;
+                    }
+
+                    return ids.length < this.total;
+                }
+                return false;
+            }
         },
         methods: {
             defaultColumns() {
@@ -142,6 +154,16 @@
                 ApiService.fetchDownloadToken(this.volume, doc.id)
                     .then(({ data }) => {
                         let link = ApiService.downloadLink(data.token); 
+                        setTimeout(function () {
+                            openLink(link);
+                        }, 0);
+                    });
+            },
+
+            downloadSelection() {
+                ApiService.fetchArchiveDownloadToken(this.volume, this.selection.ids, this.selection.exclude)
+                    .then(({ data }) => {
+                        let link = ApiService.downloadLink(data.token);
                         setTimeout(function () {
                             openLink(link);
                         }, 0);

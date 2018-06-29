@@ -35,9 +35,10 @@ const ApiService = {
 
     fetchDocuments(volumeName, start, count, sort) {
         volumeName = encodeURIComponent(volumeName);
+
         let params = {
-            "start": start,
-            "count": count
+            start: start,
+            count: count
         };
 
         if (sort) {
@@ -50,6 +51,17 @@ const ApiService = {
     fetchDownloadToken(volumeName, docId) {
         volumeName = encodeURIComponent(volumeName);
         return Vue.axios.get(`/api/volumes/${volumeName}/documents/${docId}/token`);
+    },
+
+    fetchArchiveDownloadToken(volumeName, docIds, excludeMode = false) {
+        volumeName = encodeURIComponent(volumeName);
+
+        let params = {
+            documentIds: docIds,
+            excludeMode: excludeMode
+        };
+
+        return Vue.axios.post(`/api/volumes/${volumeName}/token`, params);
     },
 
     downloadLink(token) {

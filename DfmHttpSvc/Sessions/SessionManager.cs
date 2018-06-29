@@ -99,12 +99,9 @@ namespace DfmHttpSvc.Sessions
             }
         }
 
-        public DownloadTicket CreateDownloadTicket(string sessionId, string volumeName, DocIdentity docIdentity)
+        public DownloadTicket CreateDownloadTicket(string sessionId, string volumeName, DocumentsSelection selection)
         {
-            DownloadTicket ticket = new DownloadTicket(
-                sessionId,
-                docIdentity.CompositeId,
-                volumeName);
+            DownloadTicket ticket = new DownloadTicket(sessionId, volumeName, selection);
 
             this._downloadTickets.Add(ticket.Token, ticket,
                 new CacheItemPolicy

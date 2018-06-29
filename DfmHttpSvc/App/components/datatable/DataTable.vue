@@ -20,7 +20,7 @@
                 <thead class="thead-light">
                     <tr>
                         <th v-if="selection" key="--th-multi">
-                            <span @click="toggleSelectAll()" class="selection">
+                            <span @click="toggleSelectAll()" class="select-row">
                                 <i v-show="!isAnySelected && isAnyUnselected" class="far fa-square" />
                                 <i v-show="isAnySelected && isAnyUnselected" class="fas fa-square" />
                                 <i v-show="isAnySelected && !isAnyUnselected" class="far fa-check-square" />
@@ -37,7 +37,7 @@
                 <tbody>
                     <tr v-for="row in rows">
                         <td v-if="selection">
-                            <span @click="toggleSelect(row)" class="selection">
+                            <span @click="toggleSelect(row)" class="select-row">
                                 <i v-show="isSelected(row)" class="far fa-check-square" />
                                 <i v-show="!isSelected(row)" class="far fa-square" />
                             </span>
@@ -101,7 +101,7 @@
                     return;
                 }
 
-                if (this.hasUnselected) {
+                if (this.isAnyUnselected) {
                     this.selectAll();
                 } else {
                     this.unselectAll();
@@ -192,7 +192,7 @@
         text-overflow: ellipsis;
     }
 
-    .selection {
+    .select-row {
         cursor: pointer;
         display: inline-block;
         text-align: center;
