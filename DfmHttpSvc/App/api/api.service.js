@@ -47,7 +47,7 @@ const ApiService = {
 
         return Vue.axios.get(`/api/volumes/${volumeName}/documents`, { params });
     },
-    
+
     fetchDownloadToken(volumeName, docId) {
         volumeName = encodeURIComponent(volumeName);
         return Vue.axios.get(`/api/volumes/${volumeName}/documents/${docId}/token`);
@@ -66,6 +66,17 @@ const ApiService = {
 
     downloadLink(token) {
         return `/api/downloads/${token}`;
+    },
+
+    deleteDocuments(volumeName, docIds, excludeMode = false) {
+        volumeName = encodeURIComponent(volumeName);
+
+        let params = {
+            documentIds: docIds,
+            excludeMode: excludeMode
+        };
+
+        return Vue.axios.delete(`/api/volumes/${volumeName}/documents`, { data: params });
     }
 };
 

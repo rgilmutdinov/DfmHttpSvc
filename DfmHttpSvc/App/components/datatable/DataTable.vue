@@ -1,11 +1,11 @@
 <template>
     <div>
-        <div class="flex-row my-2" style="align-items: center">
+        <div class="flex-row my-3" style="align-items: center">
             <div>
-                <slot />
+                <slot name="toolbar" />
             </div>
             <div>
-                <div class="input-group mb-3">
+                <div class="input-group">
                     <div class="input-group-prepend">
                         <label class="input-group-text" for="pageSizeSelect">{{ $t('datatable.rowsPerPage') }}</label>
                     </div>

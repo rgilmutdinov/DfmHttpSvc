@@ -26,6 +26,7 @@ module.exports = {
         'no-extra-semi': 'warn',
         'no-irregular-whitespace': 'warn',
         'no-restricted-globals': 'warn',
+        'no-trailing-spaces': "warn",
         'no-undef': 'warn',
         'no-unused-vars': 'warn',
         'semi': 'warn',

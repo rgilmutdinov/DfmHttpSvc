@@ -53,7 +53,7 @@ const actions = {
 
     [AUTO_LOGIN](context) {
         let accessToken = localStorage.getItem(ACCESS_TOKEN);
-        let username    = localStorage.getItem(USERNAME); 
+        let username    = localStorage.getItem(USERNAME);
         if (accessToken) {
             context.commit(SET_AUTH, new Account(accessToken, username));
         } else {

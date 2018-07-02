@@ -2,12 +2,19 @@
     <div>
         <alert-panel :error="error"></alert-panel>
         <h1>Volume {{ volume }}</h1>
-        <div class="btn btn-primary" @click="downloadSelection" v-show="isAnySelected">Download</div>
         <div v-show="loading" class="loading-box p-3">
             <i class="fas fa-spinner fa-pulse fa-2x fa-fw" style="color: lightslategray;"></i>
         </div>
         <div v-show="!loading && showTable">
             <data-table :rows="documents" :query="query" :total="total" :columns="columns" :selection="selection" :loading="loading">
+                <div slot="toolbar" class="btn-group" role="group">
+                    <div :class="['btn btn-sm btn-outline-primary', {'disabled': !isAnySelected}]" @click="downloadSelection" :title="$t('pageVolume.download')">
+                        <i class="fas fa-download fa-fw"/>
+                    </div>
+                    <div :class="['btn btn-sm btn-outline-primary', {'disabled': !isAnySelected}]" @click="deleteSelection" :title="$t('pageVolume.delete')">
+                        <i class="fas fa-trash fa-fw"/>
+                    </div>
+                </div>
                 <template slot="td_extension" slot-scope="{ row }">
                     <div @click.prevent="downloadDocument(row)" style="cursor: pointer">
                         <file-icon :extension="row.extension"></file-icon>
@@ -24,7 +31,7 @@
     import Error from '@/models/errors';
     import ApiService from '@/api/api.service';
     import Selection from '@/components/datatable/selection';
-    
+
     export default {
         props: {
             volume: {
@@ -120,6 +127,7 @@
                                     }
                                     return newDoc;
                                 });
+                                console.log(newDocs);
                                 this.documents.splice(0, this.documents.length, ...newDocs);
                                 this.hideLoading(delayId);
                             })
@@ -153,7 +161,7 @@
             downloadDocument(doc) {
                 ApiService.fetchDownloadToken(this.volume, doc.id)
                     .then(({ data }) => {
-                        let link = ApiService.downloadLink(data.token); 
+                        let link = ApiService.downloadLink(data.token);
                         setTimeout(function () {
                             openLink(link);
                         }, 0);
@@ -167,6 +175,16 @@
                         setTimeout(function () {
                             openLink(link);
                         }, 0);
+                    });
+            },
+
+            deleteSelection() {
+                ApiService.deleteDocuments(this.volume, this.selection.ids, this.selection.exclude)
+                    .then((result) => {
+                        this.handleQueryChange();
+                    })
+                    .catch(e => {
+                        this.error = Error.fromApiException(e);
                     });
             }
         }

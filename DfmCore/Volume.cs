@@ -137,6 +137,21 @@ namespace DfmCore
             this._volObj.DeleteDocument(docUid);
         }
 
+        public void DeleteAllDocuments()
+        {
+            if (this._volObj.DocumentCount > 0)
+            {
+                this._volObj.MoveFirst();
+                while (!this._volObj.IsEOF)
+                {
+                    this._volObj.SelectDocument(true);
+                    this._volObj.MoveNext();
+                }
+                this._volObj.AffectSelectedOnly = true;
+                this._volObj.DeleteAllDocuments();
+            }
+        }
+
         public void DeleteCurrentDocument()
         {
             this._volObj.DeleteCurrentDocument();

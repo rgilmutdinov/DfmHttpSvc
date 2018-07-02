@@ -2,7 +2,7 @@
     <div>
         <data-table :rows="units" :query="query" :total="total" :columns="columns">
             <template slot="td_icon" slot-scope="{ row }">
-                <layer-icon :layers="row.iconLayers"></layer-icon>                
+                <layer-icon :layers="row.iconLayers"></layer-icon>
             </template>
             <template slot="td_name" slot-scope="{ row }">
                 <router-link :to="row.route">{{ row.name }}</router-link>
@@ -45,7 +45,7 @@
                     this.handleQueryChange();
                 },
                 deep: true
-            }, 
+            },
             allUnits: function() {
                 this.handleQueryChange();
             }

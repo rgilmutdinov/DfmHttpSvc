@@ -45,5 +45,10 @@ export default {
         name: 'Name',
         description: 'Description',
         dateCreated: 'Date created'
+    },
+
+    pageVolume: {
+        delete: 'Delete',
+        download: 'Download'
     }
 };

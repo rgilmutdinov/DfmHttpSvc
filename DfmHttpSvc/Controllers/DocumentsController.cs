@@ -365,17 +365,17 @@ namespace DfmHttpSvc.Controllers
         }
 
         /// <summary>
-        /// Deletes specified list of documents
+        /// Deletes a list of documents specified with selection
         /// </summary>
         /// <param name="volume">Volume name</param>
-        /// <param name="documents">List of document id</param>
+        /// <param name="selection">Documents selection</param>
         /// <returns>The list of deleted documents</returns>
-        /// <response code="204">Documents was deleted successfully</response>
+        /// <response code="204">Documents were deleted successfully</response>
         /// <response code="404">Volume with requested name not found</response>
-        /// <response code="403">List of documents is null or empty</response>
+        /// <response code="403">Documents selection is null or empty</response>
         /// <response code="401">Unauthorized access</response>
         /// <response code="500">Internal server error</response>
-        [ProducesResponseType(typeof(List<string>), 200)]
+        [ProducesResponseType(200)]
         [ProducesResponseType(204)]
         [ProducesResponseType(401)]
         [ProducesResponseType(403)]
@@ -383,7 +383,7 @@ namespace DfmHttpSvc.Controllers
         [ProducesResponseType(500)]
         [Authorize]
         [HttpDelete]
-        public IActionResult DeleteDocuments(string volume, List<ulong> documents)
+        public IActionResult DeleteDocuments(string volume, [FromBody] DocumentsSelection selection)
         {
             if (!TryGetSession(User, out Session session))
             {
@@ -395,24 +395,13 @@ namespace DfmHttpSvc.Controllers
                 return NotFound(Resources.ErrorVolumeNotFound);
             }
 
-            if (documents == null || documents.Count == 0)
+            if (!selection.IsValid())
             {
                 return BadRequest();
             }
 
-            List<string> deleted = new List<string>();
-
-            foreach (ulong document in documents)
-            {
-                DocIdentity docId = new DocIdentity(document);
-
-                if (session.IsDocumentExist(volume, docId))
-                {
-                    session.DeleteDocument(volume, docId);
-                    deleted.Add(document.ToString());
-                }
-            }
-            return Ok(deleted);
+            session.DeleteDocuments(volume, selection);
+            return Ok();
         }
 
         private PhysicalFileResult GetDocumentsSelection(Session session, string volume, DocumentsSelection selection)

@@ -21,10 +21,6 @@ instance.interceptors.request.use(function (config) {
         config.headers.Authorization = 'Bearer ' + token;
     }
 
-    if (!config.data && config.method !== "delete") {
-        config.data = {}; // otherwise, 415 Unsupported media type
-    }
-
     return config;
 }, function (error) {
     NProgress.done();

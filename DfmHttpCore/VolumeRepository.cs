@@ -24,6 +24,7 @@ namespace DfmHttpCore
             {
                 if (this._volumesCache.TryGetValue(volState, out volume))
                 {
+                    volume.Reopen();
                     return volume;
                 }
 

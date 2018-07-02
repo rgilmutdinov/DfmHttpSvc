@@ -154,6 +154,15 @@ namespace DfmHttpCore
             }
         }
 
+        public void DeleteDocuments(string volumeName, DocumentsSelection selection)
+        {
+            using (Volume volume = Dictionary.OpenVolume(volumeName, selection.GetFilterQuery()))
+            {
+                volume.DeleteAllDocuments();
+                volume.Reopen();
+            }
+        }
+
         public List<AttachmentInfo> GetAttachments(string volumeName, DocIdentity identity)
         {
             using (Volume volume = Dictionary.OpenVolume(volumeName, identity.DocUidFilter))
