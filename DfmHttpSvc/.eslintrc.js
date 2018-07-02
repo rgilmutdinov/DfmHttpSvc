@@ -15,15 +15,30 @@ module.exports = {
         'plugin:vue/essential'
     ],
     rules: {
-        // allow async-await
-        'generator-star-spacing': 'off',
-        // allow debugger during development
+        // general eslint rules
+        'brace-style': ['warn', '1tbs', { 'allowSingleLine': true }],
+        'comma-dangle': 'warn',
+        'comma-spacing': ['error', { 'before': false, 'after': true }],
+        'comma-style': ['warn', 'last'],
+        'eqeqeq': 'error',
+        'no-console': 'warn',
         'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+        'no-extra-semi': 'warn',
+        'no-irregular-whitespace': 'warn',
+        'no-restricted-globals': 'warn',
+        'no-undef': 'warn',
+        'no-unused-vars': 'warn',
+        'semi': 'warn',
+        'semi-spacing': 'warn',
+        'valid-jsdoc': [
+            'error',
+            { 'requireReturn': false }
+        ],
+
+        // vue rules
         'vue/require-v-for-key': 'warn'
     },
     plugins: [
-        'import',
-        'promise',
         'vue'
     ]
 }

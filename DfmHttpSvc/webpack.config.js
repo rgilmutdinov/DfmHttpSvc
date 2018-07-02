@@ -24,13 +24,23 @@ module.exports = (env) => {
         module: {
             rules: [
                 {
+                    enforce: "pre",
+                    test: /\.(js|vue)$/,
+                    exclude: /node_modules/,
+                    loader: "eslint-loader",
+                    options: {
+                        fix: true,
+                        formatter: require("eslint/lib/formatters/visualstudio")
+                    }
+                },
+                {
                     test: /\.vue$/,
-                    use: [{ loader: 'vue-loader' }, { loader: 'eslint-loader', options: { fix: true } }]
+                    loader: 'vue-loader'
                 },
                 {
                     test: /\.js$/,
                     exclude: /(node_modules)/,
-                    use: [{ loader: 'babel-loader' }, { loader: 'eslint-loader', options: { fix: true } }]
+                    loader: 'babel-loader'
                 },
                 { test: /\.css$/, use: ExtractTextPlugin.extract({ use: isDevBuild ? 'css-loader' : 'css-loader?minimize' }) },
                 { test: /\.(png|jpg|jpeg|gif|svg)$/, use: 'url-loader?limit=25000' }

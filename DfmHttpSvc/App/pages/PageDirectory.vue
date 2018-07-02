@@ -134,7 +134,7 @@
                 let orderedUnits;
                 if (this.query.sort) {
                     let q = this.query;
-                    let order = q.order == 'asc' ? 1 : -1;
+                    let order = q.order === 'asc' ? 1 : -1;
 
                     orderedUnits = this.allUnits.slice()
                         .sort((a, b) => compareStrings(a[q.sort], b[q.sort]) * order);
