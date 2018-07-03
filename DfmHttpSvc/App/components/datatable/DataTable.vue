@@ -35,7 +35,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="row in rows">
+                    <tr v-for="(row, index) in rows" :key="index">
                         <td v-if="selection" class="select-col">
                             <span @click="toggleSelect(row)" class="select-cell">
                                 <i v-show="isSelected(row)" class="far fa-check-square" />

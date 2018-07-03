@@ -127,7 +127,7 @@
                                     }
                                     return newDoc;
                                 });
-                                console.log(newDocs);
+
                                 this.documents.splice(0, this.documents.length, ...newDocs);
                                 this.hideLoading(delayId);
                             })
@@ -180,7 +180,7 @@
 
             deleteSelection() {
                 ApiService.deleteDocuments(this.volume, this.selection.ids, this.selection.exclude)
-                    .then((result) => {
+                    .then(() => {
                         this.handleQueryChange();
                     })
                     .catch(e => {
