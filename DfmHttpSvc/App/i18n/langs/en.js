@@ -4,8 +4,8 @@ export default {
     },
 
     navTree: {
-        allVolumes: 'All areas',
-        allAreas: 'All volumes'
+        allVolumes: 'All volumes',
+        allAreas: 'All areas'
     },
 
     alertPanel: {

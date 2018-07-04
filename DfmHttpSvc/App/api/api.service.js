@@ -42,7 +42,7 @@ const ApiService = {
         };
 
         if (sort) {
-            params.sort = sort;
+            params.sort = sort.toUpperCase();
         }
 
         return Vue.axios.get(`/api/volumes/${volumeName}/documents`, { params });

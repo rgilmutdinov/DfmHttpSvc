@@ -18,9 +18,9 @@ export class Field {
 
         let dfmType = type;
 
-        this.type = Object.keys(FieldType).filter(function (k) {
-            return FieldType[k] === dfmType;
-        }).pop() || FieldType.STRING;
+        this.type = Object.keys(FieldType)
+            .filter(k => FieldType[k] === dfmType)
+            .pop() || FieldType.STRING;
     }
 
     isNumber() {
