@@ -4,10 +4,12 @@
     </a>
 </template>
 <script>
+    import { Column } from './column';
+
     export default {
         name: 'HeadSort',
         props: {
-            column: { type: String, required: true },
+            column: { type: Column, required: true },
             query: { type: Object, required: true }
         },
         data: () => ({
@@ -29,7 +31,7 @@
         watch: {
             query: {
                 handler({ sort: column, order }) {
-                    this.order = column === this.column ? order : '';
+                    this.order = column === this.column.name ? order : '';
                 },
                 deep: true,
                 immediate: true
@@ -38,7 +40,7 @@
         methods: {
             handleClick() {
                 const { query, order } = this;
-                query.sort = this.column;
+                query.sort = this.column.name;
                 query.order = this.order = order === 'desc' ? 'asc' : 'desc';
             }
         }

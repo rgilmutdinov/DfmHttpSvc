@@ -56,6 +56,19 @@ namespace DfmCore
         public int      VolumeId => this._volObj.VolumeMemberVolumeID;
         public int      VolumeMemberDocId => this._volObj.VolumeMemberDocId;
 
+        public DateTime? DocumentAddTime
+        {
+            get
+            {
+                if (Info.SupportsAddTime)
+                {
+                    return this._volObj.DocumentAddTime;
+                }
+
+                return null;
+            }
+        }
+
         public int DocumentVersion
         {
             get
@@ -91,9 +104,17 @@ namespace DfmCore
             this._volObj.Move(position);
         }
 
-        public void Reopen(string filterQuery = "", string sortOrder = "", string ftsExpression = "")
+        public void Reopen()
         {
-            this._volObj.Reopen(filterQuery, sortOrder, ftsExpression, out int _);
+            Reopen(this.FilterQuery, this.SortOrder);
+        }
+
+        public void Reopen(string filterQuery, string sortOrder)
+        {
+            this.FilterQuery = filterQuery;
+            this.SortOrder   = sortOrder;
+
+            this._volObj.Reopen(filterQuery, sortOrder, string.Empty, out int _);
         }
 
         public void ExtractDocumentToFile(string filePath)

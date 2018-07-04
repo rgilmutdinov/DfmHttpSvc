@@ -1,7 +1,7 @@
 <template>
     <div>
-        <alert-panel :error="error"></alert-panel>
         <h1>Volume {{ volume }}</h1>
+        <alert-panel :error="error"></alert-panel>
         <div v-show="loading" class="loading-box p-3">
             <i class="fas fa-spinner fa-pulse fa-2x fa-fw" style="color: lightslategray;"></i>
         </div>
@@ -9,12 +9,20 @@
             <data-table :rows="documents" :query="query" :total="total" :columns="columns" :selection="selection" :loading="loading">
                 <div slot="toolbar" class="btn-group" role="group">
                     <div :class="['btn btn-sm btn-outline-primary', {'disabled': !isAnySelected}]" @click="downloadSelection" :title="$t('pageVolume.download')">
-                        <i class="fas fa-download fa-fw"/>
+                        <i class="fas fa-download fa-fw" />
                     </div>
                     <div :class="['btn btn-sm btn-outline-primary', {'disabled': !isAnySelected}]" @click="deleteSelection" :title="$t('pageVolume.delete')">
-                        <i class="fas fa-trash fa-fw"/>
+                        <i class="fas fa-trash fa-fw" />
                     </div>
                 </div>
+
+                <template slot="th_timestamp" slot-scope="{ row }">
+                    {{ $t('pageVolume.dateModified') }}
+                </template>
+                <template slot="th_docaddtime" slot-scope="{ row }">
+                    {{ $t('pageVolume.dateCreated') }}
+                </template>
+
                 <template slot="td_extension" slot-scope="{ row }">
                     <div @click.prevent="downloadDocument(row)" style="cursor: pointer">
                         <file-icon :extension="row.extension"></file-icon>
@@ -29,8 +37,29 @@
     import delay from '@/utils/delay';
     import openLink from '@/utils/openLink';
     import Error from '@/models/errors';
+    import { Field } from '@/models/fields';
     import ApiService from '@/api/api.service';
     import Selection from '@/components/datatable/selection';
+    import { Column, ColumnType } from '@/components/datatable/column';
+
+    const Columns = {
+        EXTENSION: new Column({
+            name: 'extension',
+            title: '',
+            sortable: false,
+            style: 'width: 2em; max-width: 2em'
+        }),
+        ADDTIME: new Column({
+            name: 'docaddtime',
+            sortable: true,
+            tdStyle: 'background-color: #dfffdf;'
+        }),
+        TIMESTAMP: new Column({
+            name: 'timestamp',
+            sortable: true,
+            tdStyle: 'background-color: #cddcfe;'
+        })
+    };
 
     export default {
         props: {
@@ -74,17 +103,21 @@
             }
         },
         methods: {
-            defaultColumns() {
-                let defCols = [];
+            getColumn(field) {
+                let type = ColumnType.TEXT;
 
-                defCols.push({
-                    name: 'extension',
-                    title: '',
-                    sortable: false,
-                    style: 'width: 2em; max-width: 2em'
+                if (field.isNumber()) {
+                    type = ColumnType.NUMBER;
+                } else if (field.isDate) {
+                    type = ColumnType.DATE;
+                }
+
+                return new Column({
+                    name: field.name,
+                    title: field.caption || field.name,
+                    sortable: true,
+                    type: type
                 });
-
-                return defCols;
             },
 
             handleQueryChange() {
@@ -93,17 +126,16 @@
                 // get volume info
                 ApiService.fetchVolumeInfo(this.volume)
                     .then(({ data }) => {
-                        let newColumns = this.defaultColumns();
+                        let supportsAddTime = data.supportsAddTime;
 
-                        let volColumns = data.fields.map(f => (
-                            {
-                                name: f.name,
-                                title: f.name,
-                                sortable: true
-                            }
-                        ));
+                        let newColumns = [Columns.EXTENSION];
+                        let volColumns = data.fields.map(f => this.getColumn(new Field(f)));
 
                         newColumns.push(...volColumns);
+                        newColumns.push(Columns.TIMESTAMP);
+                        if (supportsAddTime) {
+                            newColumns.push(Columns.ADDTIME);
+                        }
 
                         let sort = '';
                         if (this.query.sort) {
@@ -119,7 +151,9 @@
                                 let newDocs = data.documents.map(doc => {
                                     let newDoc = {
                                         extension: doc.extension,
-                                        id: doc.compositeId
+                                        id: doc.compositeId,
+                                        timestamp: doc.timestamp,
+                                        docaddtime: doc.addTime
                                     };
 
                                     for (let i = 0; i < doc.fields.length; i++) {
@@ -165,6 +199,9 @@
                         setTimeout(function () {
                             openLink(link);
                         }, 0);
+                    })
+                    .catch(e => {
+                        this.error = Error.fromApiException(e);
                     });
             },
 
@@ -175,6 +212,9 @@
                         setTimeout(function () {
                             openLink(link);
                         }, 0);
+                    })
+                    .catch(e => {
+                        this.error = Error.fromApiException(e);
                     });
             },
 

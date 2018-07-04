@@ -12,7 +12,7 @@
 </template>
 
 <script>
-    import { compareStrings } from '@/utils/compare';
+    import { Column } from '@/components/datatable/column';
 
     export default {
         props: {
@@ -76,7 +76,7 @@
                         style: 'width: 12em;',
                         sortable: true
                     }
-                ];
+                ].map(o => new Column(o));
             },
 
             dictionary() {
@@ -132,12 +132,14 @@
         methods: {
             handleQueryChange() {
                 let orderedUnits;
-                if (this.query.sort) {
+                let sortBy = this.query.sort;
+                if (sortBy) {
                     let q = this.query;
                     let order = q.order === 'asc' ? 1 : -1;
 
+                    let column = this.columns.find(c => c.name === sortBy);
                     orderedUnits = this.allUnits.slice()
-                        .sort((a, b) => compareStrings(a[q.sort], b[q.sort]) * order);
+                        .sort((a, b) => column.compare(a[sortBy], b[sortBy]) * order);
                 } else {
                     orderedUnits = this.allUnits;
                 }

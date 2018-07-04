@@ -1,4 +1,9 @@
-﻿export function compareStrings(a, b) {
+﻿export function compareStrings(a, b, ignoreCase = false) {
+    if (ignoreCase) {
+        let ua = a.toUpperCase();
+        let ub = b.toUpperCase();
+        return compareStrings(ua, ub, false);
+    }
     return a > b ? 1 : b > a ? -1 : 0;
 }
 

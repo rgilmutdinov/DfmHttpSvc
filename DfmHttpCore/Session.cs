@@ -240,7 +240,7 @@ namespace DfmHttpCore
                 volume.UpdateFields();
 
                 // reload volume
-                volume.Reopen(docIdentity.DocUidFilter, string.Empty, string.Empty);
+                volume.Reopen(docIdentity.DocUidFilter, string.Empty);
 
                 return GetDocument(volume, docIdentity);
             }
@@ -275,7 +275,8 @@ namespace DfmHttpCore
                 Extension      = volume.DocumentExtension,
                 Timestamp      = volume.DocumentTimestamp,
                 HasAttachments = volume.DocumentHasAttachments,
-                Version        = volume.DocumentVersion
+                Version        = volume.DocumentVersion,
+                AddTime        = volume.DocumentAddTime
             };
 
             int fieldIndex = 0;

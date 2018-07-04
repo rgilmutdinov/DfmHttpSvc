@@ -27,7 +27,7 @@ function parseDetails(error) {
     return null;
 }
 
-export class Error {
+export default class Error {
     constructor() {
         this.message = '';
         this.details = '';
@@ -40,5 +40,3 @@ export class Error {
         return error;
     }
 }
-
-export default Error;

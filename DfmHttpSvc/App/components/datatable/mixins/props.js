@@ -2,7 +2,7 @@ import Selection from '../selection';
 
 export default {
     props: {
-        // columns
+        // columns, array of objects of Column type
         columns: { type: Array, required: true },
 
         // rows

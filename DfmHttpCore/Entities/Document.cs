@@ -21,6 +21,7 @@ namespace DfmHttpCore.Entities
         public bool      HasAttachments { get; set; }
         public int       Version        { get; set; }
         public DateTime  Timestamp      { get; set; }
+        public DateTime? AddTime        { get; set; }
 
         public List<Field> Fields { get; } = new List<Field>();
     }

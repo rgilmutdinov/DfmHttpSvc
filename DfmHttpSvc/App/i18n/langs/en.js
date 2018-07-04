@@ -49,6 +49,8 @@ export default {
 
     pageVolume: {
         delete: 'Delete',
-        download: 'Download'
+        download: 'Download',
+        dateModified: 'Date and time',
+        dateCreated: 'Date/time of archivation'
     }
 };

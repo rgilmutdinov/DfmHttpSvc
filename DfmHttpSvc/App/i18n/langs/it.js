@@ -49,6 +49,8 @@ export default {
 
     pageVolume: {
         delete: 'Elimina',
-        download: 'Scarica'
+        download: 'Scarica',
+        dateModified: 'Data e ora',
+        dateCreated: 'Data/ora archiviazione'
     }
 };

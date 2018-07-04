@@ -30,7 +30,7 @@
                             <slot :name="'th_' + col.name" :column="col">
                                 <span class="column-title" data-toggle="tooltip" :title="col.title">{{ col.title }}</span>
                             </slot>
-                            <head-sort v-if="col.sortable" :column="col.name" :query="query" />
+                            <head-sort v-if="col.sortable" :column="col" :query="query" />
                         </th>
                     </tr>
                 </thead>
@@ -130,10 +130,10 @@
                 return mergeStyles(col.style, col.tdStyle);
             },
             computeThClass(col) {
-                return [(col.class || ''), (col.thClass || '')].join(' ').trim();
+                return [(col.colClass || ''), (col.thClass || '')].join(' ').trim();
             },
             computeTdClass(col) {
-                return [(col.class || ''), (col.tdClass || '')].join(' ').trim();
+                return [(col.colClass || ''), (col.tdClass || '')].join(' ').trim();
             }
         },
         computed: {
