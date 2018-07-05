@@ -2,6 +2,7 @@ using DfmHttpSvc.Configuration;
 using DfmHttpSvc.Sessions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.SpaServices.Webpack;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,6 +24,11 @@ namespace DfmHttpSvc
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<SessionManager>();
+
+            services.Configure<FormOptions>(options => {
+                options.ValueLengthLimit = int.MaxValue;
+                options.MultipartBodyLengthLimit = int.MaxValue; // multipart body limit
+            });
 
             services.AddTokenAuthentication(Configuration);
             services.AddRouting(options => options.LowercaseUrls = true);

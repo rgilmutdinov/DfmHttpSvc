@@ -37,7 +37,10 @@ namespace DfmHttpSvc
                 .Build();
 
             hostBuilder
-                .UseKestrel()
+                .UseKestrel(options =>
+                {
+                    options.Limits.MaxRequestBodySize = null;
+                })
                 .UseConfiguration(hostingConfiguration)
                 .UseContentRoot(contentRoot)
                 .ConfigureLogging(log =>
