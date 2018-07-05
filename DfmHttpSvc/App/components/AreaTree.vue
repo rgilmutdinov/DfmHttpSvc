@@ -1,7 +1,7 @@
 <template>
     <div>
         <router-link tag="div" class="route-link" :to="area.route">
-            <div :style="spacingStyle">
+            <div class="headline" :style="spacingStyle">
                 <span @click="toggleArea()">
                     <toggle-icon :isExpanded="isExpanded" :isVisible="(areas && areas.length > 0) || (volumes && volumes.length > 0)"></toggle-icon>
                 </span>

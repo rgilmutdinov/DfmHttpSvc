@@ -25,3 +25,9 @@
     -webkit-filter: brightness(90%);
     filter: brightness(90%);
 }
+
+.ellipsis {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

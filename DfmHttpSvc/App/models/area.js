@@ -1,5 +1,6 @@
 import { UnitType, Unit } from './unit';
 import Icons from '@/common/icons';
+import { routes } from '@/router/routes';
 
 export default class Area extends Unit {
     constructor(obj) {
@@ -10,6 +11,7 @@ export default class Area extends Unit {
         this.isExpanded = false;
         this.areas = [];
         this.volumes = [];
+        this.parent = null;
     }
 
     get type() {
@@ -17,10 +19,22 @@ export default class Area extends Unit {
     }
 
     get route() {
-        return { name: 'area', params: { area: this.path } };
+        return { name: routes.AREA.name, params: { area: this.path } };
     }
 
     get iconLayers() {
         return Icons.area();
+    }
+
+    get parents() {
+        let result = [];
+
+        let parent = this.parent;
+        while (parent) {
+            result.unshift(parent);
+            parent = parent.parent;
+        }
+
+        return result;
     }
 }

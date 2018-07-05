@@ -37,9 +37,9 @@ instance.interceptors.response.use((response) => {
         store.commit(PURGE_AUTH);
 
         // avoid multiple redirections to login page
-        if (!router.currentRoute || (router.currentRoute && router.currentRoute.path !== routes.LOGIN)) {
+        if (!router.currentRoute || (router.currentRoute && router.currentRoute.path !== routes.LOGIN.path)) {
             router.replace({
-                path: routes.LOGIN,
+                path: routes.LOGIN.path,
                 query: { redirect: router.currentRoute.fullPath }
             });
         }

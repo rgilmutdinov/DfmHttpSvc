@@ -1,5 +1,6 @@
 import { UnitType, Unit } from './unit';
 import Icons from '@/common/icons';
+import { routes } from '@/router/routes';
 
 export default class Volume extends Unit {
     constructor(obj) {
@@ -17,7 +18,7 @@ export default class Volume extends Unit {
     }
 
     get route() {
-        return { name: 'volume', params: { volume: this.name } };
+        return { name: routes.VOLUME.name, params: { volume: this.name } };
     }
 
     get iconLayers() {

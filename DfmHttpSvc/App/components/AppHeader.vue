@@ -6,13 +6,14 @@
         <router-link to="/" class="navbar-brand">
             <span class="mx-2">DFM Web</span>
         </router-link>
+        <breadcrumb class="nav-breadcrumb" v-if="isAuthenticated"/>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="navbar-collapse collapse" id="navbar">
             <ul class="navbar-nav mr-auto"></ul>
 
-            <ul class="navbar-nav mx-2">
+            <ul class="navbar-nav mx-2" style="white-space: nowrap;">
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="localeSelect" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         {{ language.toUpperCase() }}
@@ -24,7 +25,7 @@
                 </li>
             </ul>
 
-            <form v-if="isAuthenticated" class="form-inline mx-2">
+            <form v-if="isAuthenticated" class="form-inline mx-2 my-1" style="flex-flow: nowrap;">
                 <span class="mr-2">{{ currentUser }}</span>
                 <button class="btn btn-outline-secondary btn-sm mx-2" @click.prevent="logout"><i class="fa fa-sign-out-alt" />&nbsp;{{ $t('header.logout') }}</button>
             </form>
@@ -56,7 +57,7 @@
                     .catch(this.redirectToLogin);
             },
             redirectToLogin() {
-                this.$router.push(routes.LOGIN);
+                this.$router.push(routes.LOGIN.path);
             },
             toggleSidebar() {
                 this.$store.commit(TOGGLE_SIDEBAR);
@@ -71,5 +72,11 @@
 <style scoped>
     .dropdown-menu > button {
         cursor: pointer;
+    }
+
+    @media (max-width: 576px) {
+        .nav-breadcrumb {
+            display: none;
+        }
     }
 </style>

@@ -78,7 +78,7 @@
                 this.$store.dispatch(LOGIN, credentials)
                     .then(() => {
                         this.loading = false;
-                        this.$router.push(this.$route.query.redirect || routes.EMPTY);
+                        this.$router.push(this.$route.query.redirect || routes.EMPTY.path);
                         this.$store.dispatch(LOAD_DICTIONARY);
                     })
                     .catch(err => {

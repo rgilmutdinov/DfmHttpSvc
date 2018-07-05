@@ -134,6 +134,7 @@ const mutations = {
             let area = state.dictionary.searchArea(path);
             if (area) {
                 area.areas = areas;
+                area.areas.forEach(a => a.parent = area);
             }
         }
     },
