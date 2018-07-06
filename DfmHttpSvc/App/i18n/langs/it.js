@@ -50,6 +50,7 @@ export default {
     pageVolume: {
         delete: 'Elimina',
         download: 'Scarica',
+        upload: 'Caricare un file',
         dateModified: 'Data e ora',
         dateCreated: 'Data/ora archiviazione'
     }

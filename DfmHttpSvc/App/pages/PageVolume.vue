@@ -8,6 +8,10 @@
         <div v-show="!loading && showTable">
             <data-table :rows="documents" :query="query" :total="total" :columns="columns" :selection="selection" :loading="loading">
                 <div slot="toolbar" class="btn-group" role="group">
+
+                    <file-input class="btn btn-sm btn-outline-primary" @input="uploadDocument" :title="$t('pageVolume.upload')">
+                        <i class="fas fa-upload fa-fw" />
+                    </file-input>
                     <div :class="['btn btn-sm btn-outline-primary', {'disabled': !isAnySelected}]" @click="downloadSelection" :title="$t('pageVolume.download')">
                         <i class="fas fa-download fa-fw" />
                     </div>
@@ -226,6 +230,18 @@
                     .catch(e => {
                         this.error = Error.fromApiException(e);
                     });
+            },
+
+            uploadDocument(files) {
+                if (files && files.length > 0) {
+                    ApiService.uploadDocuments(this.volume, files)
+                        .then(() => {
+                            this.handleQueryChange();
+                        })
+                        .catch(e => {
+                            this.error = Error.fromApiException(e);
+                        });
+                }
             }
         }
     };

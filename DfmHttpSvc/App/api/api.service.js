@@ -77,6 +77,21 @@ const ApiService = {
         };
 
         return Vue.axios.delete(`/api/volumes/${volumeName}/documents`, { data: params });
+    },
+
+    uploadDocuments(volumeName, files) {
+        volumeName = encodeURIComponent(volumeName);
+
+        let formData = new FormData();
+        for (let i = 0; i < files.length; i++) {
+            formData.append('file', files[i]);
+        }
+
+        return Vue.axios.post(
+            `/api/volumes/${volumeName}/documents`,
+            formData,
+            { headers: { 'Content-Type': 'multipart/form-data' } }
+        );
     }
 };
 

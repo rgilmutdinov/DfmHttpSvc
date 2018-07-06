@@ -4,6 +4,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using DfmCore;
+using DfmCore.Extensions;
 using DfmCore.Tools;
 using DfmHttpCore.Entities;
 
@@ -295,9 +296,12 @@ namespace DfmHttpCore
 
         private static string CombineFields(List<Field> fields)
         {
-            return String.Join(
-                ",",
-                fields.Select(f => $"{f.Name} = {f.Value}"));
+            if (fields.IsNullOrEmpty())
+            {
+                return string.Empty;
+            }
+
+            return string.Join(",", fields.Select(f => $"{f.Name} = {f.Value}"));
         }
 
         public void DeleteAttachment(string volumeName, DocIdentity docIdentity, string attachmentName)

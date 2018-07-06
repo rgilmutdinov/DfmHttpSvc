@@ -50,6 +50,7 @@ export default {
     pageVolume: {
         delete: 'Delete',
         download: 'Download',
+        upload: 'Upload',
         dateModified: 'Date and time',
         dateCreated: 'Date/time of archivation'
     }
