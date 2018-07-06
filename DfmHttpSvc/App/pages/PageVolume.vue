@@ -237,6 +237,7 @@
                     ApiService.uploadDocuments(this.volume, files)
                         .then(() => {
                             this.handleQueryChange();
+                            this.$notify.success(this.$t('pageVolume.documentAdded'));
                         })
                         .catch(e => {
                             this.error = Error.fromApiException(e);

@@ -52,6 +52,7 @@ export default {
         download: 'Download',
         upload: 'Upload',
         dateModified: 'Date and time',
-        dateCreated: 'Date/time of archivation'
+        dateCreated: 'Date/time of archivation',
+        documentAdded: 'Document successfully added'
     }
 };

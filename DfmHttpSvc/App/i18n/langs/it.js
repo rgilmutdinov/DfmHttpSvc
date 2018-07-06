@@ -52,6 +52,7 @@ export default {
         download: 'Scarica',
         upload: 'Caricare un file',
         dateModified: 'Data e ora',
-        dateCreated: 'Data/ora archiviazione'
+        dateCreated: 'Data/ora archiviazione',
+        documentAdded: 'Documento aggiunto con successo'
     }
 };
