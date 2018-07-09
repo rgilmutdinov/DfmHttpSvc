@@ -5,7 +5,7 @@
                 <slot name="toolbar" />
             </div>
             <div>
-                <div class="input-group">
+                <div class="input-group input-group-sm">
                     <div class="input-group-prepend">
                         <label class="input-group-text" for="pageSizeSelect">{{ $t('datatable.rowsPerPage') }}</label>
                     </div>

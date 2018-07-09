@@ -1,7 +1,7 @@
 <template>
     <div>
         <router-link tag="div" class="route-link" :to="area.route">
-            <div class="headline" :style="spacingStyle">
+            <div class="headline" :style="spacingStyle(level)">
                 <span @click="toggleArea()">
                     <toggle-icon :isExpanded="isExpanded" :isVisible="(areas && areas.length > 0) || (volumes && volumes.length > 0)"></toggle-icon>
                 </span>
@@ -16,9 +16,9 @@
         </div>
         <div class="headline" v-show="isExpanded" v-for="volume in volumes" :key="volume.name">
             <router-link tag="div" class="route-link" :to="volume.route">
-                <div :style="spacingStyle">
+                <div :style="spacingStyle(level + 1)">
                     <toggle-icon :isVisible="false" />
-                    <a class="headline" style="vertical-align:central">
+                    <a class="headline" style="vertical-align: central">
                         <layer-icon :layers="volume.iconLayers" />
                         <span data-toggle="tooltip" :title="volume.name">{{ volume.name }}</span>
                     </a>
@@ -47,14 +47,14 @@
             },
             isExpanded() {
                 return this.area.isExpanded;
-            },
-            spacingStyle() {
-                return 'padding-left: ' + this.level * 0.5 + 'rem';
             }
         },
         methods: {
             toggleArea() {
                 this.area.isExpanded = !this.area.isExpanded;
+            },
+            spacingStyle(level) {
+                return 'padding-left: ' + level * 0.5 + 'rem';
             }
         }
     };
