@@ -1,6 +1,18 @@
 <template>
     <div>
-        <h1>Volume {{ volume }}</h1>
+        <modal :show="showNewDocument" :title="$t('pageVolume.addDocument')" @close="showNewDocument = false" @ok="addDocument">
+            <div slot="content">
+                <div class="card card-block bg-faded p-2 mb-1">
+                    <input ref="inputFile" id="inputFile" type="file" class="form-control-file">
+                </div>
+                <div v-for="field in fields" :key="field.name" class="input-row">
+                    <div class="field field-name">{{ field.name }}</div>
+                    <div class="field field-value"><input class="form-control"/></div>
+                </div>
+            </div>
+        </modal>
+
+        <h2>Volume {{ volume }}</h2>
         <alert-panel :error="error"></alert-panel>
         <div v-show="loading" class="loading-box p-3">
             <i class="fas fa-spinner fa-pulse fa-2x fa-fw" style="color: lightslategray;"></i>
@@ -12,6 +24,9 @@
                     <file-input class="btn btn-sm btn-outline-primary" @input="uploadDocument" :title="$t('pageVolume.upload')">
                         <i class="fas fa-upload fa-fw" />
                     </file-input>
+                    <div class="btn btn-sm btn-outline-primary" @click="openAddDocument" :title="$t('pageVolume.addDocument')">
+                        <i class="fas fa-plus fa-fw" />
+                    </div>
                     <div :class="['btn btn-sm btn-outline-primary', {'disabled': !isAnySelected}]" @click="downloadSelection" :title="$t('pageVolume.download')">
                         <i class="fas fa-download fa-fw" />
                     </div>
@@ -45,8 +60,9 @@
     import ApiService from '@/api/api.service';
     import Selection from '@/components/datatable/selection';
     import { Column, ColumnType } from '@/components/datatable/column';
+    import Modal from '@/components/Modal.vue';
 
-    const Columns = {
+    const DefaultColumns = {
         EXTENSION: new Column({
             name: 'extension',
             title: '',
@@ -66,6 +82,7 @@
     };
 
     export default {
+        components: { Modal },
         props: {
             volume: {
                 type: String,
@@ -78,10 +95,12 @@
                 total: 0,
                 query: {},
                 columns: [],
+                fields: [],
                 selection: new Selection(),
                 showTable: false,
                 loading: false,
-                error: null
+                error: null,
+                showNewDocument: false
             };
         },
         watch: {
@@ -130,15 +149,16 @@
                 // get volume info
                 ApiService.fetchVolumeInfo(this.volume)
                     .then(({ data }) => {
+                        this.fields.splice(0, this.fields.length, ...data.fields);
                         let supportsAddTime = data.supportsAddTime;
 
-                        let newColumns = [Columns.EXTENSION];
+                        let newColumns = [DefaultColumns.EXTENSION];
                         let volColumns = data.fields.map(f => this.getColumn(new Field(f)));
 
                         newColumns.push(...volColumns);
-                        newColumns.push(Columns.TIMESTAMP);
+                        newColumns.push(DefaultColumns.TIMESTAMP);
                         if (supportsAddTime) {
-                            newColumns.push(Columns.ADDTIME);
+                            newColumns.push(DefaultColumns.ADDTIME);
                         }
 
                         let sort = '';
@@ -243,6 +263,22 @@
                             this.error = Error.fromApiException(e);
                         });
                 }
+            },
+
+            addDocument() {
+                let files = this.$refs.inputFile.files;
+                this.uploadDocument(files);
+
+                this.showNewDocument = false;
+            },
+
+            openAddDocument() {
+                // reset file input
+                let input = this.$refs.inputFile;
+                input.type = 'text';
+                input.type = 'file';
+
+                this.showNewDocument = true;
             }
         }
     };
@@ -254,5 +290,26 @@
         align-items: center;
         justify-content: center;
         height: 300px;
+    }
+
+    .input-row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center
+    }
+
+    .field {
+        padding-top: 2px;
+        padding-bottom: 2px;
+    }
+
+    .field-name {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        width: 8em;
+    }
+
+    .field-value {
+        flex-grow: 1;
     }
 </style>

@@ -1,5 +1,4 @@
 import 'bootstrap'; // otherwise navbar is not working
-import 'jquery'; // just for completeness, othervise navbar is not working
 
 import NProgress from 'nprogress'; // progress bar
 import 'nprogress/nprogress.css';// progress bar style
@@ -18,6 +17,10 @@ import Notify from '@/components/notify';
 
 import { sync } from 'vuex-router-sync';
 sync(store, router); // "Sync vue-router's current $route as part of vuex store's state."
+
+// import jquery globally
+window.$ = require('jquery');
+window.JQuery = require('jquery');
 
 Vue.use(VueAxios, axios);
 Vue.use(Notify, { top: '80px' });

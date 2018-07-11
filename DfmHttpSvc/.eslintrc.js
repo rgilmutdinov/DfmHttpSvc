@@ -3,6 +3,10 @@ module.exports = {
         browser: true,
         es6: true
     },
+    globals: {
+        "$": true,
+        "jQuery": true
+    },
     parserOptions: {
         parser: 'babel-eslint',
         sourceType: 'module',

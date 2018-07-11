@@ -60,7 +60,7 @@
                     top: '5px',
                     right: '15px',
                     mode: 'text',
-                    permanent: true,
+                    permanent: false,
                     dismissable: true
                 },
                 items: {},

@@ -51,6 +51,7 @@ export default {
         delete: 'Elimina',
         download: 'Scarica',
         upload: 'Caricare un file',
+        addDocument: 'Aggiungi un nuovo documento',
         dateModified: 'Data e ora',
         dateCreated: 'Data/ora archiviazione',
         documentAdded: 'Documento aggiunto con successo'

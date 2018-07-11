@@ -51,6 +51,7 @@ export default {
         delete: 'Delete',
         download: 'Download',
         upload: 'Upload',
+        addDocument: 'Add new document',
         dateModified: 'Date and time',
         dateCreated: 'Date/time of archivation',
         documentAdded: 'Document successfully added'
