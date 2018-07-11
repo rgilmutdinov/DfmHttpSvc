@@ -5,9 +5,9 @@
                 <div class="card card-block bg-faded p-2 mb-1">
                     <input ref="inputFile" id="inputFile" type="file" class="form-control-file">
                 </div>
-                <div v-for="field in fields" :key="field.name" class="input-row">
+                <div v-for="field in docFields" :key="field.name" class="input-row">
                     <div class="field field-name">{{ field.name }}</div>
-                    <div class="field field-value"><input class="form-control"/></div>
+                    <div class="field field-value"><input v-model="field.value" class="form-control"/></div>
                 </div>
             </div>
         </modal>
@@ -56,7 +56,7 @@
     import delay from '@/utils/delay';
     import openLink from '@/utils/openLink';
     import Error from '@/models/errors';
-    import { Field } from '@/models/fields';
+    import { Field, DocField } from '@/models/fields';
     import ApiService from '@/api/api.service';
     import Selection from '@/components/datatable/selection';
     import { Column, ColumnType } from '@/components/datatable/column';
@@ -123,6 +123,9 @@
                     return ids.length < this.total;
                 }
                 return false;
+            },
+            docFields() {
+                return this.fields.map(f => new DocField(f));
             }
         },
         methods: {
@@ -252,9 +255,9 @@
                     });
             },
 
-            uploadDocument(files) {
+            uploadDocument(files, fields = null) {
                 if (files && files.length > 0) {
-                    ApiService.uploadDocuments(this.volume, files)
+                    ApiService.uploadDocuments(this.volume, files, fields)
                         .then(() => {
                             this.handleQueryChange();
                             this.$notify.success(this.$t('pageVolume.documentAdded'));
@@ -267,7 +270,13 @@
 
             addDocument() {
                 let files = this.$refs.inputFile.files;
-                this.uploadDocument(files);
+
+                let fields = this.docFields.map(f => {
+                    return { name: f.name, value: f.value };
+                });
+
+                let json = JSON.stringify(fields);
+                this.uploadDocument(files, json);
 
                 this.showNewDocument = false;
             },

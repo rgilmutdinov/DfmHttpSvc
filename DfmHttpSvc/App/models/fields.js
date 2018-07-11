@@ -50,3 +50,10 @@ export class Field {
         return this.type === FieldType.DATE;
     }
 }
+
+export class DocField extends Field {
+    constructor(obj) {
+        super(obj);
+        this.value = '';
+    }
+}

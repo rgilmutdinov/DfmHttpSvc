@@ -79,12 +79,16 @@ const ApiService = {
         return Vue.axios.delete(`/api/volumes/${volumeName}/documents`, { data: params });
     },
 
-    uploadDocuments(volumeName, files) {
+    uploadDocuments(volumeName, files, fields) {
         volumeName = encodeURIComponent(volumeName);
 
         let formData = new FormData();
         for (let i = 0; i < files.length; i++) {
             formData.append('file', files[i]);
+        }
+
+        if (fields) {            
+            formData.append('fields', fields);
         }
 
         return Vue.axios.post(
