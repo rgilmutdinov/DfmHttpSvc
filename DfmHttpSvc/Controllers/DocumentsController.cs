@@ -146,6 +146,15 @@ namespace DfmHttpSvc.Controllers
         /// <summary>
         /// Generates temporary token to download an archive with a bunch of documents
         /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     {
+        ///         "excludeMode": "true",
+        ///         "documentIds": [100, 102, 105]
+        ///     }
+        ///
+        /// </remarks>
         /// <param name="volume">Volume name</param>
         /// <param name="selection">Documents selection</param>
         /// <returns>Temporary token</returns>
@@ -277,7 +286,7 @@ namespace DfmHttpSvc.Controllers
         [Consumes("multipart/form-data")]
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> AddDocument(string volume, [JsonFromForm] List<Field> fields, IFormFile file)
+        public async Task<IActionResult> AddDocument(string volume, [JsonFromForm] List<Field> fields, [FromForm] IFormFile file)
         {
             if (!TryGetSession(User, out Session session))
             {

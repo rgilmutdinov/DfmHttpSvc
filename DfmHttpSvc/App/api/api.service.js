@@ -87,7 +87,7 @@ const ApiService = {
             formData.append('file', files[i]);
         }
 
-        if (fields) {            
+        if (fields) {
             formData.append('fields', fields);
         }
 

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using DfmCore.Extensions;
+using System.Reflection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Abstractions;
 using Swashbuckle.AspNetCore.Swagger;
@@ -12,42 +12,75 @@ namespace DfmHttpSvc.Configuration.Swagger
     {
         private const string FormDataMimeType = "multipart/form-data";
 
+        private static readonly string[] FormFilePropertyNames =
+            typeof(IFormFile).GetTypeInfo().DeclaredProperties.Select(p => p.Name).ToArray();
+
         public void Apply(Operation operation, OperationFilterContext context)
         {
-            string method = context.ApiDescription.HttpMethod.ToLower();
-            if (!method.Equals("post") && !method.Equals("put"))
+            IList<IParameter> parameters = operation.Parameters;
+            if (parameters == null || parameters.Count == 0)
             {
                 return;
             }
 
-            List<ParameterDescriptor> fileParams = context.ApiDescription.ActionDescriptor.Parameters
-                .Where(n => n.ParameterType == typeof(IFormFile))
-                .ToList();
+            List<string> formFileParamNames = new List<string>();
+            List<string> formFileSubParamNames = new List<string>();
 
-            if (fileParams.IsNullOrEmpty())
+            foreach (ParameterDescriptor actionParameter in context.ApiDescription.ActionDescriptor.Parameters)
             {
-                return;
-            }
+                string[] properties =
+                    actionParameter.ParameterType.GetProperties()
+                        .Where(p => p.PropertyType == typeof(IFormFile))
+                        .Select(p => p.Name)
+                        .ToArray();
 
-            List<IParameter> operationParams = operation.Parameters.ToList();
-            foreach (ParameterDescriptor fileParam in fileParams)
-            {
-                int paramIdx = operationParams.FindIndex(n => n.Name == fileParam.Name);
-                if (paramIdx >= 0)
+                if (properties.Length != 0)
                 {
-                    IParameter parameter = operation.Parameters[paramIdx];
-                    operation.Parameters[paramIdx] = new NonBodyParameter
-                    {
-                        Name        = parameter.Name,
-                        In          = "formData",
-                        Description = parameter.Description,
-                        Required    = parameter.Required,
-                        Type        = "file"
-                    };
+                    formFileParamNames.AddRange(properties);
+                    formFileSubParamNames.AddRange(properties);
+
+                    continue;
+                }
+
+                if (actionParameter.ParameterType != typeof(IFormFile))
+                {
+                    continue;
+                }
+
+                formFileParamNames.Add(actionParameter.Name);
+            }
+
+            if (!formFileParamNames.Any())
+            {
+                return;
+            }
+
+            IList<string> consumes = operation.Consumes;
+            consumes.Clear();
+            consumes.Add(FormDataMimeType);
+
+            foreach (IParameter parameter in parameters.ToArray())
+            {
+                if (!(parameter is NonBodyParameter) || parameter.In != "formData")
+                {
+                    continue;
+                }
+
+                if (formFileSubParamNames.Any(p => parameter.Name.StartsWith(p + ".")) || FormFilePropertyNames.Contains(parameter.Name))
+                {
+                    parameters.Remove(parameter);
                 }
             }
 
-            operation.Consumes.Add(FormDataMimeType);
+            foreach (string paramName in formFileParamNames)
+            {
+                parameters.Add(new NonBodyParameter
+                {
+                    Name = paramName,
+                    Type = "file",
+                    In = "formData"
+                });
+            }
         }
     }
 }
