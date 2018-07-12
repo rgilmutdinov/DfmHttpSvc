@@ -6,6 +6,7 @@ import { routes } from './routes.js';
 
 import { AUTO_LOGIN, LOAD_DICTIONARY } from '@/store/actions.type';
 
+import DatePicker from '@/components/DatePicker.vue';
 import FileInput from '@/components/FileInput.vue';
 import Breadcrumb from '@/components/Breadcrumb.vue';
 import ExpandCard from '@/components/ExpandCard.vue';
@@ -26,6 +27,7 @@ import PageVolume from '@/pages/PageVolume.vue';
 
 Vue.use(VueRouter);
 
+Vue.component('datepicker', DatePicker);
 Vue.component('file-input', FileInput);
 Vue.component('breadcrumb', Breadcrumb);
 Vue.component('expand-card', ExpandCard);

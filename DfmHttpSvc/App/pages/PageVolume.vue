@@ -5,9 +5,18 @@
                 <div class="card card-block bg-faded p-2 mb-1">
                     <input ref="inputFile" id="inputFile" type="file" class="form-control-file">
                 </div>
-                <div v-for="field in docFields" :key="field.name" class="input-row">
-                    <div class="field field-name">{{ field.name }}</div>
-                    <div class="field field-value"><input v-model="field.value" class="form-control"/></div>
+                <div v-for="row in docRows" :key="row.field.name" class="input-row">
+                    <div class="field field-name">{{ row.field.name }}</div>
+
+                    <div v-if="row.field.isDate" class="field field-value">
+                        <datepicker v-model="row.value" />
+                    </div>
+                    <div v-else-if="row.field.isMemo" class="field field-value">
+                        <textarea v-model="row.value" class="form-control" />
+                    </div>
+                    <div v-else class="field field-value">
+                        <input v-model="row.value" class="form-control" />
+                    </div>
                 </div>
             </div>
         </modal>
@@ -56,7 +65,7 @@
     import delay from '@/utils/delay';
     import openLink from '@/utils/openLink';
     import Error from '@/models/errors';
-    import { Field, DocField } from '@/models/fields';
+    import { Field, DocRow } from '@/models/fields';
     import ApiService from '@/api/api.service';
     import Selection from '@/components/datatable/selection';
     import { Column, ColumnType } from '@/components/datatable/column';
@@ -124,15 +133,15 @@
                 }
                 return false;
             },
-            docFields() {
-                return this.fields.map(f => new DocField(f));
+            docRows() {
+                return this.fields.map(f => new DocRow(f, ''));
             }
         },
         methods: {
             getColumn(field) {
                 let type = ColumnType.TEXT;
 
-                if (field.isNumber()) {
+                if (field.isNumber) {
                     type = ColumnType.NUMBER;
                 } else if (field.isDate) {
                     type = ColumnType.DATE;
@@ -152,11 +161,13 @@
                 // get volume info
                 ApiService.fetchVolumeInfo(this.volume)
                     .then(({ data }) => {
-                        this.fields.splice(0, this.fields.length, ...data.fields);
                         let supportsAddTime = data.supportsAddTime;
+                        let newFields = data.fields.map(f => new Field(f));
+
+                        this.fields.splice(0, this.fields.length, ...newFields);
 
                         let newColumns = [DefaultColumns.EXTENSION];
-                        let volColumns = data.fields.map(f => this.getColumn(new Field(f)));
+                        let volColumns = this.fields.map(f => this.getColumn(f));
 
                         newColumns.push(...volColumns);
                         newColumns.push(DefaultColumns.TIMESTAMP);
@@ -272,14 +283,15 @@
                 let files = this.$refs.inputFile.files;
 
                 let fields = [];
-                this.docFields.forEach(f => {
-                    if (f.value) {
-                        let value = f.value;
-                        if (f.isString || f.isDate) {
+                this.docRows.forEach(row => {
+                    if (row.value) {
+                        let value = row.value;
+                        let field = row.field;
+                        if (field.isString || field.isDate) {
                             value = value.replace(/'/g, "''");
                             value = `'${value}'`;
                         }
-                        fields.push({ name: f.name, value: value });
+                        fields.push({ name: field.name, value: value });
                     }
                 });
 

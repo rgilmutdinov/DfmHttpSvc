@@ -18,12 +18,14 @@ export class Field {
 
         let dfmType = type;
 
-        this.type = Object.keys(FieldType)
+        let key = Object.keys(FieldType)
             .filter(k => FieldType[k] === dfmType)
-            .pop() || FieldType.STRING;
+            .pop();
+
+        this.type = key ? FieldType[key] : FieldType.STRING;
     }
 
-    isNumber() {
+    get isNumber() {
         switch (this.type) {
             case FieldType.INTEGER:
             case FieldType.DECIMAL:
@@ -33,7 +35,7 @@ export class Field {
         return false;
     }
 
-    isString() {
+    get isString() {
         switch (this.type) {
             case FieldType.STRING:
             case FieldType.MEMO:
@@ -42,18 +44,18 @@ export class Field {
         return false;
     }
 
-    isMemo() {
+    get isMemo() {
         return this.type === FieldType.MEMO;
     }
 
-    isDate() {
+    get isDate() {
         return this.type === FieldType.DATE;
     }
 }
 
-export class DocField extends Field {
-    constructor(obj) {
-        super(obj);
-        this.value = '';
+export class DocRow {
+    constructor(field, value = '') {
+        this.field = field;
+        this.value = value;
     }
 }

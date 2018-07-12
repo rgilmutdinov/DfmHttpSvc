@@ -8,7 +8,7 @@ module.exports = (env) => {
     const isDevBuild = !(env && env.prod);
     return [{
         stats: { modules: false },
-        entry: { 'app': ['babel-polyfill', './App/app.js', './App/app.css'] },
+        entry: { 'app': ['./App/app.js', './App/app.css'] },
         resolve: {
             extensions: ['.js', '.vue', '.json'],
             alias: {

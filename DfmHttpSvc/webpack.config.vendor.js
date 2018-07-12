@@ -30,7 +30,9 @@ module.exports = (env) => {
                 'jquery',
                 'vue',
                 'vue-axios',
+                'vue-i18n',
                 'vue-router',
+                'vuejs-datepicker',
                 'vuex',
                 'vuex-router-sync',
                 'nprogress'
