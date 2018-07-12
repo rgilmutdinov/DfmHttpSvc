@@ -271,12 +271,19 @@
             addDocument() {
                 let files = this.$refs.inputFile.files;
 
-                let fields = this.docFields.map(f => {
-                    return { name: f.name, value: f.value };
+                let fields = [];
+                this.docFields.forEach(f => {
+                    if (f.value) {
+                        let value = f.value;
+                        if (f.isString || f.isDate) {
+                            value = value.replace(/'/g, "''");
+                            value = `'${value}'`;
+                        }
+                        fields.push({ name: f.name, value: value });
+                    }
                 });
 
-                let json = JSON.stringify(fields);
-                this.uploadDocument(files, json);
+                this.uploadDocument(files, fields);
 
                 this.showNewDocument = false;
             },

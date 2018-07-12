@@ -88,7 +88,8 @@ const ApiService = {
         }
 
         if (fields) {
-            formData.append('fields', fields);
+            let json = JSON.stringify(fields);
+            formData.append('fields', json);
         }
 
         return Vue.axios.post(
