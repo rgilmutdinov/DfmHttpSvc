@@ -31,10 +31,14 @@
     </div>
 </template>
 <script>
+    import AreaTree from '@/components/AreaTree.vue';
     import { TOGGLE_VOLUMES, TOGGLE_AREAS } from '@/store/mutations.type';
     import Icons from '@/common/icons';
 
     export default {
+        components: {
+            AreaTree
+        },
         data() {
             return {
 

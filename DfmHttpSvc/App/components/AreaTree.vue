@@ -31,6 +31,7 @@
     import Area from '@/models/area';
 
     export default {
+        name: 'AreaTree',
         props: {
             area: {
                 type: Area,

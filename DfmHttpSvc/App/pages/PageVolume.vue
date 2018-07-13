@@ -36,10 +36,10 @@
                     <div class="btn btn-sm btn-outline-primary" @click="openAddDocument" :title="$t('pageVolume.addDocument')">
                         <i class="fas fa-plus fa-fw" />
                     </div>
-                    <div :class="['btn btn-sm btn-outline-primary', {'disabled': !isAnySelected}]" @click="downloadSelection" :title="$t('pageVolume.download')">
+                    <div :class="['btn btn-sm btn-outline-primary', {disabled: !isAnySelected}]" @click="downloadSelection" :title="$t('pageVolume.download')">
                         <i class="fas fa-download fa-fw" />
                     </div>
-                    <div :class="['btn btn-sm btn-outline-primary', {'disabled': !isAnySelected}]" @click="deleteSelection" :title="$t('pageVolume.delete')">
+                    <div :class="['btn btn-sm btn-outline-primary', {disabled: !isAnySelected}]" @click="deleteSelection" :title="$t('pageVolume.delete')">
                         <i class="fas fa-trash fa-fw" />
                     </div>
                 </div>
@@ -244,6 +244,10 @@
             },
 
             downloadSelection() {
+                if (!this.isAnySelected) {
+                    return;
+                }
+
                 ApiService.fetchArchiveDownloadToken(this.volume, this.selection.ids, this.selection.exclude)
                     .then(({ data }) => {
                         let link = ApiService.downloadLink(data.token);
@@ -257,6 +261,10 @@
             },
 
             deleteSelection() {
+                if (!this.isAnySelected) {
+                    return;
+                }
+
                 ApiService.deleteDocuments(this.volume, this.selection.ids, this.selection.exclude)
                     .then(() => {
                         this.handleQueryChange();

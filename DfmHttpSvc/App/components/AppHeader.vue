@@ -33,12 +33,17 @@
     </nav>
 </template>
 <script>
+    import Breadcrumb from '@/components/Breadcrumb.vue';
+
     import { LOGOUT } from '@/store/actions.type';
     import { TOGGLE_SIDEBAR, SET_LOCALE } from '@/store/mutations.type';
     import { routes } from '@/router/routes';
 
     export default {
         name: 'AppHeader',
+        components: {
+            Breadcrumb
+        },
         computed: {
             isAuthenticated() {
                 return this.$store.getters.isAuthenticated;

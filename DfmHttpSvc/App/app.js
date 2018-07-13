@@ -17,6 +17,8 @@ import i18n from '@/i18n';
 import Notify from '@/components/notify';
 
 import { sync } from 'vuex-router-sync';
+import '@/components/globals';
+
 sync(store, router); // "Sync vue-router's current $route as part of vuex store's state."
 
 // import jquery globally

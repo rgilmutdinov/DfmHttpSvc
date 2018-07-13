@@ -31,9 +31,10 @@
     }
 </style>
 <script>
-    import AppHeader from '@/components/AppHeader';
-    import AppFooter from '@/components/AppFooter';
-    import SplitPanel from '@/components/SplitPanel';
+    import AppHeader from '@/components/AppHeader.vue';
+    import AppFooter from '@/components/AppFooter.vue';
+    import SplitPanel from '@/components/SplitPanel.vue';
+    import NavTree from '@/components/NavTree.vue';
 
     import { LOAD_SIDEBAR_STATE } from '@/store/actions.type';
     import { SET_SIDEBAR_WIDTH } from '@/store/mutations.type';
@@ -41,7 +42,7 @@
     export default {
         name: 'App',
 
-        data: function () {
+        data() {
             return {
             };
         },
@@ -71,7 +72,8 @@
         components: {
             AppHeader,
             AppFooter,
-            SplitPanel
+            SplitPanel,
+            NavTree
         }
     };
 </script>
