@@ -55,5 +55,11 @@ export default {
         dateModified: 'Data e ora',
         dateCreated: 'Data/ora archiviazione',
         documentAdded: 'Documento aggiunto con successo'
+    },
+
+    newDocument: {
+        addDocument: 'Aggiungi un nuovo documento',
+        confirmAdd: 'Aggiungi',
+        cancelAdd: 'Annulla'
     }
 };

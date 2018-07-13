@@ -1,5 +1,7 @@
 <template>
-    <modal :show="show" :title="$t('pageVolume.addDocument')" @close="close" @ok="addDocument">
+    <modal :show="show" :title="$t('newDocument.addDocument')" @close="close" @ok="addDocument"
+           :okText="$t('newDocument.confirmAdd')"
+           :cancelText="$t('newDocument.cancelAdd')">
         <div slot="content">
             <alert-panel ref="alert" :error="error"></alert-panel>
             <div class="card card-block bg-faded p-2 my-2">

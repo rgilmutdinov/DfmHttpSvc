@@ -43,16 +43,25 @@
             dspBtns() {
                 const n = this.totalPage;
                 const i = this.curPage;
-                /* eslint-disable */
-                if (n <= 9) return ((n) => {
-                    const arr = Array(n)
-                    while (n) { arr[n - 1] = n-- }
-                    return arr
-                })(n)
-                if (i <= 5) return [1, 2, 3, 4, 5, 6, 7, 0, n] // 0 represents `···`
-                if (i >= n - 4) return [1, 0, n - 6, n - 5, n - 4, n - 3, n - 2, n - 1, n]
-                return [1, 0, i - 2, i - 1, i, i + 1, i + 2, 0, n]
-                /* eslint-enable */
+                if (n <= 9) {
+                    return ((n) => {
+                        const arr = Array(n);
+                        while (n) {
+                            arr[n - 1] = n--;
+                        }
+                        return arr;
+                    })(n);
+                }
+
+                if (i <= 5) {
+                    return [1, 2, 3, 4, 5, 6, 7, 0, n]; // 0 represents `···`
+                }
+
+                if (i >= n - 4) {
+                    return [1, 0, n - 6, n - 5, n - 4, n - 3, n - 2, n - 1, n];
+                }
+
+                return [1, 0, i - 2, i - 1, i, i + 1, i + 2, 0, n];
             }
         },
         methods: {

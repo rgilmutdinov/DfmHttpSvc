@@ -55,5 +55,11 @@ export default {
         dateModified: 'Date and time',
         dateCreated: 'Date/time of archivation',
         documentAdded: 'Document successfully added'
+    },
+
+    newDocument: {
+        addDocument: 'Add new document',
+        confirmAdd: 'Add',
+        cancelAdd: 'Cancel'
     }
 };
