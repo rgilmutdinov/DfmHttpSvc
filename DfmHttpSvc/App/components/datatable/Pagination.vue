@@ -1,5 +1,5 @@
 <template>
-    <ul class="pagination" style="margin: 0" name="Pagination">
+    <ul class="pagination" name="Pagination">
         <li v-if="!isFirstPage" class="page-item" @click="turnPage(-1)">
             <a href="#" class="page-link" @click.prevent>
                 <i class="fas fa-angle-left"></i>

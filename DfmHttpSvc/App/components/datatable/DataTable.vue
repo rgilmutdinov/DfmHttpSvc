@@ -138,7 +138,7 @@
         },
         computed: {
             totalColumns() {
-                return this.columns.length;
+                return this.columns.length + (this.selection ? 1 : 0);
             },
             selectedCount() {
                 if (!this.selection) {

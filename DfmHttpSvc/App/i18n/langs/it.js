@@ -5,7 +5,8 @@ export default {
 
     navTree: {
         allAreas: 'Tutte le aree',
-        allVolumes: 'Tutti i volumi'
+        allVolumes: 'Tutti i volumi',
+        search: 'Cerca...'
     },
 
     alertPanel: {

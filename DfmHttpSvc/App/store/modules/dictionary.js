@@ -17,16 +17,36 @@ import {
     SET_VOLUMES,
     SET_AREAS,
     SET_DICTIONARY_INFO,
-    TOGGLE_AREA
+    TOGGLE_AREA,
+    SET_SEARCH_TEXT
 } from '@/store/mutations.type';
 
 const state = {
-    dictionary: new Dictionary()
+    dictionary: new Dictionary(),
+    searchText: ''
 };
 
 const getters = {
+    searchText() {
+        return state.searchText;
+    },
+
+    searchAreas(state) {
+        if (state.searchText) {
+            return state.dictionary.areas.filter(a => a.name.includes(state.searchText));
+        }
+        return state.dictionary.areas;
+    },
+
     areas(state) {
         return state.dictionary && state.dictionary.areas;
+    },
+
+    searchVolumes(state) {
+        if (state.searchText) {
+            return state.dictionary.volumes.filter(v => v.name.includes(state.searchText));
+        }
+        return state.dictionary.volumes;
     },
 
     volumes(state) {
@@ -148,6 +168,10 @@ const mutations = {
         if (foundArea) {
             foundArea.isExpanded = !foundArea.isExpanded;
         }
+    },
+
+    [SET_SEARCH_TEXT](state, searchText) {
+        state.searchText = searchText;
     }
 };
 
