@@ -1,25 +1,8 @@
 <template>
     <div>
-        <modal :show="showNewDocument" :title="$t('pageVolume.addDocument')" @close="showNewDocument = false" @ok="addDocument">
-            <div slot="content">
-                <div class="card card-block bg-faded p-2 mb-1">
-                    <input ref="inputFile" id="inputFile" type="file" class="form-control-file">
-                </div>
-                <div v-for="row in docRows" :key="row.field.name" class="input-row">
-                    <div class="field field-name">{{ row.field.name }}</div>
-
-                    <div v-if="row.field.isDate" class="field field-value">
-                        <datepicker v-model="row.value" />
-                    </div>
-                    <div v-else-if="row.field.isMemo" class="field field-value">
-                        <textarea v-model="row.value" class="form-control" />
-                    </div>
-                    <div v-else class="field field-value">
-                        <input v-model="row.value" class="form-control" />
-                    </div>
-                </div>
-            </div>
-        </modal>
+        <new-document :show="showNewDocument" :volume="volume" :fields="fields"
+                      @close="showNewDocument = false"
+                      @documentAdded="documentAdded"/>
 
         <h2>Volume {{ volume }}</h2>
         <alert-panel :error="error"></alert-panel>
@@ -65,11 +48,12 @@
     import delay from '@/utils/delay';
     import openLink from '@/utils/openLink';
     import Error from '@/models/errors';
-    import { Field, DocRow } from '@/models/fields';
+    import { Field } from '@/models/fields';
     import ApiService from '@/api/api.service';
     import Selection from '@/components/datatable/selection';
     import { Column, ColumnType } from '@/components/datatable/column';
-    import Modal from '@/components/Modal.vue';
+
+    import NewDocument from '@/views/NewDocument.vue';
 
     const DefaultColumns = {
         EXTENSION: new Column({
@@ -91,7 +75,7 @@
     };
 
     export default {
-        components: { Modal },
+        components: { NewDocument },
         props: {
             volume: {
                 type: String,
@@ -132,9 +116,6 @@
                     return ids.length < this.total;
                 }
                 return false;
-            },
-            docRows() {
-                return this.fields.map(f => new DocRow(f, ''));
             }
         },
         methods: {
@@ -274,12 +255,12 @@
                     });
             },
 
-            uploadDocument(files, fields = null) {
+            uploadDocument(files) {
                 if (files && files.length > 0) {
-                    ApiService.uploadDocuments(this.volume, files, fields)
+                    ApiService.uploadDocuments(this.volume, files)
                         .then(() => {
-                            this.handleQueryChange();
                             this.$notify.success(this.$t('pageVolume.documentAdded'));
+                            this.handleQueryChange();
                         })
                         .catch(e => {
                             this.error = Error.fromApiException(e);
@@ -287,33 +268,14 @@
                 }
             },
 
-            addDocument() {
-                let files = this.$refs.inputFile.files;
-
-                let fields = [];
-                this.docRows.forEach(row => {
-                    if (row.value) {
-                        let value = row.value;
-                        let field = row.field;
-                        if (field.isString || field.isDate) {
-                            value = value.replace(/'/g, "''");
-                            value = `'${value}'`;
-                        }
-                        fields.push({ name: field.name, value: value });
-                    }
-                });
-
-                this.uploadDocument(files, fields);
-
+            documentAdded() {
                 this.showNewDocument = false;
+                this.$notify.success(this.$t('pageVolume.documentAdded'));
+
+                this.handleQueryChange();
             },
 
             openAddDocument() {
-                // reset file input
-                let input = this.$refs.inputFile;
-                input.type = 'text';
-                input.type = 'file';
-
                 this.showNewDocument = true;
             }
         }
@@ -326,26 +288,5 @@
         align-items: center;
         justify-content: center;
         height: 300px;
-    }
-
-    .input-row {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center
-    }
-
-    .field {
-        padding-top: 2px;
-        padding-bottom: 2px;
-    }
-
-    .field-name {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        width: 8em;
-    }
-
-    .field-value {
-        flex-grow: 1;
     }
 </style>

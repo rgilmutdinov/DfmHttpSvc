@@ -1,7 +1,7 @@
 <template>
-    <div v-if="error && visible" class="alert alert-danger" role="alert">
+    <div ref="alert" v-if="error && visible" class="alert alert-danger" role="alert">
         <span>{{ message }}</span>
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close" @click="hide">
+        <button type="button" class="close" @click="hide">
             <span aria-hidden="true">&times;</span>
         </button>
         <div v-if="showDetails && hasDetails">
@@ -51,10 +51,15 @@
             hide() {
                 this.detailsVisible = false;
                 this.visible = false;
+            },
+            focus() {
+                this.$nextTick(() => {
+                    this.$refs.alert.scrollIntoView();
+                });
             }
         },
         watch: {
-            error: function () {
+            error() {
                 this.visible = !!this.error;
             }
         }
