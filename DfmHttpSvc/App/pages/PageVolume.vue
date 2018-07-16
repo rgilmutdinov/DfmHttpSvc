@@ -33,6 +33,9 @@
                     {{ $t('pageVolume.dateCreated') }}
                 </template>
 
+                <template slot="td_attachments" slot-scope="{ row }">
+                    <i v-if="row.hasAttachments" class="fas fa-paperclip fa-fw vcenter"></i>
+                </template>
                 <template slot="td_extension" slot-scope="{ row }">
                     <div @click.prevent="downloadDocument(row)" style="cursor: pointer">
                         <file-icon :extension="row.extension"></file-icon>
@@ -70,6 +73,12 @@
             name: 'timestamp',
             sortable: true,
             tdStyle: 'background-color: #cddcfe;'
+        }),
+        ATTACHMENTS: new Column({
+            name: 'attachments',
+            title: '',
+            sortable: false,
+            style: 'width: 2em; max-width: 2em'
         })
     };
 
@@ -146,7 +155,7 @@
 
                         this.fields.splice(0, this.fields.length, ...newFields);
 
-                        let newColumns = [DefaultColumns.EXTENSION];
+                        let newColumns = [DefaultColumns.ATTACHMENTS, DefaultColumns.EXTENSION];
                         let volColumns = this.fields.map(f => this.getColumn(f));
 
                         newColumns.push(...volColumns);
@@ -169,6 +178,7 @@
                                 let newDocs = data.documents.map(doc => {
                                     let newDoc = {
                                         extension: doc.extension,
+                                        hasAttachments: doc.hasAttachments,
                                         id: doc.compositeId,
                                         timestamp: doc.timestamp,
                                         docaddtime: doc.addTime
