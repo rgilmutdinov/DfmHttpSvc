@@ -1,6 +1,6 @@
 <template>
     <div>
-        <data-table :rows="units" :query="query" :total="total" :columns="columns">
+        <data-table :rows="units" :query="query" :total="total" :columns="columns" :searchable="true">
             <template slot="td_icon" slot-scope="{ row }">
                 <layer-icon :layers="row.iconLayers"></layer-icon>
             </template>
@@ -131,21 +131,27 @@
         },
         methods: {
             handleQueryChange() {
-                let orderedUnits;
+                let matchUnits;
                 let sortBy = this.query.sort;
                 if (sortBy) {
                     let q = this.query;
                     let order = q.order === 'asc' ? 1 : -1;
 
                     let column = this.columns.find(c => c.name === sortBy);
-                    orderedUnits = this.allUnits.slice()
+                    matchUnits = this.allUnits.slice()
                         .sort((a, b) => column.compare(a[sortBy], b[sortBy]) * order);
                 } else {
-                    orderedUnits = this.allUnits;
+                    matchUnits = this.allUnits;
                 }
 
-                this.units = orderedUnits.slice(this.query.offset, this.query.offset + this.query.limit);
-                this.total = orderedUnits.length;
+                if (this.query.search) {
+                    matchUnits = matchUnits.filter(u =>
+                        u.name.toLowerCase().includes(this.query.search.toLowerCase())
+                    );
+                }
+
+                this.units = matchUnits.slice(this.query.offset, this.query.offset + this.query.limit);
+                this.total = matchUnits.length;
             }
         }
     };

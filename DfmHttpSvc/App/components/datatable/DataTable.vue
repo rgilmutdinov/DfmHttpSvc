@@ -1,15 +1,18 @@
 <template>
     <div>
-        <div class="flex-row my-3" style="align-items: center">
-            <div>
+        <div class="header flex-row my-2">
+            <div v-if="hasToolbarSlot" class="my-1">
                 <slot name="toolbar" />
             </div>
-            <div>
+            <div v-if="searchable" class="input-search my-1">
+                <input class="form-control form-control-sm" type="text" v-model="query.search" :placeholder="$t('datatable.search')"/>
+            </div>
+            <div class="my-1">
                 <div class="input-group input-group-sm">
                     <div class="input-group-prepend">
-                        <label class="input-group-text" for="pageSizeSelect">{{ $t('datatable.rowsPerPage') }}</label>
+                        <span class="input-group-text" for="pageSizeSelect">{{ $t('datatable.rowsPerPage') }}</span>
                     </div>
-                    <select class="custom-select" id="pageSizeSelect" v-model="query.limit" @change="query.offset = 0">
+                    <select class="custom-select custom-select-sm" id="pageSizeSelect" v-model="query.limit" @change="query.offset = 0">
                         <option v-for="pageSize in pageSizeOptions" :key="pageSize" :value="pageSize">{{ pageSize }}</option>
                     </select>
                 </div>
@@ -74,7 +77,7 @@
         mixins: [props],
         components: { HeadSort, Pagination },
         created() {
-            const q = { limit: 10, offset: 0, sort: '', order: '', ...this.query };
+            const q = { limit: 10, offset: 0, sort: '', order: '', search: '', ...this.query };
             Object.keys(q).forEach(key => { this.$set(this.query, key, q[key]); });
         },
         watch: {
@@ -140,6 +143,9 @@
             totalColumns() {
                 return this.columns.length + (this.selection ? 1 : 0);
             },
+            hasToolbarSlot() {
+                return !!this.$slots['toolbar'];
+            },
             selectedCount() {
                 if (!this.selection) {
                     return 0;
@@ -174,6 +180,10 @@
         flex-wrap: wrap;
     }
 
+    .input-search {
+        flex-grow: 1;
+    }
+
     .column-title {
         display: inline-block;
         vertical-align: middle;
@@ -199,5 +209,18 @@
         text-align: center;
         vertical-align: middle;
         width: 1em;
+    }
+
+    .header > div {
+        margin-left: 5px;
+        margin-right: 5px;
+    }
+
+    .header > div:first-child {
+        margin-left: 0px;
+    }
+
+    .header > div:last-child {
+        margin-right: 0px;
     }
 </style>

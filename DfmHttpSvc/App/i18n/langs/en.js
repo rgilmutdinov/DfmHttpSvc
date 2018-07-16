@@ -17,6 +17,7 @@ export default {
     datatable: {
         rowsPerPage: 'Rows per page',
         noData: 'No data.',
+        search: 'Search...',
         showingRecords: 'Showing {start} to {end} of {total} records'
     },
 

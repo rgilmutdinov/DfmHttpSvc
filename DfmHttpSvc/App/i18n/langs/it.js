@@ -17,6 +17,7 @@ export default {
     datatable: {
         rowsPerPage: 'Elementi per pagina',
         noData: 'Nessun elemento da visualizzare.',
+        search: 'Cerca...',
         showingRecords: 'Vista da {start} a {end} di {total} elementi'
     },
 

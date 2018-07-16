@@ -23,6 +23,9 @@ export default {
         // selection, null if not applied
         selection: { type: Selection },
 
+        // is datatable searchable?
+        searchable: { type: Boolean, default: false },
+
         // classes for <table>
         tblClass: [String, Object, Array],
 
