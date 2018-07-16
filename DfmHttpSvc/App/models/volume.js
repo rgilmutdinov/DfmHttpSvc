@@ -24,4 +24,16 @@ export default class Volume extends Unit {
     get iconLayers() {
         return Icons.volume(this);
     }
+
+    matchSearch(searchText) {
+        if (!searchText) {
+            return true;
+        }
+
+        if (this.name.toLowerCase().includes(searchText.toLowerCase())) {
+            return true;
+        }
+
+        return false;
+    }
 }

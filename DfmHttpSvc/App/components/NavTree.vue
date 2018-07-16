@@ -5,7 +5,7 @@
         </form>
         <router-link tag="div" class="route-link" :to="{ name: 'areas' }">
             <span @click="toggleAreas()">
-                <toggle-icon :isExpanded="isAreasExpanded" :isVisible="areas && areas.length > 0" />
+                <toggle-icon :isExpanded="isAreasExpanded" :isVisible="searchAreas && searchAreas.length > 0" />
             </span>
             <a class="headline">
                 <layer-icon class="mr-1" :layers="areasIconLayers" />{{ $t('navTree.allAreas') }}
@@ -16,7 +16,7 @@
         </div>
         <router-link tag="div" class="route-link" :to="{ name: 'volumes' }">
             <span @click="toggleVolumes()">
-                <toggle-icon :isExpanded="isVolumesExpanded" :isVisible="volumes && volumes.length > 0" />
+                <toggle-icon :isExpanded="isVolumesExpanded" :isVisible="searchVolumes && searchVolumes.length > 0" />
             </span>
             <a class="headline">
                 <layer-icon class="mr-1" :layers="volumesIconLayers" />{{ $t('navTree.allVolumes') }}
@@ -53,17 +53,23 @@
             areasIconLayers() {
                 return Icons.areas();
             },
-            searchVolumes() {
-                return this.$store.getters.searchVolumes;
+            areas() {
+                return this.$store.getters.areas;
             },
             volumes() {
                 return this.$store.getters.volumes;
             },
             searchAreas() {
-                return this.$store.getters.searchAreas;
+                if (this.searchText) {
+                    return this.areas.filter(a => a.matchSearch(this.searchText));
+                }
+                return this.areas;
             },
-            areas() {
-                return this.$store.getters.areas;
+            searchVolumes() {
+                if (this.searchText) {
+                    return this.volumes.filter(v => v.matchSearch(this.searchText));
+                }
+                return this.volumes;
             },
             isVolumesExpanded() {
                 return this.$store.getters.isVolumesExpanded;

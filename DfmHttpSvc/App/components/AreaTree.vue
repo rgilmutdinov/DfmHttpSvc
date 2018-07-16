@@ -40,10 +40,19 @@
             level: Number
         },
         computed: {
+            searchText() {
+                return this.$store.getters.searchText;
+            },
             volumes() {
+                if (this.searchText) {
+                    return this.area.volumes.filter(v => v.matchSearch(this.searchText));
+                }
                 return this.area.volumes;
             },
             areas() {
+                if (this.searchText) {
+                    return this.area.areas.filter(a => a.matchSearch(this.searchText));
+                }
                 return this.area.areas;
             },
             isExpanded() {

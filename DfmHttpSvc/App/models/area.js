@@ -37,4 +37,32 @@ export default class Area extends Unit {
 
         return result;
     }
+
+    matchSearch(searchText) {
+        if (!searchText) {
+            return true;
+        }
+
+        if (this.name.toLowerCase().includes(searchText.toLowerCase())) {
+            return true;
+        }
+
+        if (this.areas) {
+            for (let childArea of this.areas) {
+                if (childArea.matchSearch(searchText)) {
+                    return true;
+                }
+            }
+        }
+
+        if (this.volumes) {
+            for (let volume of this.volumes) {
+                if (volume.matchSearch(searchText)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
 }
