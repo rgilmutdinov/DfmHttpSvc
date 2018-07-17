@@ -46,6 +46,7 @@
     <Compile Include="Collections\Lists.cs" />
     <Compile Include="Credential.cs" />
     <Compile Include="DatasourceProvider.cs" />
+    <Compile Include="UnixDates.cs" />
     <Compile Include="Dictionary.cs" />
     <Compile Include="DictionaryInfo.cs" />
     <Compile Include="DisposableObject.cs" />

@@ -26,6 +26,11 @@ export default {
         // is datatable searchable?
         searchable: { type: Boolean, default: false },
 
+        explicitSearch: { type: Boolean, default: false},
+
+        // show loading row?
+        showLoading: { type: Boolean, default: false },
+
         // classes for <table>
         tblClass: [String, Object, Array],
 

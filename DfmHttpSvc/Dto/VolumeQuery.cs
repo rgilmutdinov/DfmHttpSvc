@@ -24,5 +24,11 @@ namespace DfmHttpSvc.Dto
         /// </summary>
         [FromQuery(Name = "sort")]
         public string SortOrder { get; set; } = "";
+
+        /// <summary>
+        /// Search expression
+        /// </summary>
+        [FromQuery(Name = "search")]
+        public string Search { get; set; } = "";
     }
 }

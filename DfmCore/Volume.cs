@@ -230,5 +230,10 @@ namespace DfmCore
         {
             return new VolumeInfo(this._volObj.Info);
         }
+
+        public void DoSearch(string searchExpression, DateTime dateFrom, DateTime dateTo)
+        {
+            this._volObj.DoSearch(searchExpression, dateFrom, dateTo, null, -1, false);
+        }
     }
 }

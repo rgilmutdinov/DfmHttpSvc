@@ -18,7 +18,8 @@ export default {
         rowsPerPage: 'Rows per page',
         noData: 'No data.',
         search: 'Search...',
-        showingRecords: 'Showing {start} to {end} of {total} records'
+        showingRecords: 'Showing {start} to {end} of {total} records',
+        loading: 'loading...'
     },
 
     pageLogin: {

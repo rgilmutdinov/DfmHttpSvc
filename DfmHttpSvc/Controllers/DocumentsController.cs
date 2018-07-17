@@ -57,7 +57,8 @@ namespace DfmHttpSvc.Controllers
             VolumeState volumeState = new VolumeState(
                 volumeQuery.VolumeName,
                 volumeQuery.FilterQuery,
-                volumeQuery.SortOrder
+                volumeQuery.SortOrder,
+                volumeQuery.Search
             );
 
             DocumentsResult docsResult = session.GetDocuments(volumeState, start ?? 0, count ?? 50);

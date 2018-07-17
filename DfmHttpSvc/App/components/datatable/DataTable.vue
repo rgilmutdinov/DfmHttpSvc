@@ -5,7 +5,16 @@
                 <slot name="toolbar" />
             </div>
             <div v-if="searchable" class="input-search my-1">
-                <input class="form-control form-control-sm" type="text" v-model="query.search" :placeholder="$t('datatable.search')"/>
+                <div v-if="explicitSearch" class="input-group input-group-sm">
+                    <input ref="inputSearch" type="text" class="form-control" :placeholder="$t('datatable.search')"
+                           @keydown.enter="updateSearch">
+                    <div class="input-group-append">
+                        <button type="button" class="btn btn-sm btn-outline-primary" @click="updateSearch">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+                <input v-else class="form-control form-control-sm" type="text" v-model="query.search" :placeholder="$t('datatable.search')"/>
             </div>
             <div class="my-1">
                 <div class="input-group input-group-sm">
@@ -38,22 +47,29 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(row, index) in rows" :key="index">
-                        <td v-if="selection" class="select-col">
-                            <span @click="toggleSelect(row)" class="select-cell">
-                                <i v-show="isSelected(row)" class="far fa-check-square" />
-                                <i v-show="!isSelected(row)" class="far fa-square" />
-                            </span>
-                        </td>
-                        <td v-for="col in columns" :key="col.name" :class="computeTdClass(col)" :style="computeTdStyle(col)">
-                            <slot :name="'td_' + col.name" :row="row" :column="col">
-                                <span class="cell-text text-nowrap" data-toggle="tooltip" :title="row[col.name]">{{ row[col.name] }}</span>
-                            </slot>
+                    <tr v-if="showLoading">
+                        <td :colspan="totalColumns" class="text-center text-muted">
+                            <i class="fas fa-spinner fa-pulse fa-fw"></i>&nbsp;{{ $t('datatable.loading') }}
                         </td>
                     </tr>
-                    <tr v-show="rows.length == 0">
-                        <td :colspan="totalColumns" class="text-center text-muted">{{ $t('datatable.noData') }}</td>
-                    </tr>
+                    <template v-else>
+                        <tr v-for="(row, index) in rows" :key="index">
+                            <td v-if="selection" class="select-col">
+                                <span @click="toggleSelect(row)" class="select-cell">
+                                    <i v-show="isSelected(row)" class="far fa-check-square" />
+                                    <i v-show="!isSelected(row)" class="far fa-square" />
+                                </span>
+                            </td>
+                            <td v-for="col in columns" :key="col.name" :class="computeTdClass(col)" :style="computeTdStyle(col)">
+                                <slot :name="'td_' + col.name" :row="row" :column="col">
+                                    <span class="cell-text text-nowrap" data-toggle="tooltip" :title="row[col.name]">{{ row[col.name] }}</span>
+                                </slot>
+                            </td>
+                        </tr>
+                        <tr v-show="rows.length == 0">
+                            <td :colspan="totalColumns" class="text-center text-muted">{{ $t('datatable.noData') }}</td>
+                        </tr>
+                    </template>
                 </tbody>
             </table>
         </div>
@@ -79,9 +95,6 @@
         created() {
             const q = { limit: 10, offset: 0, sort: '', order: '', search: '', ...this.query };
             Object.keys(q).forEach(key => { this.$set(this.query, key, q[key]); });
-        },
-        watch: {
-            immediate: true
         },
         methods: {
             toggleSelect(row) {
@@ -125,6 +138,10 @@
                     return this.selection.isSelected(row.id);
                 }
                 return false;
+            },
+            updateSearch() {
+                let expression = this.$refs.inputSearch.value;
+                Object.assign(this.query, { offset: 0, search: expression });
             },
             computeThStyle(col) {
                 return mergeStyles(col.style, col.thStyle);

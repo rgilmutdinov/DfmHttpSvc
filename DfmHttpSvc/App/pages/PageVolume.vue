@@ -6,11 +6,10 @@
 
         <h2>Volume {{ volume }}</h2>
         <alert-panel :error="error"></alert-panel>
-        <div v-show="loading" class="loading-box p-3">
-            <i class="fas fa-spinner fa-pulse fa-2x fa-fw" style="color: lightslategray;"></i>
-        </div>
-        <div v-show="!loading && showTable">
-            <data-table :rows="documents" :query="query" :total="total" :columns="columns" :selection="selection" :loading="loading">
+
+        <div>
+            <data-table :rows="documents" :query="query" :total="total" :columns="columns" :selection="selection" :loading="loading"
+                        :searchable="true" :showLoading="loading" :explicitSearch="true">
                 <div slot="toolbar" class="btn-group" role="group">
                     <file-input class="btn btn-sm btn-outline-primary" @input="uploadDocument" :title="$t('pageVolume.upload')">
                         <i class="fas fa-upload fa-fw" />
@@ -34,10 +33,10 @@
                 </template>
 
                 <template slot="td_attachments" slot-scope="{ row }">
-                    <i v-if="row.hasAttachments" class="fas fa-paperclip fa-fw vcenter"></i>
+                    <i v-if="row.hasAttachments" class="fas fa-paperclip fa-fw vcenter cursor-pointer"></i>
                 </template>
                 <template slot="td_extension" slot-scope="{ row }">
-                    <div @click.prevent="downloadDocument(row)" style="cursor: pointer">
+                    <div @click.prevent="downloadDocument(row)" class="cursor-pointer">
                         <file-icon :extension="row.extension"></file-icon>
                     </div>
                 </template>
@@ -98,8 +97,7 @@
                 columns: [],
                 fields: [],
                 selection: new Selection(),
-                showTable: false,
-                loading: false,
+                loading: true,
                 error: null,
                 showNewDocument: false
             };
@@ -107,7 +105,7 @@
         watch: {
             query: {
                 handler() {
-                    this.handleQueryChange();
+                    this.loadVolume();
                 },
                 deep: true
             }
@@ -144,7 +142,7 @@
                 });
             },
 
-            handleQueryChange() {
+            loadVolume() {
                 let delayId = this.showLoading();
 
                 // get volume info
@@ -164,39 +162,42 @@
                             newColumns.push(DefaultColumns.ADDTIME);
                         }
 
-                        let sort = '';
-                        if (this.query.sort) {
-                            sort = this.query.sort + ' ' + this.query.order;
-                        }
+                        this.columns.splice(0, this.columns.length, ...newColumns);
+                        this.fetchDocuments(delayId);
+                    })
+                    .catch((e) => {
+                        this.error = Error.fromApiException(e);
+                        this.hideLoading(delayId);
+                    });
+            },
 
-                        // query documents page
-                        ApiService.fetchDocuments(this.volume, this.query.offset, this.query.limit, sort)
-                            .then(({ data }) => {
-                                this.columns.splice(0, this.columns.length, ...newColumns);
+            fetchDocuments(delayId) {
+                let sort = '';
+                if (this.query.sort) {
+                    sort = this.query.sort + ' ' + this.query.order;
+                }
 
-                                this.total = data.totalDocuments;
-                                let newDocs = data.documents.map(doc => {
-                                    let newDoc = {
-                                        extension: doc.extension,
-                                        hasAttachments: doc.hasAttachments,
-                                        id: doc.compositeId,
-                                        timestamp: doc.timestamp,
-                                        docaddtime: doc.addTime
-                                    };
+                // query documents page
+                ApiService.fetchDocuments(this.volume, this.query.offset, this.query.limit, sort, this.query.search)
+                    .then(({ data }) => {
+                        this.total = data.totalDocuments;
+                        let newDocs = data.documents.map(doc => {
+                            let newDoc = {
+                                extension: doc.extension,
+                                hasAttachments: doc.hasAttachments,
+                                id: doc.compositeId,
+                                timestamp: doc.timestamp,
+                                docaddtime: doc.addTime
+                            };
 
-                                    for (let i = 0; i < doc.fields.length; i++) {
-                                        newDoc[doc.fields[i].name] = doc.fields[i].value;
-                                    }
-                                    return newDoc;
-                                });
+                            for (let i = 0; i < doc.fields.length; i++) {
+                                newDoc[doc.fields[i].name] = doc.fields[i].value;
+                            }
+                            return newDoc;
+                        });
 
-                                this.documents.splice(0, this.documents.length, ...newDocs);
-                                this.hideLoading(delayId);
-                            })
-                            .catch((e) => {
-                                this.error = Error.fromApiException(e);
-                                this.hideLoading(delayId);
-                            });
+                        this.documents.splice(0, this.documents.length, ...newDocs);
+                        this.hideLoading(delayId);
                     })
                     .catch((e) => {
                         this.error = Error.fromApiException(e);
@@ -206,13 +207,12 @@
 
             showLoading() {
                 // wait a bit before showing loading indicator
-                return delay(() => { this.loading = true; }, 200);
+                return delay(() => { this.loading = true; }, 300);
             },
 
             hideLoading(delayId) {
                 clearTimeout(delayId);
                 this.loading = false;
-                this.showTable = true;
             },
 
             documentLink(document) {
@@ -257,7 +257,7 @@
 
                 ApiService.deleteDocuments(this.volume, this.selection.ids, this.selection.exclude)
                     .then(() => {
-                        this.handleQueryChange();
+                        this.loadVolume();
                     })
                     .catch(e => {
                         this.error = Error.fromApiException(e);
@@ -269,7 +269,7 @@
                     ApiService.uploadDocuments(this.volume, files)
                         .then(() => {
                             this.$notify.success(this.$t('pageVolume.documentAdded'));
-                            this.handleQueryChange();
+                            this.loadVolume();
                         })
                         .catch(e => {
                             this.error = Error.fromApiException(e);
@@ -281,7 +281,7 @@
                 this.showNewDocument = false;
                 this.$notify.success(this.$t('pageVolume.documentAdded'));
 
-                this.handleQueryChange();
+                this.loadVolume();
             },
 
             openAddDocument() {

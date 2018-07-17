@@ -33,7 +33,7 @@ const ApiService = {
         return Vue.axios.get(`/api/volumes/${volumeName}`);
     },
 
-    fetchDocuments(volumeName, start, count, sort) {
+    fetchDocuments(volumeName, start, count, sort, search) {
         volumeName = encodeURIComponent(volumeName);
 
         let params = {
@@ -43,6 +43,10 @@ const ApiService = {
 
         if (sort) {
             params.sort = sort.toUpperCase();
+        }
+
+        if (search) {
+            params.search = search;
         }
 
         return Vue.axios.get(`/api/volumes/${volumeName}/documents`, { params });

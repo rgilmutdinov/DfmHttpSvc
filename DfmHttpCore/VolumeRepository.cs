@@ -1,4 +1,5 @@
 ﻿using DfmCore;
+using DfmCore.Extensions;
 using DfmHttpCore.Collections;
 using DfmHttpCore.Entities;
 
@@ -25,6 +26,10 @@ namespace DfmHttpCore
                 if (this._volumesCache.TryGetValue(volState, out volume))
                 {
                     volume.Reopen();
+                    if (!volState.Search.IsNullOrEmpty())
+                    {
+                        volume.DoSearch(volState.Search, UnixDates.Min, UnixDates.Max);
+                    }
 
                     return volume;
                 }
@@ -34,6 +39,11 @@ namespace DfmHttpCore
                     volState.FilterQuery,
                     volState.SortOrder
                 );
+
+                if (!volState.Search.IsNullOrEmpty())
+                {
+                    volume.DoSearch(volState.Search, UnixDates.Min, UnixDates.Max);
+                }
 
                 this._volumesCache.Set(volState, volume);
             }
