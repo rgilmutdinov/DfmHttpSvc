@@ -1,35 +1,37 @@
 <template>
-    <div class="m-0">
-        <form class="form-search py-3 mb-3">
+    <div class="nav-container m-0">
+        <form class="form-search pt-1 pb-2">
             <input class="form-control" v-model="searchText" :placeholder="$t('navTree.search')"/>
         </form>
-        <router-link tag="div" class="route-link" :to="{ name: 'areas' }">
-            <span @click="toggleAreas()">
-                <toggle-icon :isExpanded="isAreasExpanded" :isVisible="searchAreas && searchAreas.length > 0" />
-            </span>
-            <a class="headline">
-                <layer-icon class="mr-1" :layers="areasIconLayers" />{{ $t('navTree.allAreas') }}
-            </a>
-        </router-link>
-        <div v-show="isAreasExpanded" v-for="area in searchAreas" :key="area.path">
-            <area-tree :area="area" :key="area.path" :level="1"></area-tree>
-        </div>
-        <router-link tag="div" class="route-link" :to="{ name: 'volumes' }">
-            <span @click="toggleVolumes()">
-                <toggle-icon :isExpanded="isVolumesExpanded" :isVisible="searchVolumes && searchVolumes.length > 0" />
-            </span>
-            <a class="headline">
-                <layer-icon class="mr-1" :layers="volumesIconLayers" />{{ $t('navTree.allVolumes') }}
-            </a>
-        </router-link>
-        <div class="headline" v-show="isVolumesExpanded" v-for="volume in searchVolumes" :key="volume.name">
-            <router-link tag="div" class="route-link" :to="volume.route">
-                <toggle-icon :isVisible="false" />
-                <a class="headline offset">
-                    <layer-icon :layers="volume.iconLayers" />
-                    <span data-toggle="tooltip" :title="volume.name">{{ volume.name }}</span>
+        <div class="nav-tree py-2 px-1">
+            <router-link tag="div" class="route-link" :to="{ name: 'areas' }">
+                <span @click="toggleAreas()">
+                    <toggle-icon :isExpanded="isAreasExpanded" :isVisible="searchAreas && searchAreas.length > 0" />
+                </span>
+                <a class="headline">
+                    <layer-icon class="mr-1" :layers="areasIconLayers" />{{ $t('navTree.allAreas') }}
                 </a>
             </router-link>
+            <div v-show="isAreasExpanded" v-for="area in searchAreas" :key="area.path">
+                <area-tree :area="area" :key="area.path" :level="1"></area-tree>
+            </div>
+            <router-link tag="div" class="route-link" :to="{ name: 'volumes' }">
+                <span @click="toggleVolumes()">
+                    <toggle-icon :isExpanded="isVolumesExpanded" :isVisible="searchVolumes && searchVolumes.length > 0" />
+                </span>
+                <a class="headline">
+                    <layer-icon class="mr-1" :layers="volumesIconLayers" />{{ $t('navTree.allVolumes') }}
+                </a>
+            </router-link>
+            <div class="headline" v-show="isVolumesExpanded" v-for="volume in searchVolumes" :key="volume.name">
+                <router-link tag="div" class="route-link" :to="volume.route">
+                    <toggle-icon :isVisible="false" />
+                    <a class="headline offset">
+                        <layer-icon :layers="volume.iconLayers" />
+                        <span data-toggle="tooltip" :title="volume.name">{{ volume.name }}</span>
+                    </a>
+                </router-link>
+            </div>
         </div>
     </div>
 </template>
@@ -97,6 +99,15 @@
     };
 </script>
 <style scoped>
+    .nav-container {
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+    .nav-tree {
+        overflow-y: auto;
+    }
     .router-link-exact-active {
         background-color: gainsboro;
     }

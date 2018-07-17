@@ -24,7 +24,7 @@
             };
         },
         methods: {
-            toggle: function () {
+            toggle() {
                 this.expand = !this.expand;
             }
         }

@@ -46,7 +46,7 @@
                 },
                 deep: true
             },
-            allUnits: function() {
+            allUnits() {
                 this.handleQueryChange();
             }
         },

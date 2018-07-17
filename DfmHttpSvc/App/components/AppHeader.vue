@@ -51,7 +51,7 @@
             currentUser() {
                 return this.$store.getters.currentUser;
             },
-            language: function () {
+            language() {
                 return this.$i18n.locale;
             }
         },

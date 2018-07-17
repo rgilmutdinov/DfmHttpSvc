@@ -64,7 +64,7 @@
                 size: 0
             };
         },
-        mounted: function () {
+        mounted() {
             this.size = this.sizeLeft;
         },
         methods: {
@@ -109,8 +109,12 @@
 
 <style scoped>
     .split-container {
-        flex-grow: 1;
         position: relative;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        width: 100%;
     }
 
     .splitter {
