@@ -64,5 +64,10 @@ export default {
         addDocument: 'Aggiungi un nuovo documento',
         confirmAdd: 'Aggiungi',
         cancelAdd: 'Annulla'
+    },
+
+    attachments: {
+        ok: 'OK',
+        title: 'Allegati'
     }
 };

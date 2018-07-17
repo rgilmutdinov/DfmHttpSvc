@@ -101,6 +101,12 @@ const ApiService = {
             formData,
             { headers: { 'Content-Type': 'multipart/form-data' } }
         );
+    },
+
+    fetchAttachments(volumeName, docId) {
+        volumeName = encodeURIComponent(volumeName);
+
+        return Vue.axios.get(`/api/volumes/${volumeName}/documents/${docId}/attachments`);
     }
 };
 

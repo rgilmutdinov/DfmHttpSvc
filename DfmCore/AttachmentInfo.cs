@@ -4,10 +4,10 @@ namespace DfmCore
 {
     public class AttachmentInfo
     {
-        public string   AttachmentName { get; set; }
-        public string   AuthorUserName { get; set; }
-        public string   Extension      { get; set; }
-        public DateTime CreationDate   { get; set; }
-        public int      SizeInBytes    { get; set; }
+        public string   Name         { get; set; }
+        public string   Author       { get; set; }
+        public string   Extension    { get; set; }
+        public DateTime CreationDate { get; set; }
+        public int      SizeInBytes  { get; set; }
     }
 }

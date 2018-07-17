@@ -64,5 +64,10 @@ export default {
         addDocument: 'Add new document',
         confirmAdd: 'Add',
         cancelAdd: 'Cancel'
+    },
+
+    attachments: {
+        ok: 'OK',
+        title: 'Attachments'
     }
 };

@@ -4,6 +4,9 @@
                       @close="showNewDocument = false"
                       @documentAdded="documentAdded"/>
 
+        <attachments :show="showAttachments" :volume="volume" :documentId="currentDocId"
+                     @close="showAttachments = false"></attachments>
+
         <h2>Volume {{ volume }}</h2>
         <alert-panel :error="error"></alert-panel>
 
@@ -31,9 +34,12 @@
                 <template slot="th_docaddtime" slot-scope="{ row }">
                     {{ $t('pageVolume.dateCreated') }}
                 </template>
+                <template slot="th_attachments" slot-scope="{ row }">
+                    <i class="fas fa-paperclip fa-fw" style="color: lightslategrey"></i>
+                </template>
 
                 <template slot="td_attachments" slot-scope="{ row }">
-                    <i v-if="row.hasAttachments" class="fas fa-paperclip fa-fw vcenter cursor-pointer"></i>
+                    <i v-if="row.hasAttachments" class="fas fa-paperclip fa-fw vcenter cursor-pointer" @click.prevent="openAttachments(row)"></i>
                 </template>
                 <template slot="td_extension" slot-scope="{ row }">
                     <div @click.prevent="downloadDocument(row)" class="cursor-pointer">
@@ -55,6 +61,7 @@
     import { Column, ColumnType } from '@/components/datatable/column';
 
     import NewDocument from '@/views/NewDocument.vue';
+    import Attachments from '@/views/Attachments.vue';
 
     const DefaultColumns = {
         EXTENSION: new Column({
@@ -77,12 +84,12 @@
             name: 'attachments',
             title: '',
             sortable: false,
-            style: 'width: 2em; max-width: 2em'
+            style: 'width: 2em; max-width: 2em; min-width: 2em'
         })
     };
 
     export default {
-        components: { NewDocument },
+        components: { NewDocument, Attachments },
         props: {
             volume: {
                 type: String,
@@ -99,7 +106,9 @@
                 selection: new Selection(),
                 loading: true,
                 error: null,
-                showNewDocument: false
+                currentDocId: '',
+                showNewDocument: false,
+                showAttachments: false
             };
         },
         watch: {
@@ -286,6 +295,11 @@
 
             openAddDocument() {
                 this.showNewDocument = true;
+            },
+
+            openAttachments(doc) {
+                this.currentDocId = doc.id;
+                this.showAttachments = true;
             }
         }
     };

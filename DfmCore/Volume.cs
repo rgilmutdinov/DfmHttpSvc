@@ -218,8 +218,8 @@ namespace DfmCore
 
             return new AttachmentInfo
             {
-                AttachmentName = attachmentName,
-                AuthorUserName = authorUsername,
+                Name = attachmentName,
+                Author = authorUsername,
                 Extension      = extension,
                 CreationDate   = creationDate,
                 SizeInBytes    = sizeInBytes
