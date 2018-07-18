@@ -68,6 +68,10 @@ export default {
 
     attachments: {
         ok: 'OK',
-        title: 'Attachments'
+        title: 'Attachments',
+        name: 'Name',
+        size: 'Size',
+        author: 'Author',
+        creationDate: 'Creation date'
     }
 };

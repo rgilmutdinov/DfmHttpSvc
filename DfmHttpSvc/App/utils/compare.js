@@ -1,4 +1,8 @@
-﻿export function compareStrings(a, b, ignoreCase = false) {
+export function compareStrings(a, b, ignoreCase = false) {
+    if (!a && !b) return 0;
+    if (!a) return -1;
+    if (!b) return 1;
+
     if (ignoreCase) {
         let ua = a.toUpperCase();
         let ub = b.toUpperCase();
@@ -8,12 +12,9 @@
 }
 
 export function compareNumbers(a, b) {
-    if (!a) {
-        return -1;
-    }
-    if (!b) {
-        return 1;
-    }
+    if (!a && !b) return 0;
+    if (!a) return -1;
+    if (!b) return 1;
 
     let na = Number(a);
     let nb = Number(b);

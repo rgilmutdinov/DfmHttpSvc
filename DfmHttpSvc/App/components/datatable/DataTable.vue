@@ -73,11 +73,11 @@
                 </tbody>
             </table>
         </div>
-        <div v-if="pagination && total > rows.length" class="flex-row my-2" style="align-items: center">
+        <div class="flex-row my-2">
             <div class="pr-2 text-nowrap py-2">
                 {{ $t('datatable.showingRecords', {start: query.offset + 1, end: query.offset + rows.length, total: total}) }}
             </div>
-            <pagination :total="total" :query="query"></pagination>
+            <pagination v-if="pagination && total > rows.length" :total="total" :query="query"></pagination>
         </div>
     </div>
 </template>

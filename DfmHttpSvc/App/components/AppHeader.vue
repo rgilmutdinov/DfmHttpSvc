@@ -1,5 +1,5 @@
 <template>
-    <nav class="navbar sticky-top navbar-expand-sm navbar-light bg-light">
+    <nav class="navbar sticky-top navbar-expand-sm navbar-light bg-light flex-shrink-0">
         <a class="navbar-brand cursor-pointer" v-show="isAuthenticated" @click="toggleSidebar">
             <i class="fa fa-bars" />
         </a>
