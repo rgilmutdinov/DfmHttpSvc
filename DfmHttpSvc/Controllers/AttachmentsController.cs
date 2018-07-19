@@ -8,6 +8,7 @@ using DfmHttpCore;
 using DfmHttpCore.Entities;
 using DfmHttpSvc.Attributes;
 using DfmHttpSvc.Controllers.Base;
+using DfmHttpSvc.Dto;
 using DfmHttpSvc.Properties;
 using DfmHttpSvc.Sessions;
 using Microsoft.AspNetCore.Authorization;
@@ -54,6 +55,128 @@ namespace DfmHttpSvc.Controllers
         }
 
         /// <summary>
+        /// Retrieves an archive that contains attachments of a document with the specified id
+        /// </summary>
+        /// <param name="volume">Volume name</param>
+        /// <param name="documentId">Document id</param>
+        /// <param name="selection">Attachments selection</param>
+        /// <returns>The requested archive file</returns>
+        /// <response code="200">Returns the requested archive</response>
+        /// <response code="404">Volume with requested name not found</response>
+        /// <response code="401">Unauthorized access</response>
+        /// <response code="500">Internal server error</response>
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(500)]
+        [Authorize]
+        [HttpPost("download")]
+        [DeleteFile]
+        public IActionResult GetAttachmentsArchive(string volume, ulong documentId, [FromBody] AttachmentsSelection selection)
+        {
+            if (!TryGetSession(User, out Session session))
+            {
+                return Unauthorized();
+            }
+
+            DocumentAttachmentsSelection attSelection = new DocumentAttachmentsSelection(
+                documentId,
+                selection.AttachmentsNames,
+                selection.ExcludeMode
+            );
+
+            if (!attSelection.IsValid())
+            {
+                return BadRequest("Selection parameter is not valid");
+            }
+
+            return GetSelection(session, volume, attSelection);
+        }
+
+        /// <summary>
+        /// Generates temporary token to download an attachment
+        /// </summary>
+        /// <param name="volume">Volume name</param>
+        /// <param name="documentId">Document id</param>
+        /// <param name="attachmentName">Attachment name</param>
+        /// <returns>Temporary token</returns>
+        /// <response code="200">Returns temporary token for download an attachment</response>
+        /// <response code="401">Unauthorized access</response>
+        /// <response code="500">Internal server error</response>
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(500)]
+        [Authorize]
+        [HttpGet("attachment/{attachmentName}/token")]
+        public IActionResult GetAttachmentToken(string volume, ulong documentId, string attachmentName)
+        {
+            if (!TryGetSession(User, out Session _))
+            {
+                return Unauthorized();
+            }
+
+            DocIdentity identity = new DocIdentity(documentId);
+
+            string sessionId = GetSessionId(User);
+            DocumentAttachmentsSelection selection = new DocumentAttachmentsSelection(identity.CompositeId, attachmentName);
+
+            DownloadTicket ticket = SessionManager
+                .CreateDownloadTicket(sessionId, volume, selection);
+
+            return Ok(new { ticket.Token });
+        }
+
+        /// <summary>
+        /// Generates temporary token to download an archive with a bunch of document's attachments
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     {
+        ///         "excludeMode": "true",
+        ///         "attachmentNames": ['attachment1', 'attachment2']
+        ///     }
+        ///
+        /// </remarks>
+        /// <param name="volume">Volume name</param>
+        /// <param name="documentId">Document id</param>
+        /// <param name="selection">Attachments selection</param>
+        /// <returns>Temporary token</returns>
+        /// <response code="200">Returns temporary token for download an archive with a bunch of documents</response>
+        /// <response code="401">Unauthorized access</response>
+        /// <response code="500">Internal server error</response>
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(500)]
+        [Authorize]
+        [HttpPost("download/token")]
+        public IActionResult GetAttachmentsArchiveToken(string volume, ulong documentId, [FromBody] AttachmentsSelection selection)
+        {
+            if (!TryGetSession(User, out Session _))
+            {
+                return Unauthorized();
+            }
+
+            DocumentAttachmentsSelection attSelection = new DocumentAttachmentsSelection(
+                documentId,
+                selection.AttachmentsNames,
+                selection.ExcludeMode
+            );
+            
+            if (!attSelection.IsValid())
+            {
+                return BadRequest("Selection parameter is not valid");
+            }
+
+            string sessionId = GetSessionId(User);
+            DownloadTicket ticket = SessionManager.CreateDownloadTicket(sessionId, volume, attSelection);
+
+            return Ok(new { ticket.Token });
+        }
+
+        /// <summary>
         /// Retrieves the attachment (file) from document with the specified id
         /// </summary>
         /// <param name="volume">Volume name</param>
@@ -69,7 +192,7 @@ namespace DfmHttpSvc.Controllers
         [ProducesResponseType(401)]
         [ProducesResponseType(500)]
         [Authorize]
-        [HttpGet("{attachmentName}", Name = Routes.GetAttachment)]
+        [HttpGet("attachment/{attachmentName}", Name = Routes.GetAttachment)]
         [DeleteFile]
         public IActionResult GetAttachment(string volume, ulong documentId, string attachmentName)
         {
@@ -102,7 +225,7 @@ namespace DfmHttpSvc.Controllers
         [ProducesResponseType(500)]
         [Consumes("multipart/form-data")]
         [Authorize]
-        [HttpPost]
+        [HttpPost("attachment")]
         public async Task<IActionResult> AddAttachment(string volume, ulong documentId, IFormFile file, [FromForm] string attachmentName = "")
         {
             if (!TryGetSession(User, out Session session))
@@ -170,7 +293,7 @@ namespace DfmHttpSvc.Controllers
         [ProducesResponseType(401)]
         [ProducesResponseType(500)]
         [Authorize]
-        [HttpDelete("{attachmentName}")]
+        [HttpDelete("attachment/{attachmentName}")]
         public IActionResult DeleteAttachment(string volume, ulong documentId, string attachmentName)
         {
             if (!TryGetSession(User, out Session session))
@@ -181,6 +304,53 @@ namespace DfmHttpSvc.Controllers
             DocIdentity identity = new DocIdentity(documentId);
             session.DeleteAttachment(volume, identity, attachmentName);
             return NoContent();
+        }
+
+        /// <summary>
+        /// Deletes a list of attachments of a document specified with selection
+        /// </summary>
+        /// <param name="volume">Volume name</param>
+        /// <param name="documentId">Document id</param>
+        /// <param name="selection">Attachments selection</param>
+        /// <response code="204">Attachments were deleted successfully</response>
+        /// <response code="404">Volume with requested name not found</response>
+        /// <response code="403">Documents selection is null or empty</response>
+        /// <response code="401">Unauthorized access</response>
+        /// <response code="500">Internal server error</response>
+        [ProducesResponseType(200)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(403)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        [Authorize]
+        [HttpDelete]
+        public IActionResult DeleteAttachments(string volume, ulong documentId, [FromBody] AttachmentsSelection selection)
+        {
+            if (!TryGetSession(User, out Session session))
+            {
+                return Unauthorized();
+            }
+
+            if (!session.IsVolumeExist(volume))
+            {
+                return NotFound(Resources.ErrorVolumeNotFound);
+            }
+
+            DocumentAttachmentsSelection attSelection = new DocumentAttachmentsSelection(
+                documentId,
+                selection.AttachmentsNames,
+                selection.ExcludeMode
+            );
+
+            if (!attSelection.IsValid())
+            {
+                return BadRequest("Selection parameter is not valid");
+            }
+
+            session.DeleteSelection(volume, attSelection);
+
+            return Ok();
         }
     }
 }

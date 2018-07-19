@@ -140,27 +140,16 @@ namespace DfmHttpCore
             }
         }
 
-        public string ExtractDocumentsToArchive(string volumeName, DocumentsSelection selection)
+        public void DeleteSelection(string volumeName, Selection selection)
         {
-            using (Volume volume = Dictionary.OpenVolume(volumeName, selection.GetFilterQuery()))
-            {
-                string archiveFile = RandomPath.GetFile("zip");
-                using (TempDirectory tempFolder = new TempDirectory())
-                {
-                    volume.ExtractDocumentsToFolder(tempFolder.Location);
-                    ZipFile.CreateFromDirectory(tempFolder.Location, archiveFile);
-
-                    return archiveFile;
-                }
-            }
+            selection.Delete(this, volumeName);
         }
 
-        public void DeleteDocuments(string volumeName, DocumentsSelection selection)
+        public void DeleteAttachments(string volumeName, DocIdentity identity, List<string> attachmentNames)
         {
-            using (Volume volume = Dictionary.OpenVolume(volumeName, selection.GetFilterQuery()))
+            using (Volume volume = Dictionary.OpenVolume(volumeName, identity.DocUidFilter))
             {
-                volume.DeleteAllDocuments();
-                volume.Reopen();
+                attachmentNames.ForEach(attachmentName => volume.DeleteAttachment(attachmentName));
             }
         }
 

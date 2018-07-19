@@ -23,6 +23,9 @@ export default {
         // selection, null if not applied
         selection: { type: Selection },
 
+        // key to identify rows
+        rowKey: { type: String, default: 'id' },
+
         // is datatable searchable?
         searchable: { type: Boolean, default: false },
 

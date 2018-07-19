@@ -6,8 +6,26 @@
         <div slot="content">
             <alert-panel ref="alert" :error="error"></alert-panel>
 
-            <data-table :rows="pageAttachments" :query="query" :total="total" :columns="columns" :searchable="true"
+            <data-table :rows="pageAttachments" :query="query" :total="total" :columns="columns" :searchable="true" :rowKey="'name'"
+                        :selection="selection"
                         :pageSizeOptions="[10, 20, 50]">
+                <div slot="toolbar" class="btn-group" role="group">
+                    <file-input class="btn btn-sm btn-outline-primary" @input="uploadAttachment" :title="$t('attachments.upload')">
+                        <i class="fas fa-upload fa-fw" />
+                    </file-input>
+                    <div :class="['btn btn-sm btn-outline-primary', {disabled: !isAnySelected}]" @click="downloadSelection" :title="$t('attachments.download')">
+                        <i class="fas fa-download fa-fw" />
+                    </div>
+                    <div :class="['btn btn-sm btn-outline-primary', {disabled: !isAnySelected}]" @click="deleteSelection" :title="$t('attachments.delete')">
+                        <i class="fas fa-trash fa-fw" />
+                    </div>
+                </div>
+
+                <template slot="td_extension" slot-scope="{ row }">
+                    <div @click.prevent="downloadAttachment(row)" class="cursor-pointer">
+                        <file-icon :extension="row.extension"></file-icon>
+                    </div>
+                </template>
             </data-table>
         </div>
     </modal>
@@ -15,8 +33,10 @@
 
 <script>
     import ApiService from '@/api/api.service';
+    import openLink from '@/utils/openLink';
     import Error from '@/models/errors';
     import Attachment from '@/models/attachment';
+    import Selection from '@/components/datatable/selection';
     import { Column, ColumnType } from '@/components/datatable/column';
 
     export default {
@@ -39,6 +59,7 @@
                 allAttachments: [],
                 pageAttachments: [],
                 total: 0,
+                selection: new Selection(),
                 query: {},
                 error: null
             };
@@ -46,6 +67,12 @@
         computed: {
             columns() {
                 return [
+                    {
+                        title: '',
+                        name: 'extension',
+                        sortable: false,
+                        style: 'width: 2em; max-width: 2em'
+                    },
                     {
                         title: this.$t('attachments.name'),
                         name: 'name',
@@ -65,9 +92,22 @@
                     {
                         title: this.$t('attachments.creationDate'),
                         name: 'creationDate',
+                        tdStyle: 'background-color: #cddcfe;',
                         sortable: true
                     }
                 ].map(o => new Column(o));
+            },
+            isAnySelected() {
+                if (this.selection) {
+
+                    let { exclude, keys } = this.selection;
+                    if (!exclude) {
+                        return keys.length > 0;
+                    }
+
+                    return keys.length < this.total;
+                }
+                return false;
             }
         },
         watch: {
@@ -127,6 +167,50 @@
                 this.total = matchAttachments.length;
                 let page = matchAttachments.slice(this.query.offset, this.query.offset + this.query.limit);
                 this.pageAttachments.splice(0, this.pageAttachments.length, ...page);
+            },
+            uploadAttachment() {
+
+            },
+            downloadSelection() {
+                if (!this.isAnySelected) {
+                    return;
+                }
+
+                ApiService.fetchAttachmentsArchiveDownloadToken(this.volume, this.documentId, this.selection.keys, this.selection.exclude)
+                    .then(({ data }) => {
+                        let link = ApiService.downloadLink(data.token);
+                        setTimeout(function () {
+                            openLink(link);
+                        }, 0);
+                    })
+                    .catch(e => {
+                        this.error = Error.fromApiException(e);
+                    });
+            },
+            deleteSelection() {
+                if (!this.isAnySelected) {
+                    return;
+                }
+
+                ApiService.deleteAttachments(this.volume, this.documentId, this.selection.keys, this.selection.exclude)
+                    .then(() => {
+                        this.fetchAttachments();
+                    })
+                    .catch(e => {
+                        this.error = Error.fromApiException(e);
+                    });
+            },
+            downloadAttachment(attachment) {
+                ApiService.fetchAttachmentDownloadToken(this.volume, this.documentId, attachment.name)
+                    .then(({ data }) => {
+                        let link = ApiService.downloadLink(data.token);
+                        setTimeout(function () {
+                            openLink(link);
+                        }, 0);
+                    })
+                    .catch(e => {
+                        this.error = Error.fromApiException(e);
+                    });
             }
         },
         mounted() {

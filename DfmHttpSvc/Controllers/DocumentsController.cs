@@ -187,36 +187,6 @@ namespace DfmHttpSvc.Controllers
         }
 
         /// <summary>
-        /// Downloads document by temporary token
-        /// </summary>
-        /// <param name="token">temporary token</param>
-        /// <returns>A document (file), associated with the temporary token</returns>
-        /// <response code="200">A document (file)</response>
-        /// <response code="404">Token is not valid or expired</response>
-        /// <response code="401">Unauthorized access</response>
-        /// <response code="500">Internal server error</response>
-        [ProducesResponseType(200)]
-        [ProducesResponseType(404)]
-        [ProducesResponseType(401)]
-        [ProducesResponseType(500)]
-        [HttpGet("/api/downloads/{token}")]
-        public IActionResult DownloadByToken(string token)
-        {
-            DownloadTicket ticket = SessionManager.GetDownloadTicket(token);
-            if (ticket == null)
-            {
-                return NotFound("Token is not valid or expired.");
-            }
-
-            if (!TryGetSession(ticket.SessionId, out Session session))
-            {
-                return Unauthorized();
-            }
-
-            return GetDocumentsSelection(session, ticket.VolumeName, ticket.Selection);
-        }
-
-        /// <summary>
         /// Retrieves a document (file) with the specified id
         /// </summary>
         /// <param name="volume">Volume name</param>
@@ -240,7 +210,7 @@ namespace DfmHttpSvc.Controllers
                 return Unauthorized();
             }
 
-            return GetDocumentFile(session, volume, documentId);
+            return GetSelection(session, volume, new DocumentsSelection(documentId));
         }
 
         /// <summary>
@@ -258,7 +228,7 @@ namespace DfmHttpSvc.Controllers
         [ProducesResponseType(401)]
         [ProducesResponseType(500)]
         [Authorize]
-        [HttpGet("/api/volume/{volume}/download")]
+        [HttpPost("/api/volume/{volume}/download")]
         [DeleteFile]
         public IActionResult GetDocumentsArchive(string volume, [FromBody] DocumentsSelection selection)
         {
@@ -267,7 +237,7 @@ namespace DfmHttpSvc.Controllers
                 return Unauthorized();
             }
 
-            return GetDocumentsArchive(session, volume, selection);
+            return GetSelection(session, volume, selection);
         }
 
         /// <summary>
@@ -379,7 +349,6 @@ namespace DfmHttpSvc.Controllers
         /// </summary>
         /// <param name="volume">Volume name</param>
         /// <param name="selection">Documents selection</param>
-        /// <returns>The list of deleted documents</returns>
         /// <response code="204">Documents were deleted successfully</response>
         /// <response code="404">Volume with requested name not found</response>
         /// <response code="403">Documents selection is null or empty</response>
@@ -410,45 +379,9 @@ namespace DfmHttpSvc.Controllers
                 return BadRequest();
             }
 
-            session.DeleteDocuments(volume, selection);
+            session.DeleteSelection(volume, selection);
+
             return Ok();
-        }
-
-        private PhysicalFileResult GetDocumentsSelection(Session session, string volume, DocumentsSelection selection)
-        {
-            if (selection.DocumentIds.Count == 1)
-            {
-                // download single file
-                return GetDocumentFile(session, volume, selection.DocumentIds.First());
-            }
-
-            return GetDocumentsArchive(session, volume, selection);
-        }
-
-        private PhysicalFileResult GetDocumentFile(Session session, string volume, ulong documentId)
-        {
-            DocIdentity identity = new DocIdentity(documentId);
-
-            string filePath = session.ExtractDocument(volume, identity);
-            string contentType = MimeMapping.GetMimeMapping(filePath);
-
-            ContentDisposition cd = new ContentDisposition
-            {
-                FileName = Path.GetFileName(filePath),
-                Inline   = true // true = browser to try to show the file inline; false = prompt the user for downloading
-            };
-
-            Response.Headers.Add("Content-Disposition", cd.ToString());
-
-            return PhysicalFile(filePath, contentType);
-        }
-
-        private PhysicalFileResult GetDocumentsArchive(Session session, string volume, DocumentsSelection selection)
-        {
-            string archiveFile = session.ExtractDocumentsToArchive(volume, selection);
-            string contentType = MimeMapping.GetMimeMapping(archiveFile);
-
-            return PhysicalFile(archiveFile, contentType);
         }
     }
 }

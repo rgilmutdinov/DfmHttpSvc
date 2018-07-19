@@ -2,9 +2,12 @@ using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Linq;
+using System.Net.Mime;
 using System.Security.Claims;
+using System.Web;
 using DfmCore.Extensions;
 using DfmHttpCore;
+using DfmHttpCore.Entities;
 using DfmHttpSvc.Sessions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -58,6 +61,22 @@ namespace DfmHttpSvc.Controllers.Base
             }
 
             return Path.Combine(session.TempDirectory, fileName + extension);
+        }
+
+        protected PhysicalFileResult GetSelection(Session session, string volume, Selection selection)
+        {
+            string filePath = selection.GetSelectionFile(session, volume);
+            string contentType = MimeMapping.GetMimeMapping(filePath);
+
+            ContentDisposition cd = new ContentDisposition
+            {
+                FileName = Path.GetFileName(filePath),
+                Inline = true // true = browser to try to show the file inline; false = prompt the user for downloading
+            };
+
+            Response.Headers.Add("Content-Disposition", cd.ToString());
+
+            return PhysicalFile(filePath, contentType);
         }
     }
 }

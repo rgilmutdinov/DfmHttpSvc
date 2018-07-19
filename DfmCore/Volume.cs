@@ -136,6 +136,20 @@ namespace DfmCore
             }
         }
 
+        public void ExtractAttachmentsToFolder(string directory, List<string> attachmentsNames)
+        {
+            if (this._volObj.DocumentCount > 0)
+            {
+                this._volObj.MoveFirst();
+                foreach (string name in attachmentsNames)
+                {
+                    this._volObj.GetAttachmentInfo(name, out string _, out string extension, out DateTime _, out int _);
+                    string tempFile = RandomPath.GetFile(directory, extension);
+                    this._volObj.ExtractAttachmentToFile(name, tempFile);
+                }
+            }
+        }
+
         public void ExtractAttachmentToFile(string attachmentName, string filePath)
         {
             this._volObj.ExtractAttachmentToFile(attachmentName, filePath);

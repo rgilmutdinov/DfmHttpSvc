@@ -57,6 +57,12 @@ const ApiService = {
         return Vue.axios.get(`/api/volumes/${volumeName}/documents/${docId}/token`);
     },
 
+    fetchAttachmentDownloadToken(volumeName, docId, attachmentName) {
+        volumeName = encodeURIComponent(volumeName);
+        attachmentName = encodeURIComponent(attachmentName);
+        return Vue.axios.get(`/api/volumes/${volumeName}/documents/${docId}/attachments/attachment/${attachmentName}/token`);
+    },
+
     fetchArchiveDownloadToken(volumeName, docIds, excludeMode = false) {
         volumeName = encodeURIComponent(volumeName);
 
@@ -66,6 +72,17 @@ const ApiService = {
         };
 
         return Vue.axios.post(`/api/volumes/${volumeName}/token`, params);
+    },
+
+    fetchAttachmentsArchiveDownloadToken(volumeName, docId, attachmentNames = [], excludeMode = false) {
+        volumeName = encodeURIComponent(volumeName);
+
+        let params = {
+            attachmentsNames: attachmentNames,
+            excludeMode: excludeMode
+        };
+
+        return Vue.axios.post(`/api/volumes/${volumeName}/documents/${docId}/attachments/download/token`, params);
     },
 
     downloadLink(token) {
@@ -81,6 +98,19 @@ const ApiService = {
         };
 
         return Vue.axios.delete(`/api/volumes/${volumeName}/documents`, { data: params });
+    },
+
+    deleteAttachments(volumeName, docId, attachmentNames = [], excludeMode = false) {
+        volumeName = encodeURIComponent(volumeName);
+
+        let encodedNames = attachmentNames.map(attName => encodeURIComponent(attName));
+
+        let params = {
+            attachmentsNames: encodedNames,
+            excludeMode: excludeMode
+        };
+
+        return Vue.axios.delete(`/api/volumes/${volumeName}/documents/${docId}/attachments`, { data: params });
     },
 
     uploadDocuments(volumeName, files, fields) {

@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO.Compression;
 using System.Linq;
 using DfmCore;
 using DfmCore.Collections;
 using DfmCore.Extensions;
+using DfmCore.Tools;
 
 namespace DfmHttpCore.Entities
 {
-    public class DocumentsSelection
+    public class DocumentsSelection : Selection
     {
         public DocumentsSelection() : this(new List<ulong>())
         {
@@ -23,10 +25,56 @@ namespace DfmHttpCore.Entities
             ExcludeMode = excludeMode;
         }
 
-        public bool        ExcludeMode { get; set; }
         public List<ulong> DocumentIds { get; }
 
-        public string GetFilterQuery()
+        public override bool IsValid()
+        {
+            if (!ExcludeMode)
+            {
+                return DocumentIds.Count > 0;
+            }
+
+            return true;
+        }
+
+        public override void Delete(Session session, string volumeName)
+        {
+            using (Volume volume = session.Dictionary.OpenVolume(volumeName, GetFilterQuery()))
+            {
+                volume.DeleteAllDocuments();
+                volume.Reopen();
+            }
+        }
+
+        public override string GetSelectionFile(Session session, string volumeName)
+        {
+            if (DocumentIds.Count == 1)
+            {
+                // download single file
+                DocIdentity identity = new DocIdentity(DocumentIds.First());
+
+                return session.ExtractDocument(volumeName, identity);
+            }
+
+            return ExtractToArchive(session, volumeName);
+        }
+
+        private string ExtractToArchive(Session session, string volumeName)
+        {
+            using (Volume volume = session.Dictionary.OpenVolume(volumeName, GetFilterQuery()))
+            {
+                string archiveFile = RandomPath.GetFile("zip");
+                using (TempDirectory tempFolder = new TempDirectory())
+                {
+                    volume.ExtractDocumentsToFolder(tempFolder.Location);
+                    ZipFile.CreateFromDirectory(tempFolder.Location, archiveFile);
+
+                    return archiveFile;
+                }
+            }
+        }
+
+        private string GetFilterQuery()
         {
             if (this.DocumentIds.Count == 0 && !ExcludeMode)
             {
@@ -43,16 +91,6 @@ namespace DfmHttpCore.Entities
             }
 
             return filter;
-        }
-
-        public bool IsValid()
-        {
-            if (!ExcludeMode)
-            {
-                return DocumentIds.Count > 0;
-            }
-
-            return true;
         }
     }
 }

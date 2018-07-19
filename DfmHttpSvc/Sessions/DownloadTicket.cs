@@ -5,7 +5,7 @@ namespace DfmHttpSvc.Sessions
 {
     public class DownloadTicket
     {
-        public DownloadTicket(string sessionId, string volumeName, DocumentsSelection selection)
+        public DownloadTicket(string sessionId, string volumeName, Selection selection)
         {
             SessionId  = sessionId;
             VolumeName = volumeName;
@@ -17,7 +17,7 @@ namespace DfmHttpSvc.Sessions
         public string SessionId  { get; }
         public string VolumeName { get; }
 
-        public DocumentsSelection Selection { get; }
+        public Selection Selection { get; }
 
         public string Token { get; }
     }

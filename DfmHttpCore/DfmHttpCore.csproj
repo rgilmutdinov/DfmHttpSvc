@@ -47,11 +47,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Collections\LruCache.cs" />
+    <Compile Include="Entities\DocumentAttachmentsSelection.cs" />
     <Compile Include="Entities\DocIdentity.cs" />
     <Compile Include="Entities\AreaItem.cs" />
     <Compile Include="Entities\Document.cs" />
     <Compile Include="Entities\DocumentsResult.cs" />
     <Compile Include="Entities\DocumentsSelection.cs" />
+    <Compile Include="Entities\Selection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Session.cs" />
     <Compile Include="Utils\Strings.cs" />

@@ -72,6 +72,9 @@ export default {
         name: 'Name',
         size: 'Size',
         author: 'Author',
-        creationDate: 'Creation date'
+        creationDate: 'Creation date',
+        upload: 'Upload',
+        delete: 'Delete',
+        download: 'Download'
     }
 };

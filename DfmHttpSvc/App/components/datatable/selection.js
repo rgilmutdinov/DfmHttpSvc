@@ -4,43 +4,43 @@
 
         // list of identifiers for selected rows in normal mode
         // list of identifiers for non selected rows in exclude mode
-        this.ids = [];
+        this.keys = [];
     }
 
-    isSelected(id) {
-        let selected = this.ids.includes(id);
+    isSelected(key) {
+        let selected = this.keys.includes(key);
         return this.exclude ? !selected : selected;
     }
 
-    select(id) {
-        if (!this.isSelected(id)) {
+    select(key) {
+        if (!this.isSelected(key)) {
             if (this.exclude) {
-                let idx = this.ids.indexOf(id);
-                this.ids.splice(idx, 1);
+                let idx = this.keys.indexOf(key);
+                this.keys.splice(idx, 1);
             } else {
-                this.ids.push(id);
+                this.keys.push(key);
             }
         }
     }
 
-    unselect(id) {
-        if (this.isSelected(id)) {
+    unselect(key) {
+        if (this.isSelected(key)) {
             if (this.exclude) {
-                this.ids.push(id);
+                this.keys.push(key);
             } else {
-                let idx = this.ids.indexOf(id);
-                this.ids.splice(idx, 1);
+                let idx = this.keys.indexOf(key);
+                this.keys.splice(idx, 1);
             }
         }
     }
 
     selectAll() {
         this.exclude = true;
-        this.ids = [];
+        this.keys = [];
     }
 
     unselectAll() {
         this.exclude = false;
-        this.ids = [];
+        this.keys = [];
     }
 }

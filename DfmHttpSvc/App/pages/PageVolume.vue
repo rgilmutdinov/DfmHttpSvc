@@ -123,12 +123,12 @@
             isAnySelected() {
                 if (this.selection) {
 
-                    let { exclude, ids } = this.selection;
+                    let { exclude, keys } = this.selection;
                     if (!exclude) {
-                        return ids.length > 0;
+                        return keys.length > 0;
                     }
 
-                    return ids.length < this.total;
+                    return keys.length < this.total;
                 }
                 return false;
             }
@@ -224,11 +224,6 @@
                 this.loading = false;
             },
 
-            documentLink(document) {
-                let token = this.$store.getters.accessToken;
-                return ApiService.documentLink(this.volume, document.id, token);
-            },
-
             downloadDocument(doc) {
                 ApiService.fetchDownloadToken(this.volume, doc.id)
                     .then(({ data }) => {
@@ -247,7 +242,7 @@
                     return;
                 }
 
-                ApiService.fetchArchiveDownloadToken(this.volume, this.selection.ids, this.selection.exclude)
+                ApiService.fetchArchiveDownloadToken(this.volume, this.selection.keys, this.selection.exclude)
                     .then(({ data }) => {
                         let link = ApiService.downloadLink(data.token);
                         setTimeout(function () {
@@ -264,7 +259,7 @@
                     return;
                 }
 
-                ApiService.deleteDocuments(this.volume, this.selection.ids, this.selection.exclude)
+                ApiService.deleteDocuments(this.volume, this.selection.keys, this.selection.exclude)
                     .then(() => {
                         this.loadVolume();
                     })

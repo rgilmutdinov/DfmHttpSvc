@@ -99,7 +99,7 @@ namespace DfmHttpSvc.Sessions
             }
         }
 
-        public DownloadTicket CreateDownloadTicket(string sessionId, string volumeName, DocumentsSelection selection)
+        public DownloadTicket CreateDownloadTicket(string sessionId, string volumeName, Selection selection)
         {
             DownloadTicket ticket = new DownloadTicket(sessionId, volumeName, selection);
 

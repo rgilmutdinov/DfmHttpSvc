@@ -98,14 +98,14 @@
         },
         methods: {
             toggleSelect(row) {
-                if (!this.selection || !row.id) {
+                if (!this.selection || !row[this.rowKey]) {
                     return;
                 }
 
-                if (this.selection.isSelected(row.id)) {
-                    this.selection.unselect(row.id);
+                if (this.selection.isSelected(row[this.rowKey])) {
+                    this.selection.unselect(row[this.rowKey]);
                 } else {
-                    this.selection.select(row.id);
+                    this.selection.select(row[this.rowKey]);
                 }
             },
             toggleSelectAll() {
@@ -134,8 +134,8 @@
                 this.selection.unselectAll();
             },
             isSelected(row) {
-                if (row.id) {
-                    return this.selection.isSelected(row.id);
+                if (row[this.rowKey]) {
+                    return this.selection.isSelected(row[this.rowKey]);
                 }
                 return false;
             },
@@ -169,8 +169,8 @@
                 }
 
                 let total = this.rows.length;
-                let idsLen = this.selection.ids.length;
-                let selected = this.selection.exclude ? total - idsLen : idsLen;
+                let keysLen = this.selection.keys.length;
+                let selected = this.selection.exclude ? total - keysLen : keysLen;
 
                 return selected > 0 ? selected : 0;
             },

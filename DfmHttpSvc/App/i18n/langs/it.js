@@ -72,6 +72,9 @@ export default {
         name: 'Nome',
         size: 'Size',
         author: 'Author',
-        creationDate: 'Data creazione'
+        creationDate: 'Data creazione',
+        upload: "Caricare l'allegato",
+        delete: 'Elimina',
+        download: 'Scarica'
     }
 };
