@@ -6,11 +6,11 @@
         <div slot="content">
             <alert-panel ref="alert" :error="error"></alert-panel>
 
-            <data-table :rows="pageAttachments" :query="query" :total="total" :columns="columns" :searchable="true" :rowKey="'name'"
+            <data-table :rows="pageAttachments" :query="query" :total="total" :columns="columns" searchable :rowKey="'name'"
                         :selection="selection"
                         :pageSizeOptions="[10, 20, 50]">
                 <div slot="toolbar" class="btn-group" role="group">
-                    <file-input class="btn btn-sm btn-outline-primary" @input="uploadAttachment" :title="$t('attachments.upload')">
+                    <file-input class="btn btn-sm btn-outline-primary" @input="uploadAttachment" multiple :title="$t('attachments.upload')">
                         <i class="fas fa-upload fa-fw" />
                     </file-input>
                     <div :class="['btn btn-sm btn-outline-primary', {disabled: !isAnySelected}]" @click="downloadSelection" :title="$t('attachments.download')">
@@ -168,8 +168,17 @@
                 let page = matchAttachments.slice(this.query.offset, this.query.offset + this.query.limit);
                 this.pageAttachments.splice(0, this.pageAttachments.length, ...page);
             },
-            uploadAttachment() {
-
+            uploadAttachment(files) {
+                if (files && files.length > 0) {
+                    ApiService.uploadAttachments(this.volume, this.documentId, files)
+                        .then(() => {
+                            this.$notify.success(this.$t('attachments.attachmentAdded'));
+                            this.fetchAttachments();
+                        })
+                        .catch(e => {
+                            this.error = Error.fromApiException(e);
+                        });
+                }
             },
             downloadSelection() {
                 if (!this.isAnySelected) {

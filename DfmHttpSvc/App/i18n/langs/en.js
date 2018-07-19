@@ -57,7 +57,8 @@ export default {
         addDocument: 'Add new document',
         dateModified: 'Date and time',
         dateCreated: 'Date/time of archivation',
-        documentAdded: 'Document successfully added'
+        documentAdded: 'Document successfully added',
+        documentsDeleted: 'Documents successfully deleted'
     },
 
     newDocument: {
@@ -75,6 +76,7 @@ export default {
         creationDate: 'Creation date',
         upload: 'Upload',
         delete: 'Delete',
-        download: 'Download'
+        download: 'Download',
+        attachmentAdded: 'Attachment successfully added'
     }
 };

@@ -57,7 +57,8 @@ export default {
         addDocument: 'Aggiungi un nuovo documento',
         dateModified: 'Data e ora',
         dateCreated: 'Data/ora archiviazione',
-        documentAdded: 'Documento aggiunto con successo'
+        documentAdded: 'Documento aggiunto con successo',
+        documentsDeleted: 'Documenti cancellati con successo'
     },
 
     newDocument: {
@@ -75,6 +76,7 @@ export default {
         creationDate: 'Data creazione',
         upload: "Caricare l'allegato",
         delete: 'Elimina',
-        download: 'Scarica'
+        download: 'Scarica',
+        attachmentAdded: 'Allegato aggiunto con successo'
     }
 };

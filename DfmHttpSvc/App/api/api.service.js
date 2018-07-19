@@ -103,10 +103,8 @@ const ApiService = {
     deleteAttachments(volumeName, docId, attachmentNames = [], excludeMode = false) {
         volumeName = encodeURIComponent(volumeName);
 
-        let encodedNames = attachmentNames.map(attName => encodeURIComponent(attName));
-
         let params = {
-            attachmentsNames: encodedNames,
+            attachmentsNames: attachmentNames,
             excludeMode: excludeMode
         };
 
@@ -128,6 +126,21 @@ const ApiService = {
 
         return Vue.axios.post(
             `/api/volumes/${volumeName}/documents`,
+            formData,
+            { headers: { 'Content-Type': 'multipart/form-data' } }
+        );
+    },
+
+    uploadAttachments(volumeName, documentId, files) {
+        volumeName = encodeURIComponent(volumeName);
+
+        let formData = new FormData();
+        for (let i = 0; i < files.length; i++) {
+            formData.append('file', files[i]);
+        }
+
+        return Vue.axios.post(
+            `/api/volumes/${volumeName}/documents/${documentId}/attachments`,
             formData,
             { headers: { 'Content-Type': 'multipart/form-data' } }
         );

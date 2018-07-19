@@ -225,8 +225,8 @@ namespace DfmHttpSvc.Controllers
         [ProducesResponseType(500)]
         [Consumes("multipart/form-data")]
         [Authorize]
-        [HttpPost("attachment")]
-        public async Task<IActionResult> AddAttachment(string volume, ulong documentId, IFormFile file, [FromForm] string attachmentName = "")
+        [HttpPost]
+        public async Task<IActionResult> AddAttachment(string volume, ulong documentId, [FromForm] IFormFile file, [FromForm] string attachmentName = "")
         {
             if (!TryGetSession(User, out Session session))
             {

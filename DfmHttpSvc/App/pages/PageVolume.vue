@@ -12,7 +12,7 @@
 
         <div>
             <data-table :rows="documents" :query="query" :total="total" :columns="columns" :selection="selection" :loading="loading"
-                        :searchable="true" :showLoading="loading" :explicitSearch="true">
+                        searchable :showLoading="loading" explicitSearch>
                 <div slot="toolbar" class="btn-group" role="group">
                     <file-input class="btn btn-sm btn-outline-primary" @input="uploadDocument" :title="$t('pageVolume.upload')">
                         <i class="fas fa-upload fa-fw" />
@@ -261,6 +261,7 @@
 
                 ApiService.deleteDocuments(this.volume, this.selection.keys, this.selection.exclude)
                     .then(() => {
+                        this.$notify.success(this.$t('pageVolume.documentsDeleted'));
                         this.loadVolume();
                     })
                     .catch(e => {
