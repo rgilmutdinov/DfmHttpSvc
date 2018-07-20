@@ -48,7 +48,7 @@ namespace DfmHttpCore.Entities
 
         public override string GetFile(Session session, string volumeName)
         {
-            if (DocumentIds.Count == 1)
+            if (DocumentIds.Count == 1 && !ExcludeMode && !ArchiveIfSingle)
             {
                 // download single file
                 DocIdentity identity = new DocIdentity(DocumentIds.First());

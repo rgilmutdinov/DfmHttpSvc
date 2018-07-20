@@ -74,11 +74,11 @@ const ApiService = {
         return Vue.axios.post(`/api/volumes/${volumeName}/token`, params);
     },
 
-    fetchAttachmentsArchiveDownloadToken(volumeName, docId, attachmentNames = [], excludeMode = false) {
+    fetchAttachmentsArchiveDownloadToken(volumeName, docId, attachments = [], excludeMode = false) {
         volumeName = encodeURIComponent(volumeName);
 
         let params = {
-            attachmentsNames: attachmentNames,
+            attachments: attachments,
             excludeMode: excludeMode
         };
 
@@ -100,11 +100,11 @@ const ApiService = {
         return Vue.axios.delete(`/api/volumes/${volumeName}/documents`, { data: params });
     },
 
-    deleteAttachments(volumeName, docId, attachmentNames = [], excludeMode = false) {
+    deleteAttachments(volumeName, docId, attachments = [], excludeMode = false) {
         volumeName = encodeURIComponent(volumeName);
 
         let params = {
-            attachmentsNames: attachmentNames,
+            attachments: attachments,
             excludeMode: excludeMode
         };
 

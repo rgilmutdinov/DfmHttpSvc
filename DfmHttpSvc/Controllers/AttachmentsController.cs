@@ -79,11 +79,10 @@ namespace DfmHttpSvc.Controllers
                 return Unauthorized();
             }
 
-            AttachmentsSelection selection = new AttachmentsSelection(
-                documentId,
-                range.Attachments,
-                range.ExcludeMode
-            );
+            AttachmentsSelection selection = new AttachmentsSelection(documentId, range.Attachments, range.ExcludeMode)
+            {
+                ArchiveIfSingle = true
+            };
 
             if (!selection.IsValid())
             {
@@ -159,11 +158,10 @@ namespace DfmHttpSvc.Controllers
                 return Unauthorized();
             }
 
-            AttachmentsSelection selection = new AttachmentsSelection(
-                documentId,
-                range.Attachments,
-                range.ExcludeMode
-            );
+            AttachmentsSelection selection = new AttachmentsSelection(documentId, range.Attachments, range.ExcludeMode)
+            {
+                ArchiveIfSingle = true
+            };
             
             if (!selection.IsValid())
             {

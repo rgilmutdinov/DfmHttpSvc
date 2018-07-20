@@ -172,7 +172,10 @@ namespace DfmHttpSvc.Controllers
                 return Unauthorized();
             }
 
-            DocumentsSelection selection = new DocumentsSelection(range.DocumentIds, range.ExcludeMode);
+            DocumentsSelection selection = new DocumentsSelection(range.DocumentIds, range.ExcludeMode)
+            {
+                ArchiveIfSingle = true
+            };
 
             if (!selection.IsValid())
             {
@@ -236,7 +239,10 @@ namespace DfmHttpSvc.Controllers
                 return Unauthorized();
             }
 
-            DocumentsSelection selection = new DocumentsSelection(range.DocumentIds, range.ExcludeMode);
+            DocumentsSelection selection = new DocumentsSelection(range.DocumentIds, range.ExcludeMode)
+            {
+                ArchiveIfSingle = true
+            };
 
             return GetSelection(session, volume, selection);
         }

@@ -56,7 +56,7 @@ namespace DfmHttpCore.Entities
         public override string GetFile(Session session, string volumeName)
         {
             DocIdentity identity = new DocIdentity(DocumentId);
-            if (Attachments.Count == 1)
+            if (Attachments.Count == 1 && !ExcludeMode && !ArchiveIfSingle)
             {
                 return session.ExtractAttachment(volumeName, identity, Attachments.First());
             }

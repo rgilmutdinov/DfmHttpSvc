@@ -3,6 +3,7 @@
     public abstract class Selection
     {
         public bool ExcludeMode { get; set; }
+        public bool ArchiveIfSingle { get; set; } = false;
 
         public virtual bool IsValid() => true;
 
