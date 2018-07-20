@@ -44,10 +44,6 @@
         components: {
             AreaTree
         },
-        data() {
-            return {
-            };
-        },
         computed: {
             volumesIconLayers() {
                 return Icons.volumes();

@@ -15,10 +15,6 @@
         props: {
             value: String
         },
-        data() {
-            return {
-            };
-        },
         computed: {
             language() {
                 let locale = (this.$i18n.locale).toLowerCase();

@@ -29,6 +29,7 @@ export default {
         // is datatable searchable?
         searchable: { type: Boolean, default: false },
 
+        // execute search explicitly by pressing search button
         explicitSearch: { type: Boolean, default: false},
 
         // show loading row?

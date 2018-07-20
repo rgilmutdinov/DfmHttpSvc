@@ -212,6 +212,7 @@
                 ApiService.deleteAttachments(this.volume, this.documentId, this.selection.keys, this.selection.exclude)
                     .then(() => {
                         this.error = null;
+                        this.$notify.success(this.$t('attachments.attachmentDeleted'));
                     })
                     .catch(e => {
                         this.error = Error.fromApiException(e);

@@ -12,9 +12,11 @@
             column: { type: Column, required: true },
             query: { type: Object, required: true }
         },
-        data: () => ({
-            order: ''
-        }),
+        data() {
+            return {
+                order: ''
+            };
+        },
         computed: {
             iconClass() {
                 const { order } = this;

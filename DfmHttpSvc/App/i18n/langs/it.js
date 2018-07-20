@@ -77,6 +77,7 @@ export default {
         upload: "Caricare l'allegato",
         delete: 'Elimina',
         download: 'Scarica',
-        attachmentAdded: 'Allegato aggiunto con successo'
+        attachmentAdded: 'Allegato aggiunto con successo',
+        attachmentDeleted: 'Allegato eliminato con successo'
     }
 };

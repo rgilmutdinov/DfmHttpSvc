@@ -77,6 +77,7 @@ export default {
         upload: 'Upload',
         delete: 'Delete',
         download: 'Download',
-        attachmentAdded: 'Attachment successfully added'
+        attachmentAdded: 'Attachment successfully added',
+        attachmentDeleted: 'Attachment successfully deleted'
     }
 };

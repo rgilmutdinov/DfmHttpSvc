@@ -56,10 +56,6 @@
     import Icons from '@/common/icons';
 
     export default {
-        data() {
-            return {
-            };
-        },
         computed: {
             username() {
                 return this.$store.getters.dictionaryInfo.userName || '';

@@ -12,10 +12,6 @@
                 default: false
             }
         },
-        data() {
-            return {
-            };
-        },
         methods: {
             change(e) {
                 this.$emit('input', e.target.files);
