@@ -1,4 +1,5 @@
 ﻿using DfmHttpCore;
+using DfmHttpSvc.Attributes;
 using DfmHttpSvc.Controllers.Base;
 using DfmHttpSvc.Sessions;
 using Microsoft.AspNetCore.Mvc;
@@ -26,6 +27,7 @@ namespace DfmHttpSvc.Controllers
         [ProducesResponseType(401)]
         [ProducesResponseType(500)]
         [HttpGet("{token}")]
+        [DeleteFile]
         public IActionResult DownloadByToken(string token)
         {
             DownloadTicket ticket = SessionManager.GetDownloadTicket(token);

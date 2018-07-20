@@ -61,7 +61,7 @@
     <Compile Include="ServiceFields.cs" />
     <Compile Include="Tools\TempDirectory.cs" />
     <Compile Include="Tools\TempFile.cs" />
-    <Compile Include="Tools\RandomPath.cs" />
+    <Compile Include="Tools\PathUtility.cs" />
     <Compile Include="Volume.cs" />
     <Compile Include="VolumeFilter.cs" />
     <Compile Include="VolumeInfo.cs" />

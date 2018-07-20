@@ -6,7 +6,7 @@ namespace DfmCore.Tools
     {
         public TempDirectory(string parentDirectory = null)
         {
-            Location = RandomPath.GetDirectory(parentDirectory);
+            Location = PathUtility.GetRandomDirectory(parentDirectory);
             Directory.CreateDirectory(Location);
         }
 

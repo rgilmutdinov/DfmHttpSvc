@@ -63,7 +63,7 @@ namespace DfmHttpCore.Entities
         {
             using (Volume volume = session.Dictionary.OpenVolume(volumeName, GetFilterQuery()))
             {
-                string archiveFile = RandomPath.GetFile("zip");
+                string archiveFile = PathUtility.GetRandomFile("zip");
                 using (TempDirectory tempFolder = new TempDirectory())
                 {
                     volume.ExtractDocumentsToFolder(tempFolder.Location);

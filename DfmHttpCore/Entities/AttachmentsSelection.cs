@@ -72,7 +72,7 @@ namespace DfmHttpCore.Entities
                     ? volume.GetAttachments().Except(Attachments).ToList()
                     : new List<string>(Attachments);
 
-                string archiveFile = RandomPath.GetFile("zip");
+                string archiveFile = PathUtility.GetRandomFile("zip");
                 using (TempDirectory tempFolder = new TempDirectory())
                 {
                     volume.ExtractAttachmentsToFolder(tempFolder.Location, extractAttachments);

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Runtime.InteropServices;
 using DfmCore.Extensions;
 using DfmCore.Tools;
@@ -129,7 +130,7 @@ namespace DfmCore
                 this._volObj.MoveFirst();
                 while (!this._volObj.IsEOF)
                 {
-                    string tempFile = RandomPath.GetFile(directory, this._volObj.DocumentExtension);
+                    string tempFile = PathUtility.GetRandomFile(directory, this._volObj.DocumentExtension);
                     this._volObj.ExtractDocumentToFile(tempFile);
                     this._volObj.MoveNext();
                 }
@@ -144,8 +145,26 @@ namespace DfmCore
                 foreach (string name in attachmentsNames)
                 {
                     this._volObj.GetAttachmentInfo(name, out string _, out string extension, out DateTime _, out int _);
-                    string tempFile = RandomPath.GetFile(directory, extension);
-                    this._volObj.ExtractAttachmentToFile(name, tempFile);
+                    string filename = PathUtility.GetValidFilename(name);
+
+                    if (string.IsNullOrEmpty(extension))
+                    {
+                        extension = ".tmp";
+                    }
+                    else if (!extension.StartsWith("."))
+                    {
+                        extension = "." + extension;
+                    }
+
+                    filename += extension;
+                    string filepath = Path.Combine(directory, filename);
+                    
+                    while (File.Exists(filepath))
+                    {
+                        filepath = PathUtility.GetNextFileName(filepath);
+                    }
+
+                    this._volObj.ExtractAttachmentToFile(name, filepath);
                 }
             }
         }

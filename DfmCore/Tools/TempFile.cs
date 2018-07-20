@@ -11,7 +11,7 @@ namespace DfmCore.Tools
 
         public TempFile(string directory, string extension)
         {
-            Location = RandomPath.GetFile(directory, extension);
+            Location = PathUtility.GetRandomFile(directory, extension);
         }
 
         public TempFile(string extension) : this(Path.GetTempPath(), extension)
