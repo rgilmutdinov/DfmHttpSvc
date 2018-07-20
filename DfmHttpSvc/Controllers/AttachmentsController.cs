@@ -59,7 +59,7 @@ namespace DfmHttpSvc.Controllers
         /// </summary>
         /// <param name="volume">Volume name</param>
         /// <param name="documentId">Document id</param>
-        /// <param name="selection">Attachments selection</param>
+        /// <param name="range">Attachments selection</param>
         /// <returns>The requested archive file</returns>
         /// <response code="200">Returns the requested archive</response>
         /// <response code="404">Volume with requested name not found</response>
@@ -72,25 +72,25 @@ namespace DfmHttpSvc.Controllers
         [Authorize]
         [HttpPost("download")]
         [DeleteFile]
-        public IActionResult GetAttachmentsArchive(string volume, ulong documentId, [FromBody] AttachmentsSelection selection)
+        public IActionResult GetAttachmentsArchive(string volume, ulong documentId, [FromBody] AttachmentsRange range)
         {
             if (!TryGetSession(User, out Session session))
             {
                 return Unauthorized();
             }
 
-            DocumentAttachmentsSelection attSelection = new DocumentAttachmentsSelection(
+            AttachmentsSelection selection = new AttachmentsSelection(
                 documentId,
-                selection.AttachmentsNames,
-                selection.ExcludeMode
+                range.Attachments,
+                range.ExcludeMode
             );
 
-            if (!attSelection.IsValid())
+            if (!selection.IsValid())
             {
                 return BadRequest("Selection parameter is not valid");
             }
 
-            return GetSelection(session, volume, attSelection);
+            return GetSelection(session, volume, selection);
         }
 
         /// <summary>
@@ -119,7 +119,7 @@ namespace DfmHttpSvc.Controllers
             DocIdentity identity = new DocIdentity(documentId);
 
             string sessionId = GetSessionId(User);
-            DocumentAttachmentsSelection selection = new DocumentAttachmentsSelection(identity.CompositeId, attachmentName);
+            AttachmentsSelection selection = new AttachmentsSelection(identity.CompositeId, attachmentName);
 
             DownloadTicket ticket = SessionManager
                 .CreateDownloadTicket(sessionId, volume, selection);
@@ -141,7 +141,7 @@ namespace DfmHttpSvc.Controllers
         /// </remarks>
         /// <param name="volume">Volume name</param>
         /// <param name="documentId">Document id</param>
-        /// <param name="selection">Attachments selection</param>
+        /// <param name="range">Attachments selection</param>
         /// <returns>Temporary token</returns>
         /// <response code="200">Returns temporary token for download an archive with a bunch of documents</response>
         /// <response code="401">Unauthorized access</response>
@@ -152,26 +152,26 @@ namespace DfmHttpSvc.Controllers
         [ProducesResponseType(500)]
         [Authorize]
         [HttpPost("download/token")]
-        public IActionResult GetAttachmentsArchiveToken(string volume, ulong documentId, [FromBody] AttachmentsSelection selection)
+        public IActionResult GetAttachmentsArchiveToken(string volume, ulong documentId, [FromBody] AttachmentsRange range)
         {
             if (!TryGetSession(User, out Session _))
             {
                 return Unauthorized();
             }
 
-            DocumentAttachmentsSelection attSelection = new DocumentAttachmentsSelection(
+            AttachmentsSelection selection = new AttachmentsSelection(
                 documentId,
-                selection.AttachmentsNames,
-                selection.ExcludeMode
+                range.Attachments,
+                range.ExcludeMode
             );
             
-            if (!attSelection.IsValid())
+            if (!selection.IsValid())
             {
                 return BadRequest("Selection parameter is not valid");
             }
 
             string sessionId = GetSessionId(User);
-            DownloadTicket ticket = SessionManager.CreateDownloadTicket(sessionId, volume, attSelection);
+            DownloadTicket ticket = SessionManager.CreateDownloadTicket(sessionId, volume, selection);
 
             return Ok(new { ticket.Token });
         }
@@ -311,7 +311,7 @@ namespace DfmHttpSvc.Controllers
         /// </summary>
         /// <param name="volume">Volume name</param>
         /// <param name="documentId">Document id</param>
-        /// <param name="selection">Attachments selection</param>
+        /// <param name="range">Attachments selection</param>
         /// <response code="204">Attachments were deleted successfully</response>
         /// <response code="404">Volume with requested name not found</response>
         /// <response code="403">Documents selection is null or empty</response>
@@ -325,7 +325,7 @@ namespace DfmHttpSvc.Controllers
         [ProducesResponseType(500)]
         [Authorize]
         [HttpDelete]
-        public IActionResult DeleteAttachments(string volume, ulong documentId, [FromBody] AttachmentsSelection selection)
+        public IActionResult DeleteAttachments(string volume, ulong documentId, [FromBody] AttachmentsRange range)
         {
             if (!TryGetSession(User, out Session session))
             {
@@ -337,10 +337,10 @@ namespace DfmHttpSvc.Controllers
                 return NotFound(Resources.ErrorVolumeNotFound);
             }
 
-            DocumentAttachmentsSelection attSelection = new DocumentAttachmentsSelection(
+            AttachmentsSelection attSelection = new AttachmentsSelection(
                 documentId,
-                selection.AttachmentsNames,
-                selection.ExcludeMode
+                range.Attachments,
+                range.ExcludeMode
             );
 
             if (!attSelection.IsValid())

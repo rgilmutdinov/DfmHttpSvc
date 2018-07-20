@@ -65,7 +65,7 @@ namespace DfmHttpSvc.Controllers.Base
 
         protected PhysicalFileResult GetSelection(Session session, string volume, Selection selection)
         {
-            string filePath = selection.GetSelectionFile(session, volume);
+            string filePath = selection.GetFile(session, volume);
             string contentType = MimeMapping.GetMimeMapping(filePath);
 
             ContentDisposition cd = new ContentDisposition

@@ -46,7 +46,7 @@ namespace DfmHttpCore.Entities
             }
         }
 
-        public override string GetSelectionFile(Session session, string volumeName)
+        public override string GetFile(Session session, string volumeName)
         {
             if (DocumentIds.Count == 1)
             {

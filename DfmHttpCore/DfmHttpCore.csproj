@@ -47,7 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Collections\LruCache.cs" />
-    <Compile Include="Entities\DocumentAttachmentsSelection.cs" />
+    <Compile Include="Entities\AttachmentsSelection.cs" />
     <Compile Include="Entities\DocIdentity.cs" />
     <Compile Include="Entities\AreaItem.cs" />
     <Compile Include="Entities\Document.cs" />
@@ -66,8 +66,6 @@
       <Name>DfmCore</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="DfmCore\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

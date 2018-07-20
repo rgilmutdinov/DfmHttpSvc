@@ -8,32 +8,32 @@ using DfmCore.Tools;
 
 namespace DfmHttpCore.Entities
 {
-    public class DocumentAttachmentsSelection : Selection
+    public class AttachmentsSelection : Selection
     {
-        public DocumentAttachmentsSelection(ulong documentId) : this(documentId, new List<string>())
+        public AttachmentsSelection(ulong documentId) : this(documentId, new List<string>())
         {
         }
 
-        public DocumentAttachmentsSelection(ulong documentId, string attachmentName) : this(documentId, Lists.Of(attachmentName))
+        public AttachmentsSelection(ulong documentId, string attachmentName) : this(documentId, Lists.Of(attachmentName))
         {
         }
 
-        public DocumentAttachmentsSelection(ulong documentId, List<string> attachmentsNames, bool excludeMode = false)
+        public AttachmentsSelection(ulong documentId, List<string> attachmentsNames, bool excludeMode = false)
         {
             DocumentId = documentId;
-            AttachmentsNames = attachmentsNames ?? throw new ArgumentNullException(nameof(attachmentsNames));
+            Attachments = attachmentsNames ?? throw new ArgumentNullException(nameof(attachmentsNames));
             ExcludeMode = excludeMode;
         }
 
         public ulong DocumentId { get; set; }
 
-        public List<string> AttachmentsNames { get; }
+        public List<string> Attachments { get; }
 
         public override bool IsValid()
         {
             if (!ExcludeMode)
             {
-                return AttachmentsNames.Count > 0;
+                return Attachments.Count > 0;
             }
 
             return true;
@@ -46,19 +46,19 @@ namespace DfmHttpCore.Entities
             using (Volume volume = session.Dictionary.OpenVolume(volumeName, identity.DocUidFilter))
             {
                 List<string> deleteAttachments = ExcludeMode 
-                    ? volume.GetAttachments().Except(AttachmentsNames).ToList() 
-                    : new List<string>(AttachmentsNames);
+                    ? volume.GetAttachments().Except(Attachments).ToList() 
+                    : new List<string>(Attachments);
 
                 deleteAttachments.ForEach(attachmentName => volume.DeleteAttachment(attachmentName));
             }
         }
 
-        public override string GetSelectionFile(Session session, string volumeName)
+        public override string GetFile(Session session, string volumeName)
         {
             DocIdentity identity = new DocIdentity(DocumentId);
-            if (AttachmentsNames.Count == 1)
+            if (Attachments.Count == 1)
             {
-                return session.ExtractAttachment(volumeName, identity, AttachmentsNames.First());
+                return session.ExtractAttachment(volumeName, identity, Attachments.First());
             }
 
             return ExtractAttachmentsToArchive(session, identity, volumeName);
@@ -69,8 +69,8 @@ namespace DfmHttpCore.Entities
             using (Volume volume = session.Dictionary.OpenVolume(volumeName, identity.DocUidFilter))
             {
                 List<string> extractAttachments = ExcludeMode
-                    ? volume.GetAttachments().Except(AttachmentsNames).ToList()
-                    : new List<string>(AttachmentsNames);
+                    ? volume.GetAttachments().Except(Attachments).ToList()
+                    : new List<string>(Attachments);
 
                 string archiveFile = RandomPath.GetFile("zip");
                 using (TempDirectory tempFolder = new TempDirectory())

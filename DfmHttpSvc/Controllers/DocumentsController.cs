@@ -154,7 +154,7 @@ namespace DfmHttpSvc.Controllers
         ///
         /// </remarks>
         /// <param name="volume">Volume name</param>
-        /// <param name="selection">Documents selection</param>
+        /// <param name="range">Documents selection</param>
         /// <returns>Temporary token</returns>
         /// <response code="200">Returns temporary token for download an archive with a bunch of documents</response>
         /// <response code="401">Unauthorized access</response>
@@ -165,12 +165,14 @@ namespace DfmHttpSvc.Controllers
         [ProducesResponseType(500)]
         [Authorize]
         [HttpPost("/api/volumes/{volume}/token")]
-        public IActionResult GetDocumentsArchiveToken(string volume, [FromBody] DocumentsSelection selection)
+        public IActionResult GetDocumentsArchiveToken(string volume, [FromBody] DocumentsRange range)
         {
             if (!TryGetSession(User, out Session _))
             {
                 return Unauthorized();
             }
+
+            DocumentsSelection selection = new DocumentsSelection(range.DocumentIds, range.ExcludeMode);
 
             if (!selection.IsValid())
             {
@@ -214,7 +216,7 @@ namespace DfmHttpSvc.Controllers
         /// Retrieves an archive that contains documents (files) with the specified ids
         /// </summary>
         /// <param name="volume">Volume name</param>
-        /// <param name="selection">Documents selection</param>
+        /// <param name="range">Documents selection</param>
         /// <returns>The requested archive file</returns>
         /// <response code="200">Returns the requested archive</response>
         /// <response code="404">Volume with requested name not found</response>
@@ -227,12 +229,14 @@ namespace DfmHttpSvc.Controllers
         [Authorize]
         [HttpPost("/api/volume/{volume}/download")]
         [DeleteFile]
-        public IActionResult GetDocumentsArchive(string volume, [FromBody] DocumentsSelection selection)
+        public IActionResult GetDocumentsArchive(string volume, [FromBody] DocumentsRange range)
         {
             if (!TryGetSession(User, out Session session))
             {
                 return Unauthorized();
             }
+
+            DocumentsSelection selection = new DocumentsSelection(range.DocumentIds, range.ExcludeMode);
 
             return GetSelection(session, volume, selection);
         }
@@ -345,7 +349,7 @@ namespace DfmHttpSvc.Controllers
         /// Deletes a list of documents specified with selection
         /// </summary>
         /// <param name="volume">Volume name</param>
-        /// <param name="selection">Documents selection</param>
+        /// <param name="range">Documents selection</param>
         /// <response code="204">Documents were deleted successfully</response>
         /// <response code="404">Volume with requested name not found</response>
         /// <response code="403">Documents selection is null or empty</response>
@@ -359,7 +363,7 @@ namespace DfmHttpSvc.Controllers
         [ProducesResponseType(500)]
         [Authorize]
         [HttpDelete]
-        public IActionResult DeleteDocuments(string volume, [FromBody] DocumentsSelection selection)
+        public IActionResult DeleteDocuments(string volume, [FromBody] DocumentsRange range)
         {
             if (!TryGetSession(User, out Session session))
             {
@@ -370,6 +374,8 @@ namespace DfmHttpSvc.Controllers
             {
                 return NotFound(Resources.ErrorVolumeNotFound);
             }
+
+            DocumentsSelection selection = new DocumentsSelection(range.DocumentIds, range.ExcludeMode);
 
             if (!selection.IsValid())
             {

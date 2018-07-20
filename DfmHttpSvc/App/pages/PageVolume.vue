@@ -35,11 +35,11 @@
                     {{ $t('pageVolume.dateCreated') }}
                 </template>
                 <template slot="th_attachments" slot-scope="{ row }">
-                    <i class="fas fa-paperclip fa-fw" style="color: lightslategrey"></i>
+                    <i class="fas fa-paperclip fa-fw black"></i>
                 </template>
 
                 <template slot="td_attachments" slot-scope="{ row }">
-                    <i v-if="row.hasAttachments" class="fas fa-paperclip fa-fw vcenter cursor-pointer" @click.prevent="openAttachments(row)"></i>
+                    <i class="fas fa-paperclip fa-fw vcenter cursor-pointer" :class="[row.hasAttachments ? 'black' : 'lightgrey']" @click.prevent="openAttachments(row)"></i>
                 </template>
                 <template slot="td_extension" slot-scope="{ row }">
                     <div @click.prevent="downloadDocument(row)" class="cursor-pointer">
@@ -262,10 +262,13 @@
                 ApiService.deleteDocuments(this.volume, this.selection.keys, this.selection.exclude)
                     .then(() => {
                         this.$notify.success(this.$t('pageVolume.documentsDeleted'));
-                        this.loadVolume();
                     })
                     .catch(e => {
                         this.error = Error.fromApiException(e);
+                    })
+                    .then(() => {
+                        this.selection.unselectAll();
+                        this.loadVolume();
                     });
             },
 
@@ -313,5 +316,13 @@
         align-items: center;
         justify-content: center;
         height: 300px;
+    }
+
+    .black {
+        color: black;
+    }
+
+    .lightgrey {
+        color: lightgray;
     }
 </style>

@@ -7,6 +7,6 @@
         public virtual bool IsValid() => true;
 
         public abstract void Delete(Session session, string volumeName);
-        public abstract string GetSelectionFile(Session session, string volumeName);
+        public abstract string GetFile(Session session, string volumeName);
     }
 }

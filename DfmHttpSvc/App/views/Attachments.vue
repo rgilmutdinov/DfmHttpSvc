@@ -212,11 +212,13 @@
                 ApiService.deleteAttachments(this.volume, this.documentId, this.selection.keys, this.selection.exclude)
                     .then(() => {
                         this.error = null;
-
-                        this.fetchAttachments();
                     })
                     .catch(e => {
                         this.error = Error.fromApiException(e);
+                    })
+                    .then(() => {
+                        this.selection.unselectAll();
+                        this.fetchAttachments();
                     });
             },
             downloadAttachment(attachment) {
