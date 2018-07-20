@@ -81,7 +81,7 @@
                     }
                 });
 
-                ApiService.uploadDocuments(this.volume, files, fields)
+                ApiService.uploadDocument(this.volume, files[0], fields)
                     .then(() => {
                         this.$emit('documentAdded');
                     })

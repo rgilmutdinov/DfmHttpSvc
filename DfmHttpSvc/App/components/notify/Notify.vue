@@ -22,7 +22,7 @@
     .notify {
         opacity: 0.9;
         position: fixed;
-        z-index: 100;
+        z-index: 9999;
     }
 
     .close-btn {

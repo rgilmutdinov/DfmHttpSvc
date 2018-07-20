@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using DfmCore;
 using DfmCore.Extensions;
-using DfmCore.Tools;
 using DfmHttpCore.Entities;
 
 namespace DfmHttpCore

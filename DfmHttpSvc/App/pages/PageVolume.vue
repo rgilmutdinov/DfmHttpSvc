@@ -14,7 +14,7 @@
             <data-table :rows="documents" :query="query" :total="total" :columns="columns" :selection="selection" :loading="loading"
                         searchable :showLoading="loading" explicitSearch>
                 <div slot="toolbar" class="btn-group" role="group">
-                    <file-input class="btn btn-sm btn-outline-primary" @input="uploadDocument" :title="$t('pageVolume.upload')">
+                    <file-input class="btn btn-sm btn-outline-primary" @input="uploadDocuments" multiple :title="$t('pageVolume.upload')">
                         <i class="fas fa-upload fa-fw" />
                     </file-input>
                     <div class="btn btn-sm btn-outline-primary" @click="openAddDocument" :title="$t('pageVolume.addDocument')">
@@ -269,16 +269,22 @@
                     });
             },
 
-            uploadDocument(files) {
+            uploadDocuments(files) {
                 if (files && files.length > 0) {
-                    ApiService.uploadDocuments(this.volume, files)
-                        .then(() => {
-                            this.$notify.success(this.$t('pageVolume.documentAdded'));
-                            this.loadVolume();
-                        })
-                        .catch(e => {
-                            this.error = Error.fromApiException(e);
-                        });
+                    Promise.resolve([...files]).then((fileList) => {
+                        return fileList.reduce((sequence, file) => {
+                            return sequence.then(() => {
+                                return ApiService.uploadDocument(this.volume, file);
+                            }).then(() => {
+                                this.$notify.success(this.$t('pageVolume.documentAdded'));
+                            });
+                        }, Promise.resolve());
+                    }).catch(e => {
+                        this.error = Error.fromApiException(e);
+                    }).then(() => {
+                        // Always reload attachments
+                        this.loadVolume();
+                    });
                 }
             },
 

@@ -4,13 +4,13 @@
             <button type="button" class="btn btn-primary" @click="$emit('close')">{{ $t('attachments.ok') }}</button>
         </div>
         <div slot="content">
-            <alert-panel ref="alert" :error="error"></alert-panel>
+            <alert-panel :error="error"></alert-panel>
 
             <data-table :rows="pageAttachments" :query="query" :total="total" :columns="columns" searchable :rowKey="'name'"
                         :selection="selection"
                         :pageSizeOptions="[10, 20, 50]">
                 <div slot="toolbar" class="btn-group" role="group">
-                    <file-input class="btn btn-sm btn-outline-primary" @input="uploadAttachment" multiple :title="$t('attachments.upload')">
+                    <file-input class="btn btn-sm btn-outline-primary" @input="uploadAttachments" multiple :title="$t('attachments.upload')">
                         <i class="fas fa-upload fa-fw" />
                     </file-input>
                     <div :class="['btn btn-sm btn-outline-primary', {disabled: !isAnySelected}]" @click="downloadSelection" :title="$t('attachments.download')">
@@ -118,16 +118,18 @@
                 deep: true
             },
             show() {
+                this.error = null;
+
                 this.fetchAttachments();
             },
             documentId() {
+                this.error = null;
+
                 this.fetchAttachments();
             }
         },
         methods: {
             fetchAttachments() {
-                this.error = null;
-
                 if (!this.show || !this.documentId) {
                     return;
                 }
@@ -168,16 +170,22 @@
                 let page = matchAttachments.slice(this.query.offset, this.query.offset + this.query.limit);
                 this.pageAttachments.splice(0, this.pageAttachments.length, ...page);
             },
-            uploadAttachment(files) {
+            uploadAttachments(files) {
                 if (files && files.length > 0) {
-                    ApiService.uploadAttachments(this.volume, this.documentId, files)
-                        .then(() => {
-                            this.$notify.success(this.$t('attachments.attachmentAdded'));
-                            this.fetchAttachments();
-                        })
-                        .catch(e => {
-                            this.error = Error.fromApiException(e);
-                        });
+                    Promise.resolve([...files]).then((fileList) => {
+                        return fileList.reduce((sequence, file) => {
+                            return sequence.then(() => {
+                                return ApiService.uploadAttachment(this.volume, this.documentId, file);
+                            }).then(() => {
+                                this.$notify.success(this.$t('attachments.attachmentAdded'));
+                            });
+                        }, Promise.resolve());
+                    }).catch(e => {
+                        this.error = Error.fromApiException(e);
+                    }).then(() => {
+                        // Always reload attachments
+                        this.fetchAttachments();
+                    });
                 }
             },
             downloadSelection() {
@@ -203,6 +211,8 @@
 
                 ApiService.deleteAttachments(this.volume, this.documentId, this.selection.keys, this.selection.exclude)
                     .then(() => {
+                        this.error = null;
+
                         this.fetchAttachments();
                     })
                     .catch(e => {
@@ -223,6 +233,8 @@
             }
         },
         mounted() {
+            this.error = null;
+
             this.fetchAttachments();
         }
     };

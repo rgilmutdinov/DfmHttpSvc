@@ -111,13 +111,11 @@ const ApiService = {
         return Vue.axios.delete(`/api/volumes/${volumeName}/documents/${docId}/attachments`, { data: params });
     },
 
-    uploadDocuments(volumeName, files, fields) {
+    uploadDocument(volumeName, file, fields) {
         volumeName = encodeURIComponent(volumeName);
 
         let formData = new FormData();
-        for (let i = 0; i < files.length; i++) {
-            formData.append('file', files[i]);
-        }
+        formData.append('file', file);
 
         if (fields) {
             let json = JSON.stringify(fields);
@@ -131,13 +129,11 @@ const ApiService = {
         );
     },
 
-    uploadAttachments(volumeName, documentId, files) {
+    uploadAttachment(volumeName, documentId, file) {
         volumeName = encodeURIComponent(volumeName);
 
         let formData = new FormData();
-        for (let i = 0; i < files.length; i++) {
-            formData.append('file', files[i]);
-        }
+        formData.append('file', file);
 
         return Vue.axios.post(
             `/api/volumes/${volumeName}/documents/${documentId}/attachments`,
