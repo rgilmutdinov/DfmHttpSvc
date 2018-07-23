@@ -58,7 +58,8 @@ export default {
         dateModified: 'Data e ora',
         dateCreated: 'Data/ora archiviazione',
         documentAdded: 'Documento aggiunto con successo',
-        documentsDeleted: 'Documenti cancellati con successo'
+        documentsDeleted: 'Documenti cancellati con successo',
+        documentUpdated: 'Documento aggiornato con successo'
     },
 
     newDocument: {
@@ -71,8 +72,8 @@ export default {
         ok: 'OK',
         title: 'Allegati',
         name: 'Nome',
-        size: 'Size',
-        author: 'Author',
+        size: 'Dimensione',
+        author: 'Autore',
         creationDate: 'Data creazione',
         upload: "Caricare l'allegato",
         delete: 'Elimina',

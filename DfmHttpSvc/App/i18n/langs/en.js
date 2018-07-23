@@ -58,7 +58,8 @@ export default {
         dateModified: 'Date and time',
         dateCreated: 'Date/time of archivation',
         documentAdded: 'Document successfully added',
-        documentsDeleted: 'Documents successfully deleted'
+        documentsDeleted: 'Documents successfully deleted',
+        documentUpdated: 'Document successfully updated'
     },
 
     newDocument: {

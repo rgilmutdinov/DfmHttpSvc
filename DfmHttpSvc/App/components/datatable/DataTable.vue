@@ -53,16 +53,27 @@
                         </td>
                     </tr>
                     <template v-else>
-                        <tr v-for="(row, index) in rows" :key="index">
+                        <tr v-for="(row, index) in rows" :key="index" :class="[{'active-row': isRowActive(row)}]">
                             <td v-if="selection" class="select-col">
                                 <span @click="toggleSelect(row)" class="select-cell">
                                     <i v-show="isSelected(row)" class="far fa-check-square" />
                                     <i v-show="!isSelected(row)" class="far fa-square" />
                                 </span>
                             </td>
-                            <td v-for="col in columns" :key="col.name" :class="computeTdClass(col)" :style="computeTdStyle(col)">
+                            <td v-for="col in columns" :key="col.name" :class="computeTdClass(col)" :style="computeTdStyle(col)" @click.stop="onCellClick($event, row, col)">
                                 <slot :name="'td_' + col.name" :row="row" :column="col">
-                                    <span class="cell-text text-nowrap" data-toggle="tooltip" :title="row[col.name]">{{ row[col.name] }}</span>
+                                    <template v-if="!isEditing || !editable || !col.editable || !isRowActive(row) || !isColActive(col)">
+                                        <span class="cell-text text-nowrap" data-toggle="tooltip" :title="row[col.name]">{{ row[col.name] }}</span>
+                                    </template>
+                                    <template v-else>
+                                        <input autofocus class="cell-edit form-control form-control-sm"
+                                               v-model="editValue"
+                                               @keydown.tab.stop.prevent="moveNext"
+                                               @keydown.esc.prevent="refuseChanges"
+                                               @keydown.enter="commitChanges"
+                                               @blur="commitChanges"
+                                               v-select />
+                                    </template>
                                 </slot>
                             </td>
                         </tr>
@@ -88,13 +99,28 @@
     import Pagination from './Pagination.vue';
     import HeadSort from './HeadSort.vue';
 
+    const select = {
+        inserted(el) {
+            el.focus();
+            el.setSelectionRange(0, el.value.length);
+        }
+    };
+
     export default {
         name: 'DataTable',
         mixins: [props],
         components: { HeadSort, Pagination },
+        directives: { select },
         created() {
             const q = { limit: 10, offset: 0, sort: '', order: '', search: '', ...this.query };
             Object.keys(q).forEach(key => { this.$set(this.query, key, q[key]); });
+        },
+        data() {
+            return {
+                activeRow: null,
+                activeCol: null,
+                isEditing: false
+            };
         },
         methods: {
             toggleSelect(row) {
@@ -139,6 +165,77 @@
                 }
                 return false;
             },
+            onCellClick(event, row, col) {
+                if (this.isEditing && (!this.isRowActive(row) || !this.isColActive(col))) {
+                    this.commitChanges();
+                }
+                if (this.editable) {
+                    if (col.editable) {
+                        if (this.isEditing) {
+                            if (this.isRowActive(row) && !this.isColActive(col)) {
+                                // move to another column
+                                this.activeCol = col;
+                            }
+                        } else {
+                            if (this.isRowActive(row) && this.isColActive(col)) {
+                                this.isEditing = true;
+                            } else {
+                                this.activeRow = row;
+                                this.$emit('activeRowChanged', row);
+                                this.activeCol = col;
+                            }
+                        }
+                    } else {
+                        this.activeRow = row;
+                        this.$emit('activeRowChanged', row);
+                    }
+                }
+            },
+            commitChanges(stopEditing = true) {
+                if (this.isEditing) {
+                    this.isEditing = false;
+                    this.$emit('commit', { row: this.activeRow, col: this.activeCol });
+                }
+            },
+            getColumnIndex(col) {
+                for (let i = 0; i < this.columns.length; i++) {
+                    if (this.columns[i] === col) {
+                        return i;
+                    }
+                }
+                return -1;
+            },
+            moveNext(e) {
+                if (this.editable && this.activeRow && this.activeCol) {
+                    let index = this.getColumnIndex(this.activeCol);
+                    for (let i = index + 1; i < this.columns.length; i++) {
+                        if (this.columns[i].editable) {
+                            this.activeCol = this.columns[i];
+                            return false;
+                        }
+                    }
+                    for (let i = 0; i < index; i++) {
+                        if (this.columns[i].editable) {
+                            this.activeCol = this.columns[i];
+                            return false;
+                        }
+                    }
+                }
+
+                return false;
+            },
+            refuseChanges() {
+                if (this.isEditing) {
+                    this.isEditing = false;
+                    this.$emit('refuse', this.activeRow);
+                }
+            },
+            isRowActive(row) {
+                return row === this.activeRow;
+            },
+            isColActive(col) {
+                return col === this.activeCol;
+            },
             updateSearch() {
                 let expression = this.$refs.inputSearch.value;
                 Object.assign(this.query, { offset: 0, search: expression });
@@ -157,6 +254,19 @@
             }
         },
         computed: {
+            editValue: {
+                get() {
+                    if (this.isEditing && this.activeRow && this.activeCol) {
+                        return this.activeRow[this.activeCol.name];
+                    }
+                    return '';
+                },
+                set(value) {
+                    if (this.isEditing && this.activeRow && this.activeCol) {
+                        this.activeRow[this.activeCol.name] = value;
+                    }
+                }
+            },
             totalColumns() {
                 return this.columns.length + (this.selection ? 1 : 0);
             },
@@ -215,6 +325,11 @@
         text-overflow: ellipsis;
     }
 
+    .cell-edit {
+        width: 100%;
+        max-width: 100%;
+    }
+
     .select-col {
         width: 1.5em;
         max-width: 1.5em
@@ -233,11 +348,7 @@
         margin-right: 5px;
     }
 
-    .header > div:first-child {
-        margin-left: 0px;
-    }
-
-    .header > div:last-child {
-        margin-right: 0px;
+    .active-row {
+        background-color: Gainsboro !important;
     }
 </style>

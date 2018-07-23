@@ -17,6 +17,7 @@ export class Column {
         thStyle = '',
         tdStyle = '',
         sortable = false,
+        editable = false,
         type = ColumnType.TEXT
     }) {
         this.name = name;
@@ -28,6 +29,7 @@ export class Column {
         this.thStyle = thStyle;
         this.tdStyle = tdStyle;
         this.sortable = sortable;
+        this.editable = editable;
         this.type = type;
     }
 

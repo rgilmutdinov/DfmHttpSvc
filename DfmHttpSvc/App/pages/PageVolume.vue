@@ -12,7 +12,8 @@
 
         <div>
             <data-table :rows="documents" :query="query" :total="total" :columns="columns" :selection="selection" :loading="loading"
-                        searchable :showLoading="loading" explicitSearch>
+                        :showLoading="loading" searchable explicitSearch editable
+                        @commit="updateDocument">
                 <div slot="toolbar" class="btn-group" role="group">
                     <file-input class="btn btn-sm btn-outline-primary" @input="uploadDocuments" multiple :title="$t('pageVolume.upload')">
                         <i class="fas fa-upload fa-fw" />
@@ -147,7 +148,8 @@
                     name: field.name,
                     title: field.caption || field.name,
                     sortable: true,
-                    type: type
+                    type: type,
+                    editable: true
                 });
             },
 
@@ -305,6 +307,26 @@
             openAttachments(doc) {
                 this.currentDocId = doc.id;
                 this.showAttachments = true;
+            },
+
+            updateDocument({ row, col }) {
+                if (row && col) {
+                    let field = this.fields.find(f => f.name === col.name);
+                    let value = row[col.name];
+
+                    if (!field) {
+                        return;
+                    }
+
+                    ApiService.updateDocument(this.volume, row.id, [{ name: field.name, value: value }])
+                        .then(({ data }) => {
+
+                            this.$notify.success(this.$t('pageVolume.documentUpdated'));
+                        })
+                        .catch(e => {
+                            this.error = Error.fromApiException(e);
+                        });
+                }
             }
         }
     };

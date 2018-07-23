@@ -35,6 +35,9 @@ export default {
         // show loading row?
         showLoading: { type: Boolean, default: false },
 
+        // can edit table cells?
+        editable: { type: Boolean, default: false },
+
         // classes for <table>
         tblClass: [String, Object, Array],
 

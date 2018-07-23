@@ -8,7 +8,8 @@
 
             <data-table :rows="pageAttachments" :query="query" :total="total" :columns="columns" searchable :rowKey="'name'"
                         :selection="selection"
-                        :pageSizeOptions="[10, 20, 50]">
+                        :pageSizeOptions="[10, 20, 50]"
+                        editable>
                 <div slot="toolbar" class="btn-group" role="group">
                     <file-input class="btn btn-sm btn-outline-primary" @input="uploadAttachments" multiple :title="$t('attachments.upload')">
                         <i class="fas fa-upload fa-fw" />
@@ -76,7 +77,9 @@
                     {
                         title: this.$t('attachments.name'),
                         name: 'name',
-                        sortable: true
+                        sortable: true,
+                        editable: true,
+                        style: 'min-width: 10em'
                     },
                     {
                         title: this.$t('attachments.size'),
