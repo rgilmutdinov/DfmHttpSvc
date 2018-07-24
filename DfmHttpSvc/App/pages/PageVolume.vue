@@ -137,12 +137,14 @@
         },
         methods: {
             getColumn(field) {
-                let type = ColumnType.TEXT;
+                let type = ColumnType.STRING;
 
                 if (field.isNumber) {
                     type = ColumnType.NUMBER;
                 } else if (field.isDate) {
                     type = ColumnType.DATE;
+                } else if (field.isMemo) {
+                    type = ColumnType.TEXT;
                 }
 
                 return new Column({

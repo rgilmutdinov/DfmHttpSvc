@@ -1,6 +1,7 @@
 ﻿import * as comparer from '@/utils/compare';
 
 export const ColumnType = Object.freeze({
+    STRING: 'STRING',
     TEXT: 'TEXT',
     NUMBER: 'NUMBER',
     DATE: 'DATE'
@@ -18,7 +19,7 @@ export class Column {
         tdStyle = '',
         sortable = false,
         editable = false,
-        type = ColumnType.TEXT
+        type = ColumnType.STRING
     }) {
         this.name = name;
         this.title = title;
@@ -40,5 +41,9 @@ export class Column {
             default:
                 return comparer.compareStrings(a, b, true);
         }
+    }
+
+    get isText() {
+        return this.type === ColumnType.TEXT;
     }
 }

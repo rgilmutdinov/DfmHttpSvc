@@ -24,10 +24,8 @@
     }
 
     mapDataProperties() {
-        for (let key in this.data) {
-            if (this.data.hasOwnProperty(key)) {
-                this.cells[key] = this.data[key];
-            }
+        for (const key of Object.keys(this.data)) {
+            this.cells[key] = this.data[key];
         }
     }
 }

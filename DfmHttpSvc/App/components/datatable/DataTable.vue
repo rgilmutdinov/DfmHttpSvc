@@ -66,13 +66,22 @@
                                         <span class="cell-text text-nowrap" data-toggle="tooltip" :title="row.getValue(col.name)">{{ row.getValue(col.name) }}</span>
                                     </template>
                                     <template v-else>
-                                        <input autofocus class="cell-edit form-control form-control-sm"
+                                        <textarea v-if="col.isText"
+                                                  class="cell-edit form-control form-control-sm"
+                                                  v-model="editValue"
+                                                  @keydown.tab.stop.prevent="moveNext"
+                                                  @keydown.esc.prevent="refuseChanges"
+                                                  @keydown.enter.ctrl="commitChanges"
+                                                  @blur="commitChanges"
+                                                  autofocus v-select />
+                                        <input v-else
+                                               class="cell-edit form-control form-control-sm"
                                                v-model="editValue"
                                                @keydown.tab.stop.prevent="moveNext"
                                                @keydown.esc.prevent="refuseChanges"
                                                @keydown.enter="commitChanges"
                                                @blur="commitChanges"
-                                               v-select />
+                                               autofocus v-select />
                                     </template>
                                 </slot>
                             </td>
@@ -98,6 +107,7 @@
     import { mergeStyles } from './css';
     import Pagination from './Pagination.vue';
     import HeadSort from './HeadSort.vue';
+    import { ColumnType } from './column';
 
     const select = {
         inserted(el) {
