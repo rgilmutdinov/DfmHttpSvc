@@ -63,7 +63,7 @@
                             <td v-for="col in columns" :key="col.name" :class="computeTdClass(col)" :style="computeTdStyle(col)" @click.stop="onCellClick($event, row, col)">
                                 <slot :name="'td_' + col.name" :row="row" :column="col">
                                     <template v-if="!isEditing || !editable || !col.editable || !isRowActive(row) || !isColActive(col)">
-                                        <span class="cell-text text-nowrap" data-toggle="tooltip" :title="row[col.name]">{{ row[col.name] }}</span>
+                                        <span class="cell-text text-nowrap" data-toggle="tooltip" :title="row.getValue(col.name)">{{ row.getValue(col.name) }}</span>
                                     </template>
                                     <template v-else>
                                         <input autofocus class="cell-edit form-control form-control-sm"
@@ -124,14 +124,15 @@
         },
         methods: {
             toggleSelect(row) {
-                if (!this.selection || !row[this.rowKey]) {
+                let key = row.getValue(this.rowKey);
+                if (!this.selection || !key) {
                     return;
                 }
 
-                if (this.selection.isSelected(row[this.rowKey])) {
-                    this.selection.unselect(row[this.rowKey]);
+                if (this.selection.isSelected(key)) {
+                    this.selection.unselect(key);
                 } else {
-                    this.selection.select(row[this.rowKey]);
+                    this.selection.select(key);
                 }
             },
             toggleSelectAll() {
@@ -160,8 +161,9 @@
                 this.selection.unselectAll();
             },
             isSelected(row) {
-                if (row[this.rowKey]) {
-                    return this.selection.isSelected(row[this.rowKey]);
+                let key = row.getValue(this.rowKey);
+                if (key) {
+                    return this.selection.isSelected(key);
                 }
                 return false;
             },
@@ -191,10 +193,16 @@
                     }
                 }
             },
-            commitChanges(stopEditing = true) {
+            commitChanges() {
                 if (this.isEditing) {
                     this.isEditing = false;
-                    this.$emit('commit', { row: this.activeRow, col: this.activeCol });
+
+                    let newValue = this.activeRow.getValue(this.activeCol.name);
+                    let oldValue = this.activeRow.data[this.activeCol.name];
+
+                    if (newValue !== oldValue) {
+                        this.$emit('commit', { row: this.activeRow, col: this.activeCol });
+                    }
                 }
             },
             getColumnIndex(col) {
@@ -227,7 +235,7 @@
             refuseChanges() {
                 if (this.isEditing) {
                     this.isEditing = false;
-                    this.$emit('refuse', this.activeRow);
+                    this.$emit('refuse', { row: this.activeRow, col: this.activeCol });
                 }
             },
             isRowActive(row) {
@@ -257,13 +265,13 @@
             editValue: {
                 get() {
                     if (this.isEditing && this.activeRow && this.activeCol) {
-                        return this.activeRow[this.activeCol.name];
+                        return this.activeRow.getValue(this.activeCol.name);
                     }
                     return '';
                 },
                 set(value) {
                     if (this.isEditing && this.activeRow && this.activeCol) {
-                        this.activeRow[this.activeCol.name] = value;
+                        this.activeRow.setValue(this.activeCol.name, value);
                     }
                 }
             },

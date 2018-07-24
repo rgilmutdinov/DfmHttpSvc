@@ -6,10 +6,12 @@
         <div slot="content">
             <alert-panel :error="error"></alert-panel>
 
-            <data-table :rows="pageAttachments" :query="query" :total="total" :columns="columns" searchable :rowKey="'name'"
+            <data-table :rows="attachmentRows" :query="query" :total="total" :columns="columns" :rowKey="'name'"
                         :selection="selection"
                         :pageSizeOptions="[10, 20, 50]"
-                        editable>
+                        searchable editable
+                        @commit="commitRowUpdate"
+                        @refuse="refuseRowUpdate">
                 <div slot="toolbar" class="btn-group" role="group">
                     <file-input class="btn btn-sm btn-outline-primary" @input="uploadAttachments" multiple :title="$t('attachments.upload')">
                         <i class="fas fa-upload fa-fw" />
@@ -23,8 +25,8 @@
                 </div>
 
                 <template slot="td_extension" slot-scope="{ row }">
-                    <div @click.prevent="downloadAttachment(row)" class="cursor-pointer">
-                        <file-icon :extension="row.extension"></file-icon>
+                    <div @click.prevent="downloadAttachment(row.data)" class="cursor-pointer">
+                        <file-icon :extension="row.data.extension"></file-icon>
                     </div>
                 </template>
             </data-table>
@@ -39,6 +41,7 @@
     import Attachment from '@/models/attachment';
     import Selection from '@/components/datatable/selection';
     import { Column, ColumnType } from '@/components/datatable/column';
+    import Row from '@/components/datatable/row';
 
     export default {
         props: {
@@ -58,7 +61,7 @@
         data() {
             return {
                 allAttachments: [],
-                pageAttachments: [],
+                attachmentRows: [],
                 total: 0,
                 selection: new Selection(),
                 query: {},
@@ -171,7 +174,8 @@
 
                 this.total = matchAttachments.length;
                 let page = matchAttachments.slice(this.query.offset, this.query.offset + this.query.limit);
-                this.pageAttachments.splice(0, this.pageAttachments.length, ...page);
+
+                this.attachmentRows = page.map(a => new Row(a, true));
             },
             uploadAttachments(files) {
                 if (files && files.length > 0) {
@@ -236,6 +240,15 @@
                     .catch(e => {
                         this.error = Error.fromApiException(e);
                     });
+            },
+            commitRowUpdate({ row, col }) {
+                console.log('commit');
+            },
+            refuseRowUpdate({ row, col }) {
+                if (row && col) {
+                    let origValue = row.data[col.name];
+                    row.setValue(col.name, origValue);
+                }
             }
         },
         mounted() {

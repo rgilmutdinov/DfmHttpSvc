@@ -1,11 +1,11 @@
 <template>
     <div>
-        <data-table :rows="units" :query="query" :total="total" :columns="columns" :searchable="true">
+        <data-table :rows="unitRows" :query="query" :total="total" :columns="columns" :searchable="true">
             <template slot="td_icon" slot-scope="{ row }">
-                <layer-icon :layers="row.iconLayers"></layer-icon>
+                <layer-icon :layers="row.data.iconLayers"></layer-icon>
             </template>
             <template slot="td_name" slot-scope="{ row }">
-                <router-link :to="row.route">{{ row.name }}</router-link>
+                <router-link :to="row.data.route">{{ row.getValue('name') }}</router-link>
             </template>
         </data-table>
     </div>
@@ -13,6 +13,7 @@
 
 <script>
     import { Column } from '@/components/datatable/column';
+    import Row from '@/components/datatable/row';
 
     export default {
         props: {
@@ -34,7 +35,7 @@
         },
         data() {
             return {
-                units: [],
+                unitRows: [],
                 total: 0,
                 query: {}
             };
@@ -42,12 +43,12 @@
         watch: {
             query: {
                 handler() {
-                    this.handleQueryChange();
+                    this.loadUnits();
                 },
                 deep: true
             },
             allUnits() {
-                this.handleQueryChange();
+                this.loadUnits();
             }
         },
         computed: {
@@ -130,7 +131,7 @@
             }
         },
         methods: {
-            handleQueryChange() {
+            loadUnits() {
                 let matchUnits;
                 let sortBy = this.query.sort;
                 if (sortBy) {
@@ -150,7 +151,10 @@
                     );
                 }
 
-                this.units = matchUnits.slice(this.query.offset, this.query.offset + this.query.limit);
+                let pageUnits = matchUnits.slice(this.query.offset, this.query.offset + this.query.limit);
+
+                this.unitRows = pageUnits.map(u => new Row(u, true));
+
                 this.total = matchUnits.length;
             }
         }

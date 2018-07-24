@@ -11,9 +11,9 @@
         <alert-panel :error="error"></alert-panel>
 
         <div>
-            <data-table :rows="documents" :query="query" :total="total" :columns="columns" :selection="selection" :loading="loading"
+            <data-table :rows="documentRows" :query="query" :total="total" :columns="columns" :selection="selection" :loading="loading"
                         :showLoading="loading" searchable explicitSearch editable
-                        @commit="updateDocument">
+                        @commit="commitRowUpdate" @refuse="refuseRowUpdate">
                 <div slot="toolbar" class="btn-group" role="group">
                     <file-input class="btn btn-sm btn-outline-primary" @input="uploadDocuments" multiple :title="$t('pageVolume.upload')">
                         <i class="fas fa-upload fa-fw" />
@@ -40,11 +40,11 @@
                 </template>
 
                 <template slot="td_attachments" slot-scope="{ row }">
-                    <i class="fas fa-paperclip fa-fw vcenter cursor-pointer" :class="[row.hasAttachments ? 'black' : 'lightgrey']" @click.prevent="openAttachments(row)"></i>
+                    <i class="fas fa-paperclip fa-fw vcenter cursor-pointer" :class="[row.data.hasAttachments ? 'black' : 'lightgrey']" @click.prevent="openAttachments(row.data)"></i>
                 </template>
                 <template slot="td_extension" slot-scope="{ row }">
-                    <div @click.prevent="downloadDocument(row)" class="cursor-pointer">
-                        <file-icon :extension="row.extension"></file-icon>
+                    <div @click.prevent="downloadDocument(row.data)" class="cursor-pointer">
+                        <file-icon :extension="row.data.extension"></file-icon>
                     </div>
                 </template>
             </data-table>
@@ -60,6 +60,7 @@
     import ApiService from '@/api/api.service';
     import Selection from '@/components/datatable/selection';
     import { Column, ColumnType } from '@/components/datatable/column';
+    import Row from '@/components/datatable/row';
 
     import NewDocument from '@/views/NewDocument.vue';
     import Attachments from '@/views/Attachments.vue';
@@ -99,7 +100,7 @@
         },
         data() {
             return {
-                documents: [],
+                documentRows: [],
                 total: 0,
                 query: {},
                 columns: [],
@@ -182,6 +183,22 @@
                     });
             },
 
+            getDocument(obj) {
+                let document = {
+                    extension:      obj.extension,
+                    hasAttachments: obj.hasAttachments,
+                    id:             obj.compositeId,
+                    timestamp:      obj.timestamp,
+                    docaddtime:     obj.addTime
+                };
+
+                for (let i = 0; i < obj.fields.length; i++) {
+                    document[obj.fields[i].name] = obj.fields[i].value;
+                }
+
+                return document;
+            },
+
             fetchDocuments(delayId) {
                 let sort = '';
                 if (this.query.sort) {
@@ -192,22 +209,11 @@
                 ApiService.fetchDocuments(this.volume, this.query.offset, this.query.limit, sort, this.query.search)
                     .then(({ data }) => {
                         this.total = data.totalDocuments;
-                        let newDocs = data.documents.map(doc => {
-                            let newDoc = {
-                                extension: doc.extension,
-                                hasAttachments: doc.hasAttachments,
-                                id: doc.compositeId,
-                                timestamp: doc.timestamp,
-                                docaddtime: doc.addTime
-                            };
 
-                            for (let i = 0; i < doc.fields.length; i++) {
-                                newDoc[doc.fields[i].name] = doc.fields[i].value;
-                            }
-                            return newDoc;
-                        });
+                        var that = this;
+                        let documents = data.documents.map(obj => that.getDocument(obj));
 
-                        this.documents.splice(0, this.documents.length, ...newDocs);
+                        this.documentRows = documents.map(doc => new Row(doc, true));
                         this.hideLoading(delayId);
                     })
                     .catch((e) => {
@@ -309,23 +315,32 @@
                 this.showAttachments = true;
             },
 
-            updateDocument({ row, col }) {
+            commitRowUpdate({ row, col }) {
                 if (row && col) {
                     let field = this.fields.find(f => f.name === col.name);
-                    let value = row[col.name];
-
                     if (!field) {
                         return;
                     }
 
-                    ApiService.updateDocument(this.volume, row.id, [{ name: field.name, value: value }])
+                    let doc = row.data;
+                    let newValue = row.getValue(field.name);
+                    ApiService.updateDocument(this.volume, doc.id, [{ name: field.name, value: newValue }])
                         .then(({ data }) => {
+                            let document = this.getDocument(data);
+                            row.setData(document, true);
 
                             this.$notify.success(this.$t('pageVolume.documentUpdated'));
                         })
                         .catch(e => {
                             this.error = Error.fromApiException(e);
                         });
+                }
+            },
+
+            refuseRowUpdate({ row, col }) {
+                if (row && col) {
+                    let origValue = row.data[col.name];
+                    row.setValue(col.name, origValue);
                 }
             }
         }
