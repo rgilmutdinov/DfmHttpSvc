@@ -152,6 +152,13 @@ const ApiService = {
         volumeName = encodeURIComponent(volumeName);
 
         return Vue.axios.patch(`/api/volumes/${volumeName}/documents/${docId}`, fields);
+    },
+
+    updateAttachment(volumeName, docId, attachmentName, updateMetadata) {
+        volumeName = encodeURIComponent(volumeName);
+        attachmentName = encodeURIComponent(attachmentName);
+
+        return Vue.axios.patch(`/api/volumes/${volumeName}/documents/${docId}/attachments/attachment/${attachmentName}`, updateMetadata);
     }
 };
 

@@ -268,5 +268,10 @@ namespace DfmCore
         {
             this._volObj.DoSearch(searchExpression, dateFrom, dateTo, null, -1, false);
         }
+
+        public void RenameAttachment(string oldAttachmentName, string newAttachmentName)
+        {
+            this._volObj.RenameAttachment(oldAttachmentName, newAttachmentName);
+        }
     }
 }

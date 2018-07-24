@@ -79,6 +79,7 @@ export default {
         delete: 'Elimina',
         download: 'Scarica',
         attachmentAdded: 'Allegato aggiunto con successo',
-        attachmentDeleted: 'Allegato eliminato con successo'
+        attachmentDeleted: 'Allegato eliminato con successo',
+        attachmentUpdated: 'Allegato aggiornato con successo'
     }
 };

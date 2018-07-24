@@ -350,5 +350,49 @@ namespace DfmHttpSvc.Controllers
 
             return Ok();
         }
+
+        /// <summary>
+        /// Updates attachment of a document with the specified id.
+        /// </summary>
+        /// <param name="volume">Volume name</param>
+        /// <param name="documentId">Document id</param>
+        /// <param name="oldName">Current attachment name</param>
+        /// <param name="attachmentUpdate">Attachment update request</param>
+        /// <returns>Updated attachment</returns>
+        /// <response code="200">Return updated attachment</response>
+        /// <response code="404">Volume with requested name not found</response>
+        /// <response code="404">Document with requested id not found</response>
+        /// <response code="401">Unauthorized access</response>
+        /// <response code="500">Internal server error</response>
+        [ProducesResponseType(typeof(AttachmentInfo), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        [Authorize]
+        [HttpPatch("attachment/{oldName}")]
+        public IActionResult UpdateAttachment(string volume, ulong documentId, string oldName, [FromBody] AttachmentUpdate attachmentUpdate)
+        {
+            if (!TryGetSession(User, out Session session))
+            {
+                return Unauthorized();
+            }
+
+            if (!session.IsVolumeExist(volume))
+            {
+                return NotFound(Resources.ErrorVolumeNotFound);
+            }
+
+            DocIdentity docId = new DocIdentity(documentId);
+
+            if (!session.IsDocumentExist(volume, docId))
+            {
+                return NotFound(Resources.ErrorDocumentNotFound);
+            }
+
+            AttachmentInfo updatedAttachment = session.RenameAttachment(volume, docId, oldName, attachmentUpdate.NewName);
+
+            return Ok(updatedAttachment);
+        }
     }
 }

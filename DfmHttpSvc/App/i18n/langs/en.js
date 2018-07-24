@@ -79,6 +79,7 @@ export default {
         delete: 'Delete',
         download: 'Download',
         attachmentAdded: 'Attachment successfully added',
-        attachmentDeleted: 'Attachment successfully deleted'
+        attachmentDeleted: 'Attachment successfully deleted',
+        attachmentUpdated: 'Attachment successfully updated'
     }
 };

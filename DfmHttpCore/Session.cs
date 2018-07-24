@@ -299,6 +299,15 @@ namespace DfmHttpCore
             }
         }
 
+        public AttachmentInfo RenameAttachment(string volumeName, DocIdentity docIdentity, string oldAttachmentName, string newAttachmentName)
+        {
+            using (Volume volume = Dictionary.OpenVolume(volumeName, docIdentity.DocUidFilter))
+            {
+                volume.RenameAttachment(oldAttachmentName, newAttachmentName);
+                return volume.GetAttachmentInfo(newAttachmentName);
+            }
+        }
+
         public DictionaryInfo GetDictionaryInfo()
         {
             return Dictionary.Info;

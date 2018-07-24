@@ -242,13 +242,37 @@
                     });
             },
             commitRowUpdate({ row, col }) {
-                console.log('commit');
+                if (row && col) {
+                    // allow attachment rename operation only
+                    if (col.name !== 'name') {
+                        return;
+                    }
+
+                    let oldName = row.data.name;
+                    let newName = row.getValue(col.name);
+                    let metadata = { newName };
+                    ApiService.updateAttachment(this.volume, this.documentId, oldName, metadata)
+                        .then(({ data }) => {
+                            let attachment = new Attachment(data);
+                            row.setData(attachment, true);
+
+                            this.$notify.success(this.$t('attachments.attachmentUpdated'));
+                        })
+                        .catch(e => {
+                            this.discardChange(row, col);
+
+                            this.error = Error.fromApiException(e);
+                        });
+                }
             },
             refuseRowUpdate({ row, col }) {
                 if (row && col) {
-                    let origValue = row.data[col.name];
-                    row.setValue(col.name, origValue);
+                    this.discardChange(row, col);
                 }
+            },
+            discardChange(row, col) {
+                let origValue = row.data[col.name];
+                row.setValue(col.name, origValue);
             }
         },
         mounted() {

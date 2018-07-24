@@ -332,6 +332,8 @@
                             this.$notify.success(this.$t('pageVolume.documentUpdated'));
                         })
                         .catch(e => {
+                            this.discardChange(row, col);
+
                             this.error = Error.fromApiException(e);
                         });
                 }
@@ -339,9 +341,13 @@
 
             refuseRowUpdate({ row, col }) {
                 if (row && col) {
-                    let origValue = row.data[col.name];
-                    row.setValue(col.name, origValue);
+                    this.discardChange(row, col);
                 }
+            },
+
+            discardChange(row, col) {
+                let origValue = row.data[col.name];
+                row.setValue(col.name, origValue);
             }
         }
     };
