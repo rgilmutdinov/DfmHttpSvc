@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net462</TargetFramework>
@@ -10,23 +10,26 @@
     <Company>CompEd</Company>
     <Product>DfmHttpSvc</Product>
     <Copyright>Copyright (c) 2018 CompEd Software Design</Copyright>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug'">
-    <OutputPath>..\..\build\debug\dfmhttpsvc\</OutputPath>
+    <OutputPath>..\build\debug\</OutputPath>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
-    <OutputPath>..\..\build\debug\dfmhttpsvc\</OutputPath>
-    <DocumentationFile>..\..\build\debug\dfmhttpsvc\net462\DfmHttpSvc.xml</DocumentationFile>
+    <OutputPath>..\build\debug\</OutputPath>
+    <DocumentationFile>..\build\debug\DfmHttpSvc.xml</DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release'">
-    <OutputPath>..\..\build\release\dfmhttpsvc\</OutputPath>
+    <OutputPath>..\build\release\</OutputPath>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
-    <OutputPath>..\..\build\release\dfmhttpsvc\</OutputPath>
+    <OutputPath>..\build\release\</OutputPath>
+    <DocumentationFile></DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -108,18 +111,18 @@
     </Exec>
     <Error Condition="'$(ErrorCode)' != '0'" Text="Node.js is required to build and run this project. To continue, please install Node.js from https://nodejs.org/, and then restart your command prompt or IDE." />
     <Message Condition="!Exists('node_modules')" Importance="high" Text="Downloading npm packages..." />
-	<Exec Condition="!Exists('node_modules')" Command="npm install" />
+    <Exec Condition="!Exists('node_modules')" Command="npm install" />
     <Message Condition="'$(Configuration)' == 'Debug'" Importance="high" Text="Performing Webpack build (DEVELOPMENT)..." />
     <Exec Condition="'$(Configuration)' == 'Debug' And !Exists('wwwroot\dist')" Command="npm run dev_vendor" />
     <Exec Condition="'$(Configuration)' == 'Debug'" Command="npm run dev" />
     <Message Condition="'$(Configuration)' == 'Release'" Importance="high" Text="Performing Webpack build (PRODUCTION)..." />
-	<Exec Condition="'$(Configuration)' == 'Release' And !Exists('wwwroot\dist')" Command="npm run prod_vendor" />
+    <Exec Condition="'$(Configuration)' == 'Release' And !Exists('wwwroot\dist')" Command="npm run prod_vendor" />
     <Exec Condition="'$(Configuration)' == 'Release'" Command="npm run prod" />
   </Target>
   
   <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
     <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
-	<Message Importance="high" Text="Performing Webpack build (PRODUCTION)..." />
+    <Message Importance="high" Text="Performing Webpack build (PRODUCTION)..." />
     <Exec Command="npm install" />
     <Exec Command="npm run prod_vendor" />
     <Exec Command="npm run prod" />
