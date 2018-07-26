@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2012 sp1 (http://www.altova.com) by Leonid (Noname) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:include schemaLocation="wf_common.xsd"/>
+	<xs:complexType name="HyperArea">
+		<xs:sequence>
+			<xs:element name="label" type="LocalizedText" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="description" type="LocalizedText" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="hyperArea" type="HyperArea"/>
+</xs:schema>

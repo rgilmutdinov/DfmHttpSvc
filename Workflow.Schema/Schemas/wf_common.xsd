@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+	attributeFormDefault="qualified">
+	<xs:complexType name="LocalizedText">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="lang" type="xs:string" use="optional"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="Field">
+		<xs:simpleContent>
+			<xs:extension base="xs:string"/>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="Variable">
+		<xs:simpleContent>
+			<xs:extension base="xs:string"/>
+		</xs:simpleContent>
+	</xs:complexType>
+        <xs:complexType name="CalcExpression">
+		<xs:simpleContent>
+			<xs:extension base="xs:string"/>
+		</xs:simpleContent>
+	</xs:complexType>
+        <xs:complexType name="CalcDateExpression">
+		<xs:simpleContent>
+			<xs:extension base="xs:string"/>
+		</xs:simpleContent>
+	</xs:complexType>
+        <xs:complexType name="IsKeyUniqueExpression">
+		<xs:simpleContent>
+			<xs:extension base="xs:string"/>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="Constant">
+		<xs:simpleContent>
+			<xs:extension base="xs:string"/>
+		</xs:simpleContent>
+	</xs:complexType>
+        <xs:complexType name="FieldLength">
+		<xs:simpleContent>
+			<xs:extension base="xs:string"/>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="List">
+		<xs:choice maxOccurs="unbounded">
+			<xs:element name="field" type="Field"/>
+			<xs:element name="variable" type="Variable"/>
+			<xs:element name="constant" type="Constant"/>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="Operator">
+		<xs:sequence>
+			<xs:choice>
+				<xs:element name="field" type="Field"/>
+                                <xs:element name="fieldLength" type="FieldLength"/>
+				<xs:element name="variable" type="Variable"/>
+				<xs:element name="constant" type="Constant"/>
+                                <xs:element name="calcExpression" type="CalcExpression"/>
+                                <xs:element name="calcDateExpression" type="CalcDateExpression"/>
+                                <xs:element name="isKeyUniqueExpression" type="IsKeyUniqueExpression"/>
+			</xs:choice>
+			<xs:choice>
+				<xs:element name="field" type="Field"/>
+                                <xs:element name="fieldLength" type="FieldLength"/>
+				<xs:element name="variable" type="Variable"/>
+				<xs:element name="constant" type="Constant"/>
+				<xs:element name="list" type="List"/>
+			</xs:choice>
+		</xs:sequence>
+		<xs:attribute name="enabled" type="xs:boolean" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="LessPassedFrom">
+		<xs:complexContent>
+			<xs:extension base="Operator"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="MorePassedFrom">
+		<xs:complexContent>
+			<xs:extension base="Operator"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="LessToPassTo">
+		<xs:complexContent>
+			<xs:extension base="Operator"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="MoreToPassTo">
+		<xs:complexContent>
+			<xs:extension base="Operator"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Equal">
+		<xs:complexContent>
+			<xs:extension base="Operator"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="NotEqual">
+		<xs:complexContent>
+			<xs:extension base="Operator"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="GreaterThan">
+		<xs:complexContent>
+			<xs:extension base="Operator"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="GreaterOrEqual">
+		<xs:complexContent>
+			<xs:extension base="Operator"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="LessThan">
+		<xs:complexContent>
+			<xs:extension base="Operator"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="LessOrEqual">
+		<xs:complexContent>
+			<xs:extension base="Operator"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Like">
+		<xs:complexContent>
+			<xs:extension base="Operator"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="NotLike">
+		<xs:complexContent>
+			<xs:extension base="Operator"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="In">
+		<xs:complexContent>
+			<xs:extension base="Operator"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="NotIn">
+		<xs:complexContent>
+			<xs:extension base="Operator"/>
+		</xs:complexContent>
+	</xs:complexType>
+        <xs:complexType name="IsSubstrOf">
+		<xs:complexContent>
+			<xs:extension base="Operator"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="MetadataCondition">
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+			<xs:choice>
+				<xs:element name="and" type="AndCondition"/>
+				<xs:element name="or" type="OrCondition"/>
+				<xs:element name="equal" type="Equal"/>
+				<xs:element name="notEqual" type="NotEqual"/>
+				<xs:element name="greaterThan" type="GreaterThan"/>
+				<xs:element name="greaterOrEqual" type="GreaterOrEqual"/>
+				<xs:element name="lessThan" type="LessThan"/>
+				<xs:element name="lessOrEqual" type="LessOrEqual"/>
+				<xs:element name="like" type="Like"/>
+				<xs:element name="notLike" type="NotLike"/>
+				<xs:element name="in" type="In"/>
+				<xs:element name="notIn" type="NotIn"/>
+                                <xs:element name="isSubstrOf" type="IsSubstrOf"/>
+				<xs:element name="lessPassedFrom" type="LessPassedFrom"/>
+				<xs:element name="morePassedFrom" type="MorePassedFrom"/>
+				<xs:element name="lessToPassTo" type="LessToPassTo"/>
+				<xs:element name="moreToPassTo" type="MoreToPassTo"/>                                                              
+			</xs:choice>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AndCondition">
+		<xs:complexContent>
+			<xs:extension base="MetadataCondition">
+				<xs:attribute name="enabled" type="xs:boolean" use="optional" default="true"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="OrCondition">
+		<xs:complexContent>
+			<xs:extension base="MetadataCondition">
+				<xs:attribute name="enabled" type="xs:boolean" use="optional" default="true"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+        
+        <xs:complexType name="Coord">
+		<xs:attribute name="y" type="xs:int"/>
+		<xs:attribute name="x" type="xs:int"/>
+	</xs:complexType>
+	<xs:complexType name="Size">
+		<xs:attribute name="height" type="xs:int"/>
+		<xs:attribute name="width" type="xs:int"/>
+	</xs:complexType>
+	<xs:complexType name="Font">
+		<xs:sequence>
+			<xs:element name="name" type="xs:string"/>
+			<xs:element name="size" type="xs:int"/>
+			<xs:element name="effect" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

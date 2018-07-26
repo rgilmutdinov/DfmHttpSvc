@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:include schemaLocation="wf_common.xsd"/>
+	<xs:element name="pdfPrintTemplate" type="PdfPrintTemplate"/>
+	<xs:complexType name="GrObj">
+		<xs:sequence>
+			<xs:element name="name" type="xs:string"/>
+			<xs:element name="type" type="xs:string"/>
+			<xs:element name="data" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="TextObj">
+		<xs:sequence>
+			<xs:element name="name" type="xs:string"/>
+			<xs:element name="data" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="PageTextObj">
+		<xs:sequence>
+			<xs:element name="name" type="xs:string"/>
+			<xs:element name="coord" type="Coord"/>
+			<xs:element name="size" type="Size" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="condition" type="MetadataCondition"/>
+			<xs:element name="font" type="Font"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="PageGrObj">
+		<xs:sequence>
+			<xs:element name="name" type="xs:string"/>
+			<xs:element name="coord" type="Coord"/>
+			<xs:element name="size" type="Size"/>
+			<xs:element name="condition" type="MetadataCondition"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Page">
+		<xs:sequence>
+			<xs:element name="size" type="Size"/>
+			<xs:element name="pageGrObj" type="PageGrObj" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="pageTextObj" type="PageTextObj" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="PdfPrintTemplate">
+		<xs:sequence>
+			<xs:element name="grObj" type="GrObj" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="textObj" type="TextObj" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="page" type="Page" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="version" type="xs:string" use="optional"/>
+	</xs:complexType>
+</xs:schema>

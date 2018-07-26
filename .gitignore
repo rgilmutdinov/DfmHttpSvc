@@ -250,5 +250,8 @@ _Pvt_Extensions
 
 .vscode/
 
-# Exclude interops from ingore
+# Exclude interops from ignore
 !Interops/*
+
+# Ignore generated classes
+**/Generated/*.cs

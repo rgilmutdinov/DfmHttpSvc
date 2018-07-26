@@ -1,0 +1,606 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2012 sp1 (http://www.altova.com) by Leonid (Noname) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:include schemaLocation="wf_common.xsd"/>
+    <xs:complexType name="Filter">
+        <xs:sequence>
+            <xs:element name="conditions" type="MetadataCondition"/>
+            <xs:element name="onsign" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="assignment" type="UpdateField" minOccurs="0" maxOccurs="unbounded"/>
+                        <xs:choice minOccurs="0" maxOccurs="unbounded">
+                            <xs:element name="updateFieldsAction" type="UpdateFieldsAction"/>
+                            <xs:element name="sendEmailAction" type="SendEmailAction"/>
+                            <xs:element name="execAppAction" type="ExecAppAction"/>
+                            <xs:element name="sendPECAction" type="SendPECAction"/>
+                            <xs:element name="sdiAcceptRefuseAction" type="SdiAcceptRefuseAction"/>
+                            <xs:element name="stampedPrintAction" type="StampedPrintAction"/>
+                        </xs:choice>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="onversioning" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:choice minOccurs="0" maxOccurs="unbounded">
+                            <xs:element name="updateFieldsAction" type="UpdateFieldsAction"/>
+                            <xs:element name="sendEmailAction" type="SendEmailAction"/>
+                            <xs:element name="execAppAction" type="ExecAppAction"/>
+                            <xs:element name="sendPECAction" type="SendPECAction"/>
+                            <xs:element name="sdiAcceptRefuseAction" type="SdiAcceptRefuseAction"/>
+                        </xs:choice>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="onPdfConversion" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:choice minOccurs="0" maxOccurs="unbounded">
+                            <xs:element name="updateFieldsAction" type="UpdateFieldsAction"/>
+                            <xs:element name="sendEmailAction" type="SendEmailAction"/>
+                            <xs:element name="execAppAction" type="ExecAppAction"/>
+                            <xs:element name="sendPECAction" type="SendPECAction"/>
+                        </xs:choice>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="localizedDescription" type="LocalizedText" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="note" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="contextMenuLabel" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="name" type="xs:string"/>
+                        <xs:sequence>
+                            <xs:element name="label" type="LocalizedText" minOccurs="0" maxOccurs="unbounded"/> 
+                        </xs:sequence>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>    
+            <xs:element name="filterForm" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="formName" type="xs:string"/>
+                        <xs:element name="condition" type="MetadataCondition"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="padesSignature" type="PadesSignature" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+                                
+        <xs:attribute name="enabled" type="xs:boolean" use="optional" default="true"/>
+        <xs:attribute name="sequenceNumber" type="xs:string" use="required"/>
+        <xs:attribute name="description" type="xs:string" use="optional"/>
+        <xs:attribute name="form" type="xs:string" use="optional"/>
+        <xs:attribute name="applicationDependency" type="xs:string" use="optional"/>
+        <xs:attribute name="versioningEnabled" type="xs:boolean" default="false"/>
+        <xs:attribute name="viewVersionsEnabled" type="xs:boolean" default="false"/>
+        <xs:attribute name="updateAttachmentEnabled" type="xs:boolean" default="false"/>
+        <xs:attribute name="padesEnabled" type="xs:boolean" default="true"/>
+        <xs:attribute name="cadesEnabled" type="xs:boolean" default="true"/>      
+        <xs:attribute name="padesAttachmentEnabled" type="xs:boolean" use="optional" default="false"/>
+        <xs:attribute name="cadesAttachmentEnabled" type="xs:boolean" use="optional" default="false"/>          
+        <xs:attribute name="pdfConversionEnabled" type="xs:boolean" default="true"/>
+        <xs:attribute name="padesMassiveEnabled" type="xs:boolean" use="optional" default="false"/>
+    </xs:complexType>
+    <xs:simpleType name="ControlType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="textBox"/>
+            <xs:enumeration value="dateTimePicker"/>
+            <xs:enumeration value="userPicker"/>
+            <xs:enumeration value="spinControl"/>
+            <xs:enumeration value="comboBox"/>
+            <xs:enumeration value="groupPicker"/>
+            <xs:enumeration value="memoTextBox"/>
+            <xs:enumeration value="questionnaireIdPicker"/>
+            <xs:enumeration value="emailPicker"/>
+            <xs:enumeration value="clientEmailPicker"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="FormRole">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="newRecord"/>
+            <xs:enumeration value="updateRecord"/>
+            <xs:enumeration value="massiveUpdate"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:complexType name="Validator">
+        <xs:complexContent>
+            <xs:extension base="MetadataCondition">
+                <xs:sequence>
+                    <xs:element name="localizedErrorMessage" type="LocalizedText" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+                <xs:attribute name="enabled" type="xs:boolean" use="optional" default="true"/>
+                <xs:attribute name="errorMessage" type="xs:string" use="optional"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="ActionCondition">
+        <xs:complexContent>
+            <xs:extension base="MetadataCondition">
+                <xs:attribute name="enabled" type="xs:boolean" use="optional" default="true"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="Layout">
+        <xs:sequence> 
+            <xs:element name="size" type="Size" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="coord" type="Coord" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>        
+    <xs:complexType name="TitledLayout">
+        <xs:complexContent>
+            <xs:extension base="Layout">
+                <xs:sequence>
+                    <xs:element name="title" type="Layout" minOccurs="0" maxOccurs="1"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="PadesSignature">
+        <xs:sequence>            
+            <xs:element name="c1" type="Coord" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="c2" type="Coord" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="addCommonName" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="addEmail" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="addIsValid" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="addTimeReference" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="addFiscalCode" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="addRole" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="addCertificateIssuer" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="reason" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="page" type="xs:int" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="addTimestamp" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="addSigningTime" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="Form">
+        <xs:sequence>
+            <xs:element name="layout" type="Layout" minOccurs="0" maxOccurs="1"/>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element name="label" type="Label" minOccurs="0"/>
+                <xs:element name="textBox" minOccurs="0">
+                    <xs:complexType>
+                        <xs:complexContent>
+                            <xs:extension base="TextBox"/>
+                        </xs:complexContent>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="comboBox" type="ComboBox" minOccurs="0"/>
+                <xs:element name="groupPicker" type="GroupPicker" minOccurs="0"/>
+                <xs:element name="userPicker" type="UserPicker" minOccurs="0"/>
+                <xs:element name="dateTimePicker" minOccurs="0">
+                    <xs:complexType>
+                        <xs:complexContent>
+                            <xs:extension base="DateTimePicker"/>
+                        </xs:complexContent>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="spinControl" type="SpinControl" minOccurs="0"/>
+                <xs:element name="memoTextBox" type="MemoTextBox" minOccurs="0"/>
+                <xs:element name="questionnaireIdPicker" type="QuestionnaireIdPicker" minOccurs="0"/>
+                <xs:element name="emailPicker" type="EmailPicker" minOccurs="0"/>
+                <xs:element name="clientEmailPicker" type="ClientEmailPicker" minOccurs="0"/>
+                <xs:element name="lookupControl" minOccurs="0">
+                    <xs:complexType>
+                        <xs:complexContent>
+                            <xs:extension base="LookupControl">
+                                <xs:sequence>
+                                    <xs:element name="text" type="LocalizedText" minOccurs="1" maxOccurs="unbounded"/>
+                                </xs:sequence>
+                                <xs:attribute name="configurationName" type="xs:string"/>
+                            </xs:extension>
+                        </xs:complexContent>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="previewPanel" type="PreviewPanel" minOccurs="0" maxOccurs="1"/>
+                <xs:element name="localAppButton" type="LocalAppButton" minOccurs="0"/>
+                <xs:element name="gSignButton" type="GSignButton" minOccurs="0"/>
+                <xs:element name="gestPayButton" type="GestPayButton" minOccurs="0"/>
+                <xs:element name="scanButton" type="ScanButton" minOccurs="0"/>
+                <xs:element name="questionnaireButton" type="QuestionnaireButton" minOccurs="0"/>                                
+                <xs:element name="button" type="Button" minOccurs="0"/>				
+            </xs:choice>
+            <xs:element name="localizedDescription" type="LocalizedText" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="fakeDocument" minOccurs="0" maxOccurs="1">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="name" type="xs:string"/>
+                        <xs:element name="content" type="xs:string"/>
+                    </xs:sequence>
+                    <xs:attribute name="enabled" type="xs:boolean"/>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="description" type="xs:string" use="optional"/>
+        <xs:attribute name="role" type="FormRole" use="required"/>
+        <xs:attribute name="useCustomLayout" type="xs:boolean" use="optional" default="false"/>
+    </xs:complexType>
+    <xs:complexType name="FieldVisibilityInfo">
+        <xs:sequence>
+            <xs:element name="label" type="LocalizedText" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:string"/>
+        <xs:attribute name="visible" type="xs:boolean"/>
+    </xs:complexType>
+    <xs:complexType name="HyperVolume">
+        <xs:sequence>
+            <xs:element name="label" type="LocalizedText" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="filter" type="Filter" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="form" type="Form" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="procedure" type="Procedure" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="fieldsVisibility" type="FieldVisibilityInfo" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="description" type="xs:string" use="optional"/>
+        <xs:attribute name="pollingTime" type="xs:int" use="required"/> 
+        <xs:attribute name="version" type="xs:int" use="optional" default="1"/>
+    </xs:complexType>
+    <xs:element name="hyperVolume" type="HyperVolume"/>
+    <xs:complexType name="UpdateField">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="enabled" type="xs:boolean"/>
+                <xs:attribute name="name" type="xs:string" use="required"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+    <xs:complexType name="Control">        
+        <xs:sequence>
+            <xs:element name="layout" type="TitledLayout" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute name="enabled" type="xs:boolean"/>
+    </xs:complexType>
+    <xs:complexType name="Button">
+        <xs:complexContent>
+            <xs:extension base="Control">
+                <xs:sequence>
+                    <xs:element name="note" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="text" type="LocalizedText" minOccurs="1" maxOccurs="unbounded"/>
+                    <xs:element name="validator" type="Validator" minOccurs="0" maxOccurs="unbounded"/>
+                    <xs:choice minOccurs="0" maxOccurs="unbounded">
+                        <xs:element name="updateFieldsAction" type="UpdateFieldsAction"/>
+                        <xs:element name="sendEmailAction" type="SendEmailAction"/>
+                        <xs:element name="execAppAction" type="ExecAppAction"/>
+                        <xs:element name="sendPECAction" type="SendPECAction"/>
+                        <xs:element name="pdfPrintAction" type="PDFPrintAction"/>
+                        <xs:element name="sdiAcceptRefuseAction" type="SdiAcceptRefuseAction"/>
+                        <xs:element name="stampedPrintAction" type="StampedPrintAction"/>
+                    </xs:choice>
+                </xs:sequence>
+                <xs:attribute name="commandId" type="xs:string" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="Label">
+        <xs:complexContent>
+            <xs:extension base="Control">
+                <xs:sequence>
+                    <xs:element name="text" type="LocalizedText" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="InputControl">
+        <xs:complexContent>
+            <xs:extension base="Control">
+                <xs:sequence>
+                    <xs:element name="label" type="Label" minOccurs="0"/>
+                </xs:sequence>
+                <xs:attribute name="readOnly" type="xs:boolean"/>
+                <xs:attribute name="field" type="xs:string"/>
+                <xs:attribute name="fieldLength" type="xs:int" use="optional"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="TextBox">
+        <xs:complexContent>
+            <xs:extension base="InputControl"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="ClientEmailPicker">
+        <xs:complexContent>
+            <xs:extension base="InputControl"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="MemoTextBox">
+        <xs:complexContent>
+            <xs:extension base="InputControl">
+                <xs:attribute name="height" type="xs:int"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="ComboBox">
+        <xs:complexContent>
+            <xs:extension base="InputControl">
+                <xs:sequence>
+                    <xs:element name="item" minOccurs="0" maxOccurs="unbounded">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="name" type="LocalizedText" minOccurs="1" maxOccurs="unbounded"/>
+                                <xs:element name="value"/>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="GroupPicker">
+        <xs:complexContent>
+            <xs:extension base="InputControl"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="UserPicker">
+        <xs:complexContent>
+            <xs:extension base="InputControl"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="DateTimePicker">
+        <xs:complexContent>
+            <xs:extension base="InputControl"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="QuestionnaireIdPicker">
+        <xs:complexContent>
+            <xs:extension base="InputControl"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="EmailPicker">
+        <xs:complexContent>
+            <xs:extension base="InputControl"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="SpinControl">
+        <xs:complexContent>
+            <xs:extension base="InputControl"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="LookupControl">
+        <xs:complexContent>
+            <xs:extension base="Control"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="LocalAppButton">
+        <xs:complexContent>
+            <xs:extension base="Control">
+                <xs:sequence>
+                    <xs:element name="text" type="LocalizedText" minOccurs="1" maxOccurs="unbounded"/>
+                    <xs:element name="path" type="xs:string"/>
+                    <xs:element name="cmdLine" type="xs:string"/>
+                    <xs:element name="returnDocument" type="xs:boolean"/>
+                    <xs:element name="outFolder" type="xs:string"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>    
+    <xs:complexType name="GSignButton">
+        <xs:complexContent>
+            <xs:extension base="Control">
+                <xs:sequence>
+                    <xs:element name="text" type="LocalizedText" minOccurs="1" maxOccurs="unbounded"/>
+                    <xs:element name="wizardFile" type="xs:string"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="GestPayButton">
+        <xs:complexContent>
+            <xs:extension base="Button">
+                <xs:sequence>                        
+                    <xs:element name="merchantId" type="xs:string"/>
+                    <xs:element name="currency" type="xs:string"/>
+                    <xs:element name="amount" type="xs:string"/>
+                    <xs:element name="transactionStatus" type="xs:string"/>
+                    <xs:element name="paymentCode" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                </xs:sequence>                    
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="QuestionnaireButton">
+        <xs:complexContent>
+            <xs:extension base="Control">
+                <xs:sequence>         
+                    <xs:element name="evaluateQuizzes" type="xs:boolean"/>               
+                    <xs:element name="text" type="LocalizedText" minOccurs="1" maxOccurs="unbounded"/>                        
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="ScanButton">
+        <xs:complexContent>
+            <xs:extension base="Control">
+                <xs:sequence>
+                    <xs:element name="text" type="LocalizedText" minOccurs="1" maxOccurs="unbounded"/> 
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="PreviewPanel">
+        <xs:complexContent>
+            <xs:extension base="Control">
+                <xs:sequence>
+                    <xs:element name="text" type="LocalizedText" minOccurs="1" maxOccurs="unbounded"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="Action">
+        <xs:sequence>
+            <xs:element name="condition" type="ActionCondition" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="enabled" type="xs:boolean" use="optional" default="true"/>
+        <xs:attribute name="sequenceNumber" type="xs:string" use="required"/>
+        <xs:attribute name="createsDocument" type="xs:boolean" use="optional" default="false"/>
+    </xs:complexType>
+    <xs:complexType name="UpdateFieldsAction">
+        <xs:complexContent>
+            <xs:extension base="Action">
+                <xs:sequence>
+                    <xs:element name="field" type="UpdateField" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="SdiAcceptRefuseAction">
+        <xs:complexContent>
+            <xs:extension base="Action">
+                <xs:sequence>
+                    <xs:element name="field" type="UpdateField" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+                <xs:attribute name="accept" type="xs:boolean" default="true"/>                 
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="PDFPrintAction">
+        <xs:complexContent>
+            <xs:extension base="Action"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="StampedPrintAction">
+        <xs:complexContent>
+            <xs:extension base="Action">
+                <xs:attribute name="copies" type="xs:int" use="optional" default="1"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="SendEmailActionBase">
+        <xs:complexContent>
+            <xs:extension base="Action">
+                <xs:sequence>
+                    <xs:element name="recipient" minOccurs="0" maxOccurs="unbounded">
+                        <xs:complexType>
+                            <xs:attribute name="enabled" type="xs:boolean"/>
+                            <xs:attribute name="address" type="xs:string" use="required"/>
+                            <xs:attribute name="persone" type="xs:string" use="required"/>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="subject" type="LocalizedText" minOccurs="1" maxOccurs="unbounded"/>
+                    <xs:element name="body" type="LocalizedText" minOccurs="1" maxOccurs="unbounded"/>
+                    <xs:element name="smtp" type="Smtp" minOccurs="0" maxOccurs="1"/>
+                </xs:sequence>
+                <xs:attribute name="document" type="xs:boolean" default="false"/>
+                <xs:attribute name="documentNameTemplate"/>
+                <xs:attribute name="attachments" type="xs:boolean" default="false"/>                    
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="SendEmailAction">
+        <xs:complexContent>
+            <xs:extension base="SendEmailActionBase">
+                <xs:attribute name="letsUserDecide" type="xs:boolean" default="false" use="optional"/>
+                <xs:attribute name="attachExternalFiles" type="xs:boolean" default="false" use="optional"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="ExecAppAction">
+        <xs:complexContent>
+            <xs:extension base="Action">
+                <xs:sequence>
+                    <xs:element name="path" type="xs:string"/>
+                    <xs:element name="cmdLine" type="xs:string" minOccurs="0"/>
+                    <xs:element name="credentials" minOccurs="0">
+                        <xs:complexType>
+                            <xs:attribute name="enabled" type="xs:boolean" default="true"/>
+                            <xs:attribute name="userName" type="xs:string" use="required"/>
+                            <xs:attribute name="password" type="xs:string" use="required"/>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:sequence>
+                <xs:attribute name="applicationDependency" type="xs:boolean" default="false"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="SendPECActionBase">
+        <xs:complexContent>
+            <xs:extension base="Action">
+                <xs:attribute name="includeAttachments" type="xs:boolean" default="false"/>
+                <xs:attribute name="includeMainDocument" type="xs:boolean" default="true" use="optional"/>                                
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="SendPECAction">
+        <xs:complexContent>
+            <xs:extension base="SendPECActionBase">				
+                <xs:attribute name="letsUserDecide" type="xs:boolean" default="false" use="optional"/>
+                <xs:attribute name="attachExternalFiles" type="xs:boolean" default="false" use="optional"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="Procedure">
+        <xs:sequence>
+            <xs:sequence>
+                <xs:element name="condition" type="ActionCondition" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:sequence>
+                <xs:choice minOccurs="0" maxOccurs="unbounded">
+                    <xs:element name="updateFieldsAction" type="ProcedureUpdateFieldsAction"/>
+                    <xs:element name="sendEmailAction" type="ProcedureSendEmailAction"/>
+                    <xs:element name="execAppAction" type="ProcedureExecAppAction"/>
+                    <xs:element name="sendPECAction" type="ProcedureSendPECAction"/>
+                    <xs:element name="sdiAcceptRefuseAction" type="ProcedureSdiAcceptRefuseAction"/>
+                </xs:choice>
+            </xs:sequence>
+            <xs:element name="localizedDescription" type="LocalizedText" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="enabled" type="xs:boolean" default="true"/>
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="description" type="xs:string" use="optional"/>
+        <xs:attribute name="type" type="ProcedureType" use="required"/>
+    </xs:complexType>
+    <xs:simpleType name="ProcedureType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="VIRT_VOLUME_PROCEDURE"/>
+            <xs:enumeration value="SYNC_VOLUME_PROCEDURE"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:complexType name="ProcedureUpdateFieldsAction">
+        <xs:complexContent>
+            <xs:extension base="UpdateFieldsAction">
+                <xs:attribute name="timeout" type="xs:int" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="ProcedureSdiAcceptRefuseAction">
+        <xs:complexContent>
+            <xs:extension base="SdiAcceptRefuseAction">
+                <xs:attribute name="timeout" type="xs:int" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="ProcedureSendEmailAction">
+        <xs:complexContent>
+            <xs:extension base="SendEmailActionBase">                        
+                <xs:attribute name="timeout" type="xs:int" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="ProcedureSendPECAction">
+        <xs:complexContent>
+            <xs:extension base="SendPECActionBase">
+                <xs:attribute name="timeout" type="xs:int" use="required"/>
+            </xs:extension>	
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="ProcedureExecAppAction">
+        <xs:complexContent>
+            <xs:extension base="ExecAppAction">
+                <xs:attribute name="timeout" type="xs:int" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="Smtp">        
+        <xs:sequence>
+            <xs:element name="server" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="port" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="enableSSL" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="fromAddress" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="fromPersonal" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="authEnabled" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="authMechanisms" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="authLogin" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="authPassword" type="xs:string" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>        
+        <xs:attribute name="enabled" type="xs:boolean" default="false"/>
+    </xs:complexType>
+</xs:schema>

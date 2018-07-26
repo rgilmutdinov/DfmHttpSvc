@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:complexType name="SerializableFieldInfo">
+		<xs:sequence>
+			<xs:element name="size" type="xs:int"/>
+			<xs:element name="caption" type="xs:string"/>
+			<xs:element name="precision" type="xs:int"/>
+			<xs:element name="dateFormat" type="xs:int"/>
+			<xs:element name="autofill" type="xs:string"/>
+			<xs:element name="updatable" type="xs:boolean"/>
+			<xs:element name="type" type="xs:byte"/>
+			<xs:element name="nullable" type="xs:boolean"/>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string"/>
+	</xs:complexType>
+	<xs:complexType name="SerializableIndexInfo">
+		<xs:attribute name="indexData" type="xs:string"/>
+	</xs:complexType>
+	<xs:complexType name="SerializableVolumeInfo">
+		<xs:attribute name="name" type="xs:string"/>
+		<xs:attribute name="description" type="xs:string" use="optional"/>
+		<xs:attribute name="visible" type="xs:boolean" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="PdfPrintInfo">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="name" type="xs:string" use="required"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+        <xs:complexType name="AttachmentStampInfo">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="name" type="xs:string" use="required"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="PhysicalVolumeInfo">
+		<xs:complexContent>
+			<xs:extension base="SerializableVolumeInfo">
+				<xs:sequence>
+					<xs:element name="fieldInfo" type="SerializableFieldInfo" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="indexInfo" type="SerializableIndexInfo" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+				<xs:attribute name="protocolVolume" type="xs:boolean" use="optional" default="true"/>
+				<xs:attribute name="versioningEnabled" type="xs:boolean" use="optional" default="true"/>
+				<xs:attribute name="pecVolume" type="xs:boolean" use="optional" default="false"/>
+				<xs:attribute name="dssVolume" type="xs:boolean" use="optional" default="false"/>
+				<xs:attribute name="extStorageParams" type="xs:string" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="HyperVolumeSerializationInfo">
+		<xs:sequence>
+			<xs:element name="hyperVolumeConfig" type="xs:string"/>
+			<xs:element name="physicalVolume" type="PhysicalVolumeInfo"/>
+			<xs:element name="virtualVolume" type="SerializableVolumeInfo"/>
+			<xs:element name="pdfPrintInfo" type="PdfPrintInfo" minOccurs="0" maxOccurs="unbounded"/>
+                        <xs:element name="attachmentStampInfo" type="AttachmentStampInfo" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="description" type="xs:string" use="optional"/>
+		<xs:attribute name="exclusiveUsage" type="xs:boolean" use="required"/>
+		<xs:attribute name="syncVolume" type="xs:boolean" use="required"/>
+	</xs:complexType>
+	<xs:element name="hyperVolumeSerializationInfo" type="HyperVolumeSerializationInfo"/>
+</xs:schema>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:element name="questionnaire" type="Questionnaire"/>
+    <xs:element name="questioningMode" type="QuestioningMode"/>
+    <xs:element name="modeAllQuestions" type="ModeAllQuestions" substitutionGroup="questioningMode"/>
+    <xs:element name="modeSubsetOfQuestions" type="ModeSubsetOfQuestions" substitutionGroup="questioningMode"/>
+    <xs:complexType name="QuestioningMode" abstract="true">
+        <xs:sequence/>
+    </xs:complexType>
+    <xs:complexType name="ModeAllQuestions">
+        <xs:complexContent>
+            <xs:extension base="QuestioningMode">
+                <xs:sequence>
+                    <xs:element name="minScore" type="xs:float"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="ModeSubsetOfQuestions">
+        <xs:complexContent>
+            <xs:extension base="QuestioningMode">
+                <xs:sequence>
+                    <xs:element name="minCorrectAnswers" type="xs:int"/>
+                    <xs:element name="questions" type="xs:int"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>  
+    <xs:complexType name="Identity">        
+        <xs:sequence>
+            <xs:element name="location" type="xs:string"/>
+            <xs:element name="role" type="xs:string"/>
+            <xs:element name="teacher" type="xs:string"/>
+        </xs:sequence>        
+    </xs:complexType>
+    <xs:complexType name="Questionnaire">
+        <xs:sequence>
+            <xs:element name="questionsVolume" type="xs:string"/>     
+            <xs:element ref="questioningMode"/>                         
+            <xs:element name="maxTime" type="xs:float" default="0"/>
+            <xs:element name="deliveryDate" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="identity" type="Identity" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>        
+</xs:schema>

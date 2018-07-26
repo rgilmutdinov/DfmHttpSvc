@@ -1,0 +1,103 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{4ED99390-1111-4077-B22B-779FEE6F42F5}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Workflow.Schema</RootNamespace>
+    <AssemblyName>Workflow.Schema</AssemblyName>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Generated\WFSchema.AttachmentPrint.cs" />
+    <Compile Include="Generated\WFSchema.HAConfig.cs" />
+    <Compile Include="Generated\WFSchema.HVConfig.cs" />
+    <Compile Include="Generated\WFSchema.HVSerialization.cs" />
+    <Compile Include="Generated\WFSchema.PDFPrint.cs" />
+    <Compile Include="Generated\WFSchema.Questionnaire.cs" />
+    <Compile Include="Generated\WFSchema.WFCommon.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resource.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resource.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Generator\XmlSchemaClassGenerator.Console.exe" />
+    <None Include="Generator\XmlSchemaClassGenerator.dll" />
+    <None Include="Schemas\attachmentprint_configuration.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Schemas\ha_configuration.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Schemas\hv_configuration.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Schemas\hv_serialization.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Schemas\pdfprint_configuration.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Schemas\qhv_configuration.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Schemas\wf_common.episode" />
+    <None Include="Schemas\wf_common.xsd">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>$(ProjectDir)Generator\XmlSchemaClassGenerator.Console.exe --output=$(ProjectDir)Generated -a -r -n "|wf_common.xsd=WFSchema.WFCommon" $(ProjectDir)Schemas\wf_common.xsd
+$(ProjectDir)Generator\XmlSchemaClassGenerator.Console.exe --output=$(ProjectDir)Generated -a -r -n "|pdfprint_configuration.xsd=WFSchema.PDFPrint" -n "|wf_common.xsd=WFSchema.WFCommon" $(ProjectDir)Schemas\pdfprint_configuration.xsd
+$(ProjectDir)Generator\XmlSchemaClassGenerator.Console.exe --output=$(ProjectDir)Generated -a -r -n "|hv_configuration.xsd=WFSchema.HVConfig" -n "|wf_common.xsd=WFSchema.WFCommon" $(ProjectDir)Schemas\hv_configuration.xsd
+$(ProjectDir)Generator\XmlSchemaClassGenerator.Console.exe --output=$(ProjectDir)Generated -a -r -n "|ha_configuration.xsd=WFSchema.HAConfig" -n "|wf_common.xsd=WFSchema.WFCommon" $(ProjectDir)Schemas\ha_configuration.xsd
+$(ProjectDir)Generator\XmlSchemaClassGenerator.Console.exe --output=$(ProjectDir)Generated -a -r -n "|hv_serialization.xsd=WFSchema.HVSerialization" $(ProjectDir)Schemas\hv_serialization.xsd
+$(ProjectDir)Generator\XmlSchemaClassGenerator.Console.exe --output=$(ProjectDir)Generated -a -r -n "|attachmentprint_configuration.xsd=WFSchema.AttachmentPrint" -n "|wf_common.xsd=WFSchema.WFCommon" $(ProjectDir)Schemas\attachmentprint_configuration.xsd
+$(ProjectDir)Generator\XmlSchemaClassGenerator.Console.exe --output=$(ProjectDir)Generated -a -r -n "|qhv_configuration.xsd=WFSchema.Questionnaire" $(ProjectDir)Schemas\qhv_configuration.xsd
+</PreBuildEvent>
+  </PropertyGroup>
+</Project>

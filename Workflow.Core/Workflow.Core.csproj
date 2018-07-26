@@ -4,13 +4,14 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{B5570C08-49F4-477E-BF09-9B555C62ABA2}</ProjectGuid>
+    <ProjectGuid>{36DEE25D-84FD-4584-8F20-1142EA6C8187}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DfmHttpCore</RootNamespace>
-    <AssemblyName>DfmHttpCore</AssemblyName>
+    <RootNamespace>Workflow.Core</RootNamespace>
+    <AssemblyName>Workflow.Core</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -32,12 +33,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Interop.DFMServer">
-      <HintPath>..\Interops\Interop.DFMServer.dll</HintPath>
+      <HintPath>..\..\DfmHttpSvc\Interops\Interop.DFMServer.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -46,26 +46,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Collections\LruCache.cs" />
-    <Compile Include="Entities\AttachmentsSelection.cs" />
-    <Compile Include="Entities\DocIdentity.cs" />
-    <Compile Include="Entities\AreaItem.cs" />
-    <Compile Include="Entities\Document.cs" />
-    <Compile Include="Entities\DocumentsResult.cs" />
-    <Compile Include="Entities\DocumentsSelection.cs" />
-    <Compile Include="Entities\Selection.cs" />
+    <Compile Include="HyperVolumeConfiguration.cs" />
+    <Compile Include="HyperVolumeInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Session.cs" />
-    <Compile Include="Utils\Strings.cs" />
-    <Compile Include="VolumeRepository.cs" />
-    <Compile Include="Entities\VolumeState.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DfmCore\DfmCore.csproj">
       <Project>{4b758f10-0e08-4c2e-8c4a-29c88178836b}</Project>
       <Name>DfmCore</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Workflow.Schema\Workflow.Schema.csproj">
+      <Project>{4ed99390-1111-4077-b22b-779fee6f42f5}</Project>
+      <Name>Workflow.Schema</Name>
+    </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

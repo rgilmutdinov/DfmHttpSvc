@@ -107,7 +107,6 @@
     import { mergeStyles } from './css';
     import Pagination from './Pagination.vue';
     import HeadSort from './HeadSort.vue';
-    import { ColumnType } from './column';
 
     const select = {
         inserted(el) {
@@ -223,7 +222,7 @@
                 }
                 return -1;
             },
-            moveNext(e) {
+            moveNext() {
                 if (this.editable && this.activeRow && this.activeCol) {
                     let index = this.getColumnIndex(this.activeCol);
                     for (let i = index + 1; i < this.columns.length; i++) {
