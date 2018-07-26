@@ -1,7 +1,7 @@
 {
-  "name": "dfmhttpsvc",
+  "name": "dfmweb",
   "version": "1.0.0",
-  "description": "DFM HTTP Server",
+  "description": "DFM Web Server",
   "scripts": {
     "dev": "webpack",
     "dev_vendor": "webpack --config webpack.config.vendor.js",

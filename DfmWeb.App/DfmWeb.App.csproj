@@ -20,7 +20,7 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
     <OutputPath>..\build\debug\</OutputPath>
-    <DocumentationFile>..\build\debug\DfmHttpSvc.xml</DocumentationFile>
+    <DocumentationFile>..\build\debug\DfmWeb.xml</DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release'">

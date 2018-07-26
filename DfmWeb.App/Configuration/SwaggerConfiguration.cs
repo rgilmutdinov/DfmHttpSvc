@@ -22,8 +22,8 @@ namespace DfmWeb.App.Configuration
                     new Info
                     {
                         Version = "v1",
-                        Title = "DfmHttpSvc",
-                        Description = "ASP.NET Core Web API for Doc-Filing Manager HTTP Service",
+                        Title = "DfmWeb",
+                        Description = "ASP.NET Core Web API for Doc-Filing Manager Web application",
                         TermsOfService = "Terms Of Service",
                         Contact = new Contact { Name = "CompEd Assistant", Email = "assistenza@comped.it", Url = "http://www.comped.it/it/contattaci" },
                         License = new License { Name = "License: Proprietary" }
@@ -56,7 +56,7 @@ namespace DfmWeb.App.Configuration
 
                 // Set the comments path for the Swagger JSON and UI.
                 string basePath = AppContext.BaseDirectory;
-                string xmlPath = Path.Combine(basePath, "DfmHttpSvc.xml");
+                string xmlPath = Path.Combine(basePath, "DfmWeb.xml");
                 if (File.Exists(xmlPath))
                 {
                     c.IncludeXmlComments(xmlPath);
@@ -74,7 +74,7 @@ namespace DfmWeb.App.Configuration
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), specifying the Swagger JSON endpoint.
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "dfmhttpsvc api v1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "dfmweb api v1");
             });
         }
     }
