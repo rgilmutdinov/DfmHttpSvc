@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Workflow.Core")]
+[assembly: AssemblyTitle("DfmServer.Managed")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
@@ -19,7 +19,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("36dee25d-84fd-4584-8f20-1142ea6c8187")]
+[assembly: Guid("4b758f10-0e08-4c2e-8c4a-29c88178836b")]
 
 // Version information for an assembly consists of the following four values:
 //

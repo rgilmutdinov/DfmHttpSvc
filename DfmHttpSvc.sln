@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27004.2009
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DfmHttpSvc", "DfmHttpSvc\DfmHttpSvc.csproj", "{F4C94062-36C0-4707-9D6F-0B14C6547AB9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DfmWeb.App", "DfmWeb.App\DfmWeb.App.csproj", "{F4C94062-36C0-4707-9D6F-0B14C6547AB9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DfmCore", "DfmCore\DfmCore.csproj", "{4B758F10-0E08-4C2E-8C4A-29C88178836B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DfmServer.Managed", "DfmServer.Managed\DfmServer.Managed.csproj", "{4B758F10-0E08-4C2E-8C4A-29C88178836B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DfmHttpCore", "DfmHttpCore\DfmHttpCore.csproj", "{B5570C08-49F4-477E-BF09-9B555C62ABA2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DfmWeb.Core", "DfmWeb.Core\DfmWeb.Core.csproj", "{B5570C08-49F4-477E-BF09-9B555C62ABA2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Workflow.Core", "Workflow.Core\Workflow.Core.csproj", "{36DEE25D-84FD-4584-8F20-1142EA6C8187}"
 EndProject
