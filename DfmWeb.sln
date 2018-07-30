@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Workflow.Schema", "Workflow
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Workflow.Tests", "Workflow.Tests\Workflow.Tests.csproj", "{CA6451F8-0BA8-4A10-9F3F-B81B34AB8F23}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Workflow.Expressions", "Workflow.Expressions\Workflow.Expressions.csproj", "{61CAEE23-5FD8-46EE-9E45-BF0C82038137}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -45,6 +47,10 @@ Global
 		{CA6451F8-0BA8-4A10-9F3F-B81B34AB8F23}.Debug|x86.Build.0 = Debug|x86
 		{CA6451F8-0BA8-4A10-9F3F-B81B34AB8F23}.Release|x86.ActiveCfg = Release|x86
 		{CA6451F8-0BA8-4A10-9F3F-B81B34AB8F23}.Release|x86.Build.0 = Release|x86
+		{61CAEE23-5FD8-46EE-9E45-BF0C82038137}.Debug|x86.ActiveCfg = Debug|x86
+		{61CAEE23-5FD8-46EE-9E45-BF0C82038137}.Debug|x86.Build.0 = Debug|x86
+		{61CAEE23-5FD8-46EE-9E45-BF0C82038137}.Release|x86.ActiveCfg = Release|x86
+		{61CAEE23-5FD8-46EE-9E45-BF0C82038137}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

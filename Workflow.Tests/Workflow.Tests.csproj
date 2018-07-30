@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\Antlr4.CodeGenerator.4.6.4\build\Antlr4.CodeGenerator.props" Condition="Exists('..\packages\Antlr4.CodeGenerator.4.6.4\build\Antlr4.CodeGenerator.props')" />
   <Import Project="..\packages\Microsoft.NET.Test.Sdk.15.8.0\build\net45\Microsoft.Net.Test.Sdk.props" Condition="Exists('..\packages\Microsoft.NET.Test.Sdk.15.8.0\build\net45\Microsoft.Net.Test.Sdk.props')" />
   <Import Project="..\packages\Microsoft.CodeCoverage.15.8.0\build\netstandard1.0\Microsoft.CodeCoverage.props" Condition="Exists('..\packages\Microsoft.CodeCoverage.15.8.0\build\netstandard1.0\Microsoft.CodeCoverage.props')" />
   <Import Project="..\packages\NUnit3TestAdapter.3.10.0\build\net35\NUnit3TestAdapter.props" Condition="Exists('..\packages\NUnit3TestAdapter.3.10.0\build\net35\NUnit3TestAdapter.props')" />
@@ -44,6 +45,9 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Antlr4.Runtime, Version=4.6.0.0, Culture=neutral, PublicKeyToken=09abb75b9ed49849, processorArchitecture=MSIL">
+      <HintPath>..\packages\Antlr4.Runtime.4.6.4\lib\net45\Antlr4.Runtime.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.VisualStudio.CodeCoverage.Shim, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeCoverage.15.8.0\lib\net45\Microsoft.VisualStudio.CodeCoverage.Shim.dll</HintPath>
     </Reference>
@@ -55,6 +59,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CalcTests.cs" />
     <Compile Include="Resource.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -70,6 +75,10 @@
     <ProjectReference Include="..\Workflow.Core\Workflow.Core.csproj">
       <Project>{36dee25d-84fd-4584-8f20-1142ea6c8187}</Project>
       <Name>Workflow.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Workflow.Expressions\Workflow.Expressions.csproj">
+      <Project>{61caee23-5fd8-46ee-9e45-bf0c82038137}</Project>
+      <Name>Workflow.Expressions</Name>
     </ProjectReference>
     <ProjectReference Include="..\Workflow.Schema\Workflow.Schema.csproj">
       <Project>{4ed99390-1111-4077-b22b-779fee6f42f5}</Project>
@@ -102,8 +111,11 @@
     <Error Condition="!Exists('..\packages\Microsoft.CodeCoverage.15.8.0\build\netstandard1.0\Microsoft.CodeCoverage.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeCoverage.15.8.0\build\netstandard1.0\Microsoft.CodeCoverage.targets'))" />
     <Error Condition="!Exists('..\packages\Microsoft.NET.Test.Sdk.15.8.0\build\net45\Microsoft.Net.Test.Sdk.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.NET.Test.Sdk.15.8.0\build\net45\Microsoft.Net.Test.Sdk.props'))" />
     <Error Condition="!Exists('..\packages\Microsoft.NET.Test.Sdk.15.8.0\build\net45\Microsoft.Net.Test.Sdk.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.NET.Test.Sdk.15.8.0\build\net45\Microsoft.Net.Test.Sdk.targets'))" />
+    <Error Condition="!Exists('..\packages\Antlr4.CodeGenerator.4.6.4\build\Antlr4.CodeGenerator.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Antlr4.CodeGenerator.4.6.4\build\Antlr4.CodeGenerator.props'))" />
+    <Error Condition="!Exists('..\packages\Antlr4.CodeGenerator.4.6.4\build\Antlr4.CodeGenerator.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Antlr4.CodeGenerator.4.6.4\build\Antlr4.CodeGenerator.targets'))" />
   </Target>
   <Import Project="..\packages\MSTest.TestAdapter.1.2.1\build\net45\MSTest.TestAdapter.targets" Condition="Exists('..\packages\MSTest.TestAdapter.1.2.1\build\net45\MSTest.TestAdapter.targets')" />
   <Import Project="..\packages\Microsoft.CodeCoverage.15.8.0\build\netstandard1.0\Microsoft.CodeCoverage.targets" Condition="Exists('..\packages\Microsoft.CodeCoverage.15.8.0\build\netstandard1.0\Microsoft.CodeCoverage.targets')" />
   <Import Project="..\packages\Microsoft.NET.Test.Sdk.15.8.0\build\net45\Microsoft.Net.Test.Sdk.targets" Condition="Exists('..\packages\Microsoft.NET.Test.Sdk.15.8.0\build\net45\Microsoft.Net.Test.Sdk.targets')" />
+  <Import Project="..\packages\Antlr4.CodeGenerator.4.6.4\build\Antlr4.CodeGenerator.targets" Condition="Exists('..\packages\Antlr4.CodeGenerator.4.6.4\build\Antlr4.CodeGenerator.targets')" />
 </Project>
