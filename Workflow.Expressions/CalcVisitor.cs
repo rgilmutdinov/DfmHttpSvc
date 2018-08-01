@@ -1,30 +1,206 @@
-﻿namespace Workflow.Expressions
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
+
+namespace Workflow.Expressions
 {
-    public class CalcVisitor : CalcBaseVisitor<int>
+    public class CalcVisitor : CalcBaseVisitor<Argument>
     {
-        public override int VisitAdditiveExpression(CalcParser.AdditiveExpressionContext context)
+        public override Argument VisitAdditiveExpression(CalcParser.AdditiveExpressionContext context)
         {
-            int left  = Visit(context.expression(0));
-            int right = Visit(context.expression(1));
-            int result = 0;
+            Argument arg1 = Visit(context.expression(0));
+            Argument arg2 = Visit(context.expression(1));
+
+            if (arg1.IsNull || arg2.IsNull)
+            {
+                return Argument.Null;
+            }
 
             if (context.Plus() != null)
-                result = left + right;
+            {
+                return Sum(arg1, arg2);
+            }
 
             if (context.Minus() != null)
-                result = left - right;
+            {
+                return Difference(arg1, arg2);
+            }
 
-            return result;
+            return Argument.Null;
         }
 
-        public override int VisitLiteralExpression(CalcParser.LiteralExpressionContext context)
+        public override Argument VisitMultiplicativeExpression(CalcParser.MultiplicativeExpressionContext context)
         {
-            return int.Parse(context.GetText());
+            Argument arg1 = Visit(context.expression(0));
+            Argument arg2 = Visit(context.expression(1));
+
+            if (arg1.IsNull || arg2.IsNull)
+            {
+                return Argument.Null;
+            }
+
+            if (context.Multiply() != null)
+            {
+                return Multiplication(arg1, arg2);
+            }
+
+            if (context.Divide() != null)
+            {
+                return Division(arg1, arg2);
+            }
+
+            return Argument.Null;
         }
 
-        public override int VisitParenthesisExpression(CalcParser.ParenthesisExpressionContext context)
+        public override Argument VisitUnaryMinusExpression(CalcParser.UnaryMinusExpressionContext context)
+        {
+            Argument arg = Visit(context.expression());
+
+            if (arg.IsNull)
+            {
+                return Argument.Null;
+            }
+
+            if (arg.IsInteger)
+            {
+                return new Argument(-arg.ToInteger());
+            }
+
+            if (arg.IsDouble)
+            {
+                return new Argument(-arg.ToDouble());
+            }
+
+            throw new ArgumentCastException("Wrong argument in unary minus expression");
+        }
+
+        public override Argument VisitLiteralExpression(CalcParser.LiteralExpressionContext context)
+        {
+            return new Argument(context.GetText());
+        }
+
+        public override Argument VisitParenthesisExpression(CalcParser.ParenthesisExpressionContext context)
         {
             return Visit(context.expression());
+        }
+
+        [SuppressMessage("ReSharper", "PossibleInvalidOperationException")]
+        private Argument Sum(Argument arg1, Argument arg2)
+        {
+            if (arg1.IsInteger && arg2.IsInteger)
+            {
+                return new Argument(arg1.ToInteger() + arg2.ToInteger());
+            }
+
+            if (arg1.IsDouble && arg2.IsDouble)
+            {
+                return new Argument(arg1.ToDouble() + arg2.ToDouble());
+            }
+
+            if (arg1.IsDate && arg2.IsInteger)
+            {
+                DateTime sumDate = arg1.ToDate().Value.AddDays(arg2.ToInteger());
+                return new Argument(sumDate);
+            }
+
+            if (arg2.IsDate && arg1.IsInteger)
+            {
+                DateTime sumDate = arg2.ToDate().Value.AddDays(arg1.ToInteger());
+                return new Argument(sumDate);
+            }
+
+            if (arg1.IsDate && arg2.IsTime)
+            {
+                DateTime sumDate = arg1.ToDate().Value.AddSeconds(arg2.ToTime());
+                return new Argument(sumDate);
+            }
+
+            if (arg2.IsDate && arg1.IsTime)
+            {
+                DateTime sumDate = arg2.ToDate().Value.AddSeconds(arg1.ToTime());
+                return new Argument(sumDate);
+            }
+
+            string lhs = arg1.ToString();
+            string rhs = arg2.ToString();
+
+            return new Argument(lhs + rhs);
+        }
+
+        [SuppressMessage("ReSharper", "PossibleInvalidOperationException")]
+        private Argument Difference(Argument arg1, Argument arg2)
+        {
+            if (arg1.IsNull || arg2.IsNull)
+            {
+                return Argument.Null;
+            }
+
+            if (arg1.IsInteger && arg2.IsInteger)
+            {
+                return new Argument(arg1.ToInteger() - arg2.ToInteger());
+            }
+
+            if (arg1.IsDouble && arg2.IsDouble)
+            {
+                return new Argument(arg1.ToDouble() - arg2.ToDouble());
+            }
+
+            if (arg1.IsDate && arg2.IsInteger)
+            {
+                DateTime lhs = arg1.ToDate().Value;
+                int rhs = arg2.ToInteger();
+
+                return new Argument(lhs.AddDays(-rhs));
+            }
+
+            if (arg1.IsDate && arg2.IsDate)
+            {
+                DateTime lhs = arg1.ToDate().Value;
+                DateTime rhs = arg2.ToDate().Value;
+
+                return new Argument((lhs - rhs).TotalDays);
+            }
+
+            if (arg1.IsDate && arg2.IsTime)
+            {
+                DateTime lhs = arg1.ToDate().Value;
+                int subSeconds = arg2.ToTime();
+
+                return new Argument(lhs.AddSeconds(-subSeconds));
+            }
+
+            throw new ArgumentCastException("Wrong arguments are used in substract operation");
+        }
+
+        [SuppressMessage("ReSharper", "PossibleInvalidOperationException")]
+        private Argument Multiplication(Argument arg1, Argument arg2)
+        {
+            if (arg1.IsInteger && arg2.IsInteger)
+            {
+                return new Argument(arg1.ToInteger() * arg2.ToInteger());
+            }
+
+            if (arg1.IsDouble && arg2.IsDouble)
+            {
+                return new Argument(arg1.ToDouble() * arg2.ToDouble());
+            }
+
+            throw new ArgumentCastException("Wrong arguments are used in multiplication operation");
+        }
+
+        [SuppressMessage("ReSharper", "PossibleInvalidOperationException")]
+        private Argument Division(Argument arg1, Argument arg2)
+        {
+            if (arg1.IsInteger && arg2.IsInteger)
+            {
+                return new Argument(arg1.ToInteger() / arg2.ToInteger());
+            }
+
+            if (arg1.IsDouble && arg2.IsDouble)
+            {
+                return new Argument(arg1.ToDouble() / arg2.ToDouble());
+            }
+
+            throw new ArgumentCastException("Wrong arguments are used in divide operation");
         }
     }
 }

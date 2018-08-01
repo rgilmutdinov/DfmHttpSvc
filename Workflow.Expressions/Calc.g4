@@ -28,6 +28,7 @@ literal
  : StringLiteral
  | IntegerLiteral
  | DecimalLiteral
+ | DateLiteral
  ;
 
 /*
@@ -61,6 +62,7 @@ CloseParen             : ')' ;
 
 IntegerLiteral         : [0-9]+ ;
 DecimalLiteral         : [0-9]+ '.' [0-9]* | '.' [0-9]+ ;
+DateLiteral            : '[' (~['\\\r\n])* ']' ;
 
 ConstE                 : E ;
 ConstPi                : P I ;

@@ -1,4 +1,5 @@
-﻿using Antlr4.Runtime;
+﻿using System;
+using Antlr4.Runtime;
 using NUnit.Framework;
 using Workflow.Expressions;
 
@@ -43,10 +44,43 @@ namespace Workflow.Tests
 
             this._calcParser.expression();
 
-            CommonTokenStream ts = (CommonTokenStream) _calcParser.InputStream;
+            CommonTokenStream ts = (CommonTokenStream) this._calcParser.InputStream;
 
             Assert.AreEqual(type, ts.Get(0).Type);
             Assert.AreEqual(0, this._calcParser.NumberOfSyntaxErrors);
+        }
+
+        [Test]
+        [TestCase("1", typeof(CalcParser.LiteralExpressionContext))]
+        [TestCase("1.0", typeof(CalcParser.LiteralExpressionContext))]
+        [TestCase("[2013-01-02]", typeof(CalcParser.LiteralExpressionContext))]
+        [TestCase("1+1", typeof(CalcParser.AdditiveExpressionContext))]
+        [TestCase("1-1", typeof(CalcParser.AdditiveExpressionContext))]
+        [TestCase("1*1", typeof(CalcParser.MultiplicativeExpressionContext))]
+        [TestCase("1/1", typeof(CalcParser.MultiplicativeExpressionContext))]
+        [TestCase("2^2", typeof(CalcParser.PowerExpressionContext))]
+        [TestCase("abs(1)", typeof(CalcParser.AbsExpressionContext))]
+        [TestCase("sgn(1)", typeof(CalcParser.SgnExpressionContext))]
+        [TestCase("sqrt(1)", typeof(CalcParser.SqrtExpressionContext))]
+        [TestCase("e", typeof(CalcParser.ConstantExpressionContext))]
+        [TestCase("pi", typeof(CalcParser.ConstantExpressionContext))]
+        [TestCase("$FIELD(F1)", typeof(CalcParser.FieldExpressionContext))]
+        [TestCase("$VAR(SYSTIME)", typeof(CalcParser.VarExpressionContext))]
+        [TestCase("$NORMD(F1)", typeof(CalcParser.NormdExpressionContext))]
+        [TestCase("$FLDLEN(F1)", typeof(CalcParser.FldlenExpressionContext))]
+        [TestCase("1=1", typeof(CalcParser.EqualityExpressionContext))]
+        [TestCase("1<>1", typeof(CalcParser.EqualityExpressionContext))]
+        [TestCase("1>1", typeof(CalcParser.RelationalExpressionContext))]
+        [TestCase("1<1", typeof(CalcParser.RelationalExpressionContext))]
+        [TestCase("1>=1", typeof(CalcParser.RelationalExpressionContext))]
+        [TestCase("1<=1", typeof(CalcParser.RelationalExpressionContext))]
+        [TestCase("$FLDLEN(F1)", typeof(CalcParser.FldlenExpressionContext))]
+        public void TestExpressionContextType(string value, Type expectedType)
+        {
+            Setup(value);
+
+            CalcParser.ExpressionContext expression = this._calcParser.expression();
+            Assert.AreEqual(expectedType, expression.GetType());
         }
 
         [Test]
@@ -56,7 +90,7 @@ namespace Workflow.Tests
 
             this._calcParser.expression();
 
-            CommonTokenStream ts = (CommonTokenStream) _calcParser.InputStream;
+            CommonTokenStream ts = (CommonTokenStream) this._calcParser.InputStream;
 
             Assert.AreEqual(CalcLexer.IntegerLiteral, ts.Get(0).Type);
             Assert.AreEqual(CalcLexer.Power, ts.Get(1).Type);
@@ -76,7 +110,7 @@ namespace Workflow.Tests
 
             this._calcParser.expression();
 
-            CommonTokenStream ts = (CommonTokenStream) _calcParser.InputStream;
+            CommonTokenStream ts = (CommonTokenStream) this._calcParser.InputStream;
 
             Assert.AreEqual(CalcLexer.Minus, ts.Get(0).Type);
             Assert.AreEqual(type, ts.Get(1).Type);
@@ -91,7 +125,7 @@ namespace Workflow.Tests
 
             this._calcParser.expression();
 
-            CommonTokenStream ts = (CommonTokenStream)_calcParser.InputStream;
+            CommonTokenStream ts = (CommonTokenStream) this._calcParser.InputStream;
 
             Assert.AreEqual(CalcLexer.Var, ts.Get(0).Type);
             Assert.AreEqual(CalcLexer.OpenParen, ts.Get(1).Type);
@@ -116,10 +150,84 @@ namespace Workflow.Tests
             CalcParser.ExpressionContext context = this._calcParser.expression();
 
             CalcVisitor visitor = new CalcVisitor();
-            int actualResult = visitor.Visit(context);
+            Argument result = visitor.Visit(context);
 
-            Assert.AreEqual(exprectedResult, actualResult);
+            Assert.AreEqual(true, result.IsInteger);
+            Assert.AreEqual(exprectedResult, result.ToInteger());
         }
 
+        [Test]
+        [TestCase("1*2", 2)]
+        [TestCase("1 * 2 * 3", 6)]
+        [TestCase("1/2/3", 0)]
+        [TestCase("1/2*3", 0)]
+        [TestCase("1 / 2 * 3", 0)]
+        [TestCase("(2 * 2) / (2 * 2)", 1)]
+        [TestCase("(1 / 2) * (3 / 4)", 0)]
+        [TestCase("(3 * 4) / (2 * 3)", 2)]
+        public void TestIntegerMultiplicativeExpressions(string expression, int exprectedResult)
+        {
+            Setup(expression);
+
+            CalcParser.ExpressionContext context = this._calcParser.expression();
+
+            CalcVisitor visitor = new CalcVisitor();
+            Argument result = visitor.Visit(context);
+
+            Assert.AreEqual(true, result.IsInteger);
+            Assert.AreEqual(exprectedResult, result.ToInteger());
+        }
+
+        [Test]
+        [TestCase("-2", -2)]
+        [TestCase("2 * -2", -4)]
+        [TestCase("-2 + -2", -4)]
+        public void TestUnaryMinusExpression(string expression, int exprectedResult)
+        {
+            Setup(expression);
+
+            CalcParser.ExpressionContext context = this._calcParser.expression();
+
+            CalcVisitor visitor = new CalcVisitor();
+            Argument result = visitor.Visit(context);
+
+            Assert.AreEqual(true, result.IsInteger);
+            Assert.AreEqual(exprectedResult, result.ToInteger());
+        }
+
+        [Test]
+        [TestCase("2 + 2 * 2", 6)]
+        [TestCase("2+2*2", 6)]
+        [TestCase("(-2-2)*2", -8)]
+        [TestCase("(1+2) *(3 + 4) - (7 / 2 - 1/2) * (-5 - 1)", 39)]
+        [TestCase("((((8 - 1) + 3) * 6) - ((-3 + 7) * 2))", 52)]
+        public void TestIntegerComplexExpressions(string expression, int exprectedResult)
+        {
+            Setup(expression);
+
+            CalcParser.ExpressionContext context = this._calcParser.expression();
+
+            CalcVisitor visitor = new CalcVisitor();
+            Argument result = visitor.Visit(context);
+
+            Assert.AreEqual(true, result.IsInteger);
+            Assert.AreEqual(exprectedResult, result.ToInteger());
+        }
+
+        [Test]
+        [TestCase("0.1 * .5", 0.05)]
+        [TestCase("2.0 / -0.5 + 21.7 / ((3.22 - 1.22) * 3.5)", -0.9)]
+        public void TestDoubleComplexExpressions(string expression, double exprectedResult)
+        {
+            Setup(expression);
+
+            CalcParser.ExpressionContext context = this._calcParser.expression();
+
+            CalcVisitor visitor = new CalcVisitor();
+            Argument result = visitor.Visit(context);
+
+            Assert.AreEqual(true, result.IsDouble);
+            Assert.AreEqual(exprectedResult, result.ToDouble(), 1e-10);
+        }
     }
 }
