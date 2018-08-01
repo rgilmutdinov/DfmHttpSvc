@@ -157,6 +157,75 @@ namespace Workflow.Tests
         }
 
         [Test]
+        [TestCase("2^2", 4)]
+        [TestCase("2^2^2", 16)]
+        [TestCase("(-2)^2", 4)]
+        [TestCase("4^0.5", 2)]
+        public void TestPowerExpressions(string expression, int exprectedResult)
+        {
+            Setup(expression);
+
+            CalcParser.ExpressionContext context = this._calcParser.expression();
+
+            CalcVisitor visitor = new CalcVisitor();
+            Argument result = visitor.Visit(context);
+
+            Assert.AreEqual(true, result.IsInteger);
+            Assert.AreEqual(exprectedResult, result.ToInteger());
+        }
+
+        [Test]
+        [TestCase("abs(2)", 2)]
+        [TestCase("ABS(-2)", 2)]
+        [TestCase("Abs(-1.1)", 1.1)]
+        [TestCase("abs(1.1)", 1.1)]
+        public void TestAbsExpressions(string expression, double expectedResult)
+        {
+            Setup(expression);
+
+            CalcParser.ExpressionContext context = this._calcParser.expression();
+
+            CalcVisitor visitor = new CalcVisitor();
+            Argument result = visitor.Visit(context);
+
+            Assert.AreEqual(expectedResult, result.ToDouble());
+        }
+
+        [Test]
+        [TestCase("sgn(2)", 1)]
+        [TestCase("SGN(-2)", -1)]
+        [TestCase("Sgn(-1.1)", -1)]
+        [TestCase("sgn(1.1)", 1)]
+        [TestCase("sgn(0)", 0)]
+        public void TestSngExpressions(string expression, double expectedResult)
+        {
+            Setup(expression);
+
+            CalcParser.ExpressionContext context = this._calcParser.expression();
+
+            CalcVisitor visitor = new CalcVisitor();
+            Argument result = visitor.Visit(context);
+
+            Assert.AreEqual(expectedResult, result.ToDouble());
+        }
+
+        [Test]
+        [TestCase("sqrt(4)", 2)]
+        [TestCase("SQRT(1)", 1)]
+        [TestCase("Sqrt(0.81)", 0.9)]
+        public void TestSrqtExpressions(string expression, double expectedResult)
+        {
+            Setup(expression);
+
+            CalcParser.ExpressionContext context = this._calcParser.expression();
+
+            CalcVisitor visitor = new CalcVisitor();
+            Argument result = visitor.Visit(context);
+
+            Assert.AreEqual(expectedResult, result.ToDouble());
+        }
+
+        [Test]
         [TestCase("1*2", 2)]
         [TestCase("1 * 2 * 3", 6)]
         [TestCase("1/2/3", 0)]
@@ -201,6 +270,7 @@ namespace Workflow.Tests
         [TestCase("(-2-2)*2", -8)]
         [TestCase("(1+2) *(3 + 4) - (7 / 2 - 1/2) * (-5 - 1)", 39)]
         [TestCase("((((8 - 1) + 3) * 6) - ((-3 + 7) * 2))", 52)]
+        [TestCase("(3 * 3 ^ 4) / 3 ^ 3", 9)]
         public void TestIntegerComplexExpressions(string expression, int exprectedResult)
         {
             Setup(expression);

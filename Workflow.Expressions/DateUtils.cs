@@ -70,7 +70,7 @@ namespace Workflow.Expressions
         public static long MultiParseTime(string input)
         {
             DateTime dateTime = DateTime.ParseExact(input, "HH:mm:ss", CultureInfo.InvariantCulture);
-            return new DateTimeOffset(dateTime).ToUnixTimeSeconds();
+            return (long) dateTime.TimeOfDay.TotalSeconds;
         }
 
         public static bool TryMultiParseTime(string input, out long totalSeconds)

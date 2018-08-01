@@ -73,6 +73,76 @@ namespace Workflow.Expressions
             throw new ArgumentCastException("Wrong argument in unary minus expression");
         }
 
+        public override Argument VisitPowerExpression(CalcParser.PowerExpressionContext context)
+        {
+            Argument arg1 = Visit(context.expression(0));
+            Argument arg2 = Visit(context.expression(1));
+
+            if (arg1.IsNull || arg2.IsNull)
+            {
+                return Argument.Null;
+            }
+
+            if (arg1.IsDouble && arg2.IsDouble)
+            {
+                double result = Math.Pow(arg1.ToDouble(), arg2.ToDouble());
+                return new Argument(result);
+            }
+
+            throw new ArgumentCastException("Wrong arguments are used in exponentiation operation");
+        }
+
+        public override Argument VisitAbsExpression(CalcParser.AbsExpressionContext context)
+        {
+            Argument arg = Visit(context.expression());
+
+            if (arg.IsNull)
+            {
+                return Argument.Null;
+            }
+
+            if (arg.IsDouble)
+            {
+                return new Argument(Math.Abs(arg.ToDouble()));
+            }
+
+            throw ArgumentCastException.Create("double", arg);
+        }
+
+        public override Argument VisitSqrtExpression(CalcParser.SqrtExpressionContext context)
+        {
+            Argument arg = Visit(context.expression());
+
+            if (arg.IsNull)
+            {
+                return Argument.Null;
+            }
+
+            if (arg.IsDouble)
+            {
+                return new Argument(Math.Sqrt(arg.ToDouble()));
+            }
+
+            throw ArgumentCastException.Create("double", arg);
+        }
+
+        public override Argument VisitSgnExpression(CalcParser.SgnExpressionContext context)
+        {
+            Argument arg = Visit(context.expression());
+
+            if (arg.IsNull)
+            {
+                return Argument.Null;
+            }
+
+            if (arg.IsDouble)
+            {
+                return new Argument(Math.Sign(arg.ToDouble()));
+            }
+
+            throw ArgumentCastException.Create("double", arg);
+        }
+
         public override Argument VisitLiteralExpression(CalcParser.LiteralExpressionContext context)
         {
             return new Argument(context.GetText());
