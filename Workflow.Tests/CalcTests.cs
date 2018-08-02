@@ -143,7 +143,7 @@ namespace Workflow.Tests
         [TestCase("1 - 2 + 3", 2)]
         [TestCase("(2 + 2) - (2 + 2)", 0)]
         [TestCase("(1 - 2) + (3 - 4)", -2)]
-        public void TestIntegerAdditiveExpressions(string expression, int exprectedResult)
+        public void TestIntegerAdditiveExpressions(string expression, int expectedResult)
         {
             Setup(expression);
 
@@ -153,7 +153,7 @@ namespace Workflow.Tests
             Argument result = visitor.Visit(context);
 
             Assert.AreEqual(true, result.IsInteger);
-            Assert.AreEqual(exprectedResult, result.ToInteger());
+            Assert.AreEqual(expectedResult, result.ToInteger());
         }
 
         [Test]
@@ -161,7 +161,7 @@ namespace Workflow.Tests
         [TestCase("2^2^2", 16)]
         [TestCase("(-2)^2", 4)]
         [TestCase("4^0.5", 2)]
-        public void TestPowerExpressions(string expression, int exprectedResult)
+        public void TestPowerExpressions(string expression, int expectedResult)
         {
             Setup(expression);
 
@@ -171,7 +171,7 @@ namespace Workflow.Tests
             Argument result = visitor.Visit(context);
 
             Assert.AreEqual(true, result.IsInteger);
-            Assert.AreEqual(exprectedResult, result.ToInteger());
+            Assert.AreEqual(expectedResult, result.ToInteger());
         }
 
         [Test]
@@ -234,7 +234,7 @@ namespace Workflow.Tests
         [TestCase("(2 * 2) / (2 * 2)", 1)]
         [TestCase("(1 / 2) * (3 / 4)", 0)]
         [TestCase("(3 * 4) / (2 * 3)", 2)]
-        public void TestIntegerMultiplicativeExpressions(string expression, int exprectedResult)
+        public void TestIntegerMultiplicativeExpressions(string expression, int expectedResult)
         {
             Setup(expression);
 
@@ -244,7 +244,7 @@ namespace Workflow.Tests
             Argument result = visitor.Visit(context);
 
             Assert.True(result.IsInteger);
-            Assert.AreEqual(exprectedResult, result.ToInteger());
+            Assert.AreEqual(expectedResult, result.ToInteger());
         }
 
         [Test]
@@ -252,7 +252,7 @@ namespace Workflow.Tests
         [TestCase("2 * -2", -4)]
         [TestCase("-2 + -2", -4)]
         [TestCase("-(-1)", 1)]
-        public void TestUnaryMinusExpression(string expression, int exprectedResult)
+        public void TestUnaryMinusExpression(string expression, int expectedResult)
         {
             Setup(expression);
 
@@ -262,7 +262,7 @@ namespace Workflow.Tests
             Argument result = visitor.Visit(context);
 
             Assert.True(result.IsInteger);
-            Assert.AreEqual(exprectedResult, result.ToInteger());
+            Assert.AreEqual(expectedResult, result.ToInteger());
         }
 
         [Test]
@@ -272,7 +272,7 @@ namespace Workflow.Tests
         [TestCase("(1+2) *(3 + 4) - (7 / 2 - 1/2) * (-5 - 1)", 39)]
         [TestCase("((((8 - 1) + 3) * 6) - ((-3 + 7) * 2))", 52)]
         [TestCase("(3 * 3 ^ 4) / 3 ^ 3", 9)]
-        public void TestIntegerComplexExpressions(string expression, int exprectedResult)
+        public void TestIntegerComplexExpressions(string expression, int expectedResult)
         {
             Setup(expression);
 
@@ -282,13 +282,16 @@ namespace Workflow.Tests
             Argument result = visitor.Visit(context);
 
             Assert.True(result.IsInteger);
-            Assert.AreEqual(exprectedResult, result.ToInteger());
+            Assert.AreEqual(expectedResult, result.ToInteger());
         }
 
         [Test]
-        [TestCase("0.1 * .5", 0.05)]
-        [TestCase("2.0 / -0.5 + 21.7 / ((3.22 - 1.22) * 3.5)", -0.9)]
-        public void TestDoubleComplexExpressions(string expression, double exprectedResult)
+        [TestCase("2 <> 3", 1)]
+        [TestCase("2 = 3", 0)]
+        [TestCase("2 = 2", 1)]
+        [TestCase("2 <> 2", 0)]
+        [TestCase("2 + 1 = 2 + 1", 1)]
+        public void TestEqualityExpressions(string expression, double expectedResult)
         {
             Setup(expression);
 
@@ -298,7 +301,64 @@ namespace Workflow.Tests
             Argument result = visitor.Visit(context);
 
             Assert.True(result.IsDouble);
-            Assert.AreEqual(exprectedResult, result.ToDouble(), 1e-10);
+            Assert.AreEqual(expectedResult, result.ToDouble());
+        }
+
+        [Test]
+        [TestCase("2 < 3", 1)]
+        [TestCase("2 > 3", 0)]
+        [TestCase("2 <= 2", 1)]
+        [TestCase("2 < 2", 0)]
+        [TestCase("2 >= 2", 1)]
+        [TestCase("2 > 2", 0)]
+        [TestCase("2 + 1 >= 2 + 1", 1)]
+        [TestCase("2 + 1 > 2 + 1", 0)]
+        [TestCase("2 + 1 <= 2 + 1", 1)]
+        [TestCase("2 + 1 < 2 + 1", 0)]
+        public void TestRelationalExpressions(string expression, double expectedResult)
+        {
+            Setup(expression);
+
+            CalcParser.ExpressionContext context = this._calcParser.expression();
+
+            CalcVisitor visitor = new CalcVisitor();
+            Argument result = visitor.Visit(context);
+
+            Assert.True(result.IsDouble);
+            Assert.AreEqual(expectedResult, result.ToDouble());
+        }
+
+        [Test]
+        [TestCase("PI", Math.PI)]
+        [TestCase("pi", Math.PI)]
+        [TestCase("E", Math.E)]
+        public void TestConstantExpressions(string expression, double expectedResult)
+        {
+            Setup(expression);
+
+            CalcParser.ExpressionContext context = this._calcParser.expression();
+
+            CalcVisitor visitor = new CalcVisitor();
+            Argument result = visitor.Visit(context);
+
+            Assert.True(result.IsDouble);
+            Assert.AreEqual(expectedResult, result.ToDouble(), 1e-10);
+        }
+
+        [Test]
+        [TestCase("0.1 * .5", 0.05)]
+        [TestCase("2.0 / -0.5 + 21.7 / ((3.22 - 1.22) * 3.5)", -0.9)]
+        public void TestDoubleComplexExpressions(string expression, double expectedResult)
+        {
+            Setup(expression);
+
+            CalcParser.ExpressionContext context = this._calcParser.expression();
+
+            CalcVisitor visitor = new CalcVisitor();
+            Argument result = visitor.Visit(context);
+
+            Assert.True(result.IsDouble);
+            Assert.AreEqual(expectedResult, result.ToDouble(), 1e-10);
         }
 
         [Test]

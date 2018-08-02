@@ -268,22 +268,73 @@ namespace Workflow.Expressions
 
         public override Argument VisitRelationalExpression(CalcParser.RelationalExpressionContext context)
         {
-            return base.VisitRelationalExpression(context);
+            Argument arg1 = Visit(context.expression(0));
+            Argument arg2 = Visit(context.expression(1));
+
+            if (arg1.IsNull || arg2.IsNull)
+            {
+                return Argument.Null;
+            }
+
+            if (context.GreaterThan() != null)
+            {
+                return arg1.ToDouble() > arg2.ToDouble() ? new Argument(1.0) : new Argument(0.0);
+            }
+
+            if (context.GreaterThanEquals() != null)
+            {
+                return arg1.ToDouble() >= arg2.ToDouble() ? new Argument(1.0) : new Argument(0.0);
+            }
+
+            if (context.LessThan() != null)
+            {
+                return arg1.ToDouble() < arg2.ToDouble() ? new Argument(1.0) : new Argument(0.0);
+            }
+
+            if (context.LessThanEquals() != null)
+            {
+                return arg1.ToDouble() <= arg2.ToDouble() ? new Argument(1.0) : new Argument(0.0);
+            }
+
+            throw new ArgumentCastException("Unknown relational operation");
         }
 
         public override Argument VisitConstantExpression(CalcParser.ConstantExpressionContext context)
         {
-            return base.VisitConstantExpression(context);
+            if (context.ConstE() != null)
+            {
+                return new Argument(Math.E);
+            }
+
+            if (context.ConstPi() != null)
+            {
+                return new Argument(Math.PI);
+            }
+
+            throw new ArgumentCastException("Unknown constant: " + context.GetText());
         }
 
         public override Argument VisitEqualityExpression(CalcParser.EqualityExpressionContext context)
         {
-            return base.VisitEqualityExpression(context);
-        }
+            Argument arg1 = Visit(context.expression(0));
+            Argument arg2 = Visit(context.expression(1));
 
-        public override Argument VisitLiteral(CalcParser.LiteralContext context)
-        {
-            return base.VisitLiteral(context);
+            if (arg1.IsNull || arg2.IsNull)
+            {
+                return Argument.Null;
+            }
+
+            if (context.Equals_() != null)
+            {
+                return Equals(arg1, arg2) ? new Argument(1.0) : new Argument(0.0);
+            }
+
+            if (context.NotEquals() != null)
+            {
+                return !Equals(arg1, arg2) ? new Argument(1.0) : new Argument(0.0);
+            }
+
+            throw new ArgumentCastException("Unknown equality operation");
         }
 
         public override Argument VisitErrorNode(IErrorNode node)
