@@ -61,12 +61,14 @@
   <ItemGroup>
     <Compile Include="ArgumentTests.cs" />
     <Compile Include="CalcTests.cs" />
+    <Compile Include="CalculatorTests.cs" />
     <Compile Include="DateUtilsTests.cs" />
     <Compile Include="Resource.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resource.resx</DependentUpon>
     </Compile>
+    <Compile Include="TestResolver.cs" />
     <Compile Include="WFSchemaTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

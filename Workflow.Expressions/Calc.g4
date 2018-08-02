@@ -19,6 +19,7 @@ expression
  | Normd OpenParen expression CloseParen                                               # NormdExpression
  | Field OpenParen expression CloseParen                                               # FieldExpression
  | FldLen OpenParen expression CloseParen                                              # FldlenExpression
+ | Identifier OpenParen expression CloseParen                                          # UnknownFunctionExpression
  | Identifier                                                                          # IdentifierExpression
  | (ConstPi | ConstE)                                                                  # ConstantExpression
  | literal                                                                             # LiteralExpression
@@ -62,7 +63,7 @@ CloseParen             : ')' ;
 
 IntegerLiteral         : [0-9]+ ;
 DecimalLiteral         : [0-9]+ '.' [0-9]* | '.' [0-9]+ ;
-DateLiteral            : '[' (~['\\\r\n])* ']' ;
+DateLiteral            : '[' (~[\]\r\n])* ']' { Text = Text.Substring(1, Text.Length - 2); };
 
 ConstE                 : E ;
 ConstPi                : P I ;
@@ -71,7 +72,7 @@ Identifier             : [a-zA-Z_] [a-zA-Z_0-9]* ;
 
 Whitespace             : [ \t\r\n] -> skip ;
 
-StringLiteral          : '\'' (~['\\\r\n])* '\'' ;
+StringLiteral          : '\'' STRING '\'';
 
 /* case insensitive lexer matching */
 fragment DOLLAR: '$';
@@ -101,3 +102,4 @@ fragment W:('w'|'W');
 fragment X:('x'|'X');
 fragment Y:('y'|'Y');
 fragment Z:('z'|'Z');
+fragment STRING: (~['\\\r\n] | '\'\'')*;

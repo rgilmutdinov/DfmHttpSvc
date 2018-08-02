@@ -84,7 +84,7 @@ namespace Workflow.Tests
         }
 
         [Test]
-        public void TestExpressionPow()
+        public void TestExpressionPowTypes()
         {
             Setup("5^3^2");
 
@@ -104,7 +104,7 @@ namespace Workflow.Tests
         [Test]
         [TestCase("-1",    CalcLexer.IntegerLiteral)]
         [TestCase("-9.99", CalcLexer.DecimalLiteral)]
-        public void TestUnaryMinus(string value, int type)
+        public void TestUnaryMinusType(string value, int type)
         {
             Setup(value);
 
@@ -119,7 +119,7 @@ namespace Workflow.Tests
         }
 
         [Test]
-        public void TestVarExpression()
+        public void TestVarExpressionType()
         {
             Setup("$VAR(FIELD)");
 
@@ -243,7 +243,7 @@ namespace Workflow.Tests
             CalcVisitor visitor = new CalcVisitor();
             Argument result = visitor.Visit(context);
 
-            Assert.AreEqual(true, result.IsInteger);
+            Assert.True(result.IsInteger);
             Assert.AreEqual(exprectedResult, result.ToInteger());
         }
 
@@ -251,6 +251,7 @@ namespace Workflow.Tests
         [TestCase("-2", -2)]
         [TestCase("2 * -2", -4)]
         [TestCase("-2 + -2", -4)]
+        [TestCase("-(-1)", 1)]
         public void TestUnaryMinusExpression(string expression, int exprectedResult)
         {
             Setup(expression);
@@ -260,7 +261,7 @@ namespace Workflow.Tests
             CalcVisitor visitor = new CalcVisitor();
             Argument result = visitor.Visit(context);
 
-            Assert.AreEqual(true, result.IsInteger);
+            Assert.True(result.IsInteger);
             Assert.AreEqual(exprectedResult, result.ToInteger());
         }
 
@@ -280,7 +281,7 @@ namespace Workflow.Tests
             CalcVisitor visitor = new CalcVisitor();
             Argument result = visitor.Visit(context);
 
-            Assert.AreEqual(true, result.IsInteger);
+            Assert.True(result.IsInteger);
             Assert.AreEqual(exprectedResult, result.ToInteger());
         }
 
@@ -296,8 +297,46 @@ namespace Workflow.Tests
             CalcVisitor visitor = new CalcVisitor();
             Argument result = visitor.Visit(context);
 
-            Assert.AreEqual(true, result.IsDouble);
+            Assert.True(result.IsDouble);
             Assert.AreEqual(exprectedResult, result.ToDouble(), 1e-10);
+        }
+
+        [Test]
+        [TestCase("[2013-10-10] + 10", "2013-10-20")]
+        [TestCase("[2013-10-10] + 1 - 1", "2013-10-10")]
+        [TestCase("[2013-10-10] - [2013-10-09] + [2013-10-09]", "2013-10-10")]
+        public void TestDateExpressionsWithDateResult(string expression, string expectedResult)
+        {
+            Setup(expression);
+
+            CalcParser.ExpressionContext context = this._calcParser.expression();
+
+            CalcVisitor visitor = new CalcVisitor();
+            Argument result = visitor.Visit(context);
+
+            Assert.True(result.IsDate);
+            Assert.False(result.IsInteger);
+            Assert.False(result.IsDouble);
+            Assert.IsNotNull(result.ToDate());
+            Assert.AreEqual(expectedResult, result.ToDate().Value.ToString("yyyy-MM-dd"));
+        }
+
+        [Test]
+        [TestCase("[2013-10-10] - [2013-10-09]", 1)]
+        [TestCase("([2013-10-12] - [2013-10-09])*([2013-10-11] - [2013-10-09])", 6)]
+        public void TestDateExpressionsWithIntegerResult(string expression, int expectedResult)
+        {
+            Setup(expression);
+
+            CalcParser.ExpressionContext context = this._calcParser.expression();
+
+            CalcVisitor visitor = new CalcVisitor();
+            Argument result = visitor.Visit(context);
+
+            Assert.True(result.IsInteger);
+            Assert.True(result.IsDouble);
+            Assert.False(result.IsDate);
+            Assert.AreEqual(expectedResult, result.ToInteger());
         }
     }
 }

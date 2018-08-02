@@ -1,10 +1,21 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using Antlr4.Runtime.Tree;
 
 namespace Workflow.Expressions
 {
     public class CalcVisitor : CalcBaseVisitor<Argument>
     {
+        private readonly IMetadataResolver _resolver;
+        public CalcVisitor(IMetadataResolver resolver)
+        {
+            this._resolver = resolver;
+        }
+
+        public CalcVisitor() : this(NullResolver.Instance)
+        {
+        }
+
         public override Argument VisitAdditiveExpression(CalcParser.AdditiveExpressionContext context)
         {
             Argument arg1 = Visit(context.expression(0));
@@ -153,6 +164,133 @@ namespace Workflow.Expressions
             return Visit(context.expression());
         }
 
+        public override Argument VisitFieldExpression(CalcParser.FieldExpressionContext context)
+        {
+            Argument arg = Visit(context.expression());
+
+            if (arg.IsNull)
+            {
+                return Argument.Null;
+            }
+
+            if (arg.IsDouble || arg.IsDate)
+            {
+                throw new ArgumentCastException("Argument of $FIELD macro should not be a number or a date");
+            }
+
+            string fieldName = arg.ToString();
+            return this._resolver.ResolveFieldValue(fieldName);
+        }
+
+        public override Argument VisitIdentifierExpression(CalcParser.IdentifierExpressionContext context)
+        {
+            return new Argument(context.GetText());
+        }
+
+        public override Argument VisitUnknownFunctionExpression(CalcParser.UnknownFunctionExpressionContext context)
+        {
+            throw new ArgumentException("Unknown function '" + context.GetText());
+        }
+
+        public override Argument VisitFldlenExpression(CalcParser.FldlenExpressionContext context)
+        {
+            Argument arg = Visit(context.expression());
+            if (arg.IsNull)
+            {
+                return Argument.Null;
+            }
+
+            if (arg.IsDouble || arg.IsDate)
+            {
+                throw new ArgumentCastException("Argument of $FLDLEN macro should not be a number or a date");
+            }
+
+            string fieldName = arg.ToString();
+            Argument sArg = this._resolver.ResolveFieldValue(fieldName);
+            if (sArg.IsNull)
+            {
+                return new Argument(0);
+            }
+
+            int length = sArg.ToString().Length;
+            return new Argument(length);
+        }
+
+        public override Argument VisitVarExpression(CalcParser.VarExpressionContext context)
+        {
+            Argument arg = Visit(context.expression());
+            if (arg.IsNull)
+            {
+                return Argument.Null;
+            }
+
+            if (arg.IsDouble || arg.IsDate)
+            {
+                throw new ArgumentCastException("Argument of $VAR macro should not be a number or a date");
+            }
+
+            String variableName = arg.ToString();
+            return this._resolver.ResolveVariable(variableName);
+        }
+
+        [SuppressMessage("ReSharper", "PossibleInvalidOperationException")]
+        public override Argument VisitNormdExpression(CalcParser.NormdExpressionContext context)
+        {
+            Argument arg = Visit(context.expression());
+
+            if (arg.IsNull)
+            {
+                return Argument.Null;
+            }
+
+            if (arg.IsDouble || arg.IsInteger)
+            {
+                throw new ArgumentCastException("Argument of $NORMD macro should not be a number");
+            }
+
+            if (arg.IsTime)
+            {
+                int time = arg.ToTime();
+                if (time != -1)
+                {
+                    throw new ArgumentCastException("Argument of $NORMD macro should not be a number or a time");
+                }
+            }
+
+            if (arg.IsDate)
+            {
+                return new Argument(arg.ToDate().Value);
+            }
+
+            // argument is not a date. So, it's a field
+            return this._resolver.ResolveFieldValue(arg.ToString());
+        }
+
+        public override Argument VisitRelationalExpression(CalcParser.RelationalExpressionContext context)
+        {
+            return base.VisitRelationalExpression(context);
+        }
+
+        public override Argument VisitConstantExpression(CalcParser.ConstantExpressionContext context)
+        {
+            return base.VisitConstantExpression(context);
+        }
+
+        public override Argument VisitEqualityExpression(CalcParser.EqualityExpressionContext context)
+        {
+            return base.VisitEqualityExpression(context);
+        }
+
+        public override Argument VisitLiteral(CalcParser.LiteralContext context)
+        {
+            return base.VisitLiteral(context);
+        }
+
+        public override Argument VisitErrorNode(IErrorNode node)
+        {
+            throw new ArgumentException("Invalid token '" + node.GetText());
+        }
+
         [SuppressMessage("ReSharper", "PossibleInvalidOperationException")]
         private Argument Sum(Argument arg1, Argument arg2)
         {
@@ -227,7 +365,7 @@ namespace Workflow.Expressions
                 DateTime lhs = arg1.ToDate().Value;
                 DateTime rhs = arg2.ToDate().Value;
 
-                return new Argument((lhs - rhs).TotalDays);
+                return new Argument((int) (lhs - rhs).TotalDays);
             }
 
             if (arg1.IsDate && arg2.IsTime)

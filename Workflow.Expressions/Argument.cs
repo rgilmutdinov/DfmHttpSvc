@@ -13,7 +13,7 @@ namespace Workflow.Expressions
             string literalAsString = LiteralCharacter.ToString();
             if (s.StartsWith(literalAsString) && s.EndsWith(literalAsString))
             {
-                string newString = s.Substring(1, s.Length - 1);
+                string newString = s.Substring(1, s.Length - 2);
                 if (newString.Contains(literalAsString))
                 {
                     return s;
@@ -24,7 +24,6 @@ namespace Workflow.Expressions
         }
 
         private readonly object _arg;
-        private bool v;
 
         public Argument(int value) : this((object) value)
         {
@@ -146,7 +145,7 @@ namespace Workflow.Expressions
                     ToTime();
                     return true;
                 }
-                catch (ArgumentCastException e)
+                catch (Exception e)
                 {
                     return false;
                 }
