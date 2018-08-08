@@ -52,8 +52,8 @@
     <Compile Include="Calculator.cs" />
     <Compile Include="CalcVisitor.cs" />
     <Compile Include="DateUtils.cs" />
-    <Compile Include="NullResolver.cs" />
-    <Compile Include="IMetadataResolver.cs" />
+    <Compile Include="Resolvers\BasicResolver.cs" />
+    <Compile Include="Resolvers\IDataResolver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QueryVisitor.cs" />
     <Compile Include="ThrowExceptionErrorListener.cs" />

@@ -1,4 +1,5 @@
 ﻿using Antlr4.Runtime;
+using Workflow.Expressions.Resolvers;
 
 namespace Workflow.Expressions
 {
@@ -6,13 +7,13 @@ namespace Workflow.Expressions
     {
         private readonly CalcVisitor _visitor;
 
-        public Calculator(IMetadataResolver resolver)
+        public Calculator(IDataResolver resolver)
         {
-            this.MetadataResolver = resolver;
+            this.DataResolver = resolver;
             this._visitor = new CalcVisitor(resolver);
         }
 
-        public IMetadataResolver MetadataResolver { get; set; }
+        public IDataResolver DataResolver { get; set; }
 
         public Argument Calculate(string expression)
         {

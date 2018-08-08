@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using Antlr4.Runtime.Tree;
+using Workflow.Expressions.Resolvers;
 
 namespace Workflow.Expressions
 {
     public class CalcVisitor : CalcBaseVisitor<Argument>
     {
-        private readonly IMetadataResolver _resolver;
-        public CalcVisitor(IMetadataResolver resolver)
+        private readonly IDataResolver _resolver;
+        public CalcVisitor(IDataResolver resolver)
         {
             this._resolver = resolver;
         }
 
-        public CalcVisitor() : this(NullResolver.Instance)
+        public CalcVisitor() : this(BasicResolver.Instance)
         {
         }
 

@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Globalization;
 using Workflow.Expressions;
+using Workflow.Expressions.Resolvers;
 
 namespace Workflow.Tests
 {
-    public class TestResolver : IMetadataResolver
+    public class TestResolver : IDataResolver
     {
         private const string DateFormat = "yyyy-MM-dd";
         private const string DateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss";
@@ -39,6 +40,11 @@ namespace Workflow.Tests
                 case "DATSTRFLD": return new Argument(new DateTime(2016, 02, 02));
                 default: return Argument.Null;
             }
+        }
+
+        public string ResolveField(string fieldName)
+        {
+            return "X" + fieldName;
         }
     }
 }

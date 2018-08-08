@@ -1,20 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Workflow.Expressions.Resolvers;
 
 namespace Workflow.Expressions
 {
     public class QueryVisitor : CalcBaseVisitor<string>
     {
-        private readonly IMetadataResolver _resolver;
-        public QueryVisitor(IMetadataResolver resolver)
+        private readonly IDataResolver _dataResolver;
+
+        public QueryVisitor(IDataResolver dataResolver)
         {
-            this._resolver = resolver;
+            this._dataResolver = dataResolver;
         }
 
-        public QueryVisitor() : this(NullResolver.Instance)
+        public QueryVisitor() : this(BasicResolver.Instance)
         {
         }
 
@@ -101,6 +99,17 @@ namespace Workflow.Expressions
         {
             string arg = Visit(context.expression());
             return string.Format($"({arg})");
+        }
+
+        public override string VisitUnknownFunctionExpression(CalcParser.UnknownFunctionExpressionContext context)
+        {
+            throw new ArgumentException("Unknown function '" + context.GetText());
+        }
+
+        public override string VisitFieldExpression(CalcParser.FieldExpressionContext context)
+        {
+            string fieldName = Visit(context.expression());
+            return this._dataResolver.ResolveField(fieldName);
         }
     }
 }

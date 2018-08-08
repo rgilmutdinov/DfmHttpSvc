@@ -67,7 +67,7 @@ namespace Workflow.Expressions
                     ToDate();
                     return true;
                 }
-                catch (ArgumentCastException e)
+                catch (ArgumentCastException)
                 {
                     return false;
                 }
@@ -88,7 +88,7 @@ namespace Workflow.Expressions
                     ToDouble();
                     return true;
                 }
-                catch (ArgumentCastException e)
+                catch (ArgumentCastException)
                 {
                     return false;
                 }
@@ -119,7 +119,7 @@ namespace Workflow.Expressions
                     ToInteger();
                     return true;
                 }
-                catch (ArgumentCastException e)
+                catch (ArgumentCastException)
                 {
                     return false;
                 }
@@ -145,7 +145,7 @@ namespace Workflow.Expressions
                     ToTime();
                     return true;
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     return false;
                 }
@@ -179,7 +179,7 @@ namespace Workflow.Expressions
 
                     return Object.Equals(a.Object);
                 }
-                catch (Exception exc)
+                catch (Exception)
                 {
                     return false;
                 }
@@ -210,7 +210,7 @@ namespace Workflow.Expressions
                 {
                     return double.Parse(s);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     // Allow to pass through to ArgumentCastException
                 }
@@ -237,7 +237,7 @@ namespace Workflow.Expressions
                 {
                     return int.Parse(s);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     // Allow to pass through to ArgumentCastException
                 }
