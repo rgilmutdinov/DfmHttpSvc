@@ -371,5 +371,21 @@ namespace Workflow.Tests
 
             Assert.AreEqual(expectedQuery, query);
         }
+
+        [Test]
+        [TestCase("[2013-10-10]", "CONVERT(datetime, '2013-10-10T00:00:00', 126)")]
+        public void TestQueryDatesMssql(string expr, string expectedQuery)
+        {
+            Setup(expr);
+
+            CalcParser.ExpressionContext context = this._calcParser.expression();
+            DbTranslator translator = new MssqlTranslator();
+            IMetadataResolver resolver = Substitute.For<IMetadataResolver>();
+
+            QueryVisitor visitor = new QueryVisitor(resolver, translator);
+            string query = visitor.Visit(context);
+
+            Assert.AreEqual(expectedQuery, query);
+        }
     }
 }

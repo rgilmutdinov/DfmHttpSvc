@@ -93,12 +93,7 @@ namespace Workflow.Expressions
             string arg = Visit(context.expression());
             return string.Format($"SGN({arg})");
         }
-
-        public override string VisitLiteralExpression(CalcParser.LiteralExpressionContext context)
-        {
-            return context.GetText();
-        }
-
+        
         public override string VisitParenthesisExpression(CalcParser.ParenthesisExpressionContext context)
         {
             string arg = Visit(context.expression());
@@ -134,6 +129,31 @@ namespace Workflow.Expressions
             string variableName = Visit(context.expression());
             Argument arg = this._metadataResolver.ResolveVariable(variableName);
 
+            return TranslateArgument(arg);
+        }
+
+        public override string VisitLiteral(CalcParser.LiteralContext context)
+        {
+            string text = context.GetText();
+            Argument arg = new Argument(text);
+
+            // TODO: fix this            
+            if (context.DateLiteral() != null)
+            {
+                DateTime date = arg.ToDate().Value;
+                return this._dbTranslator.GetDbDate(date.Year, date.Month, date.Day, date.Hour, date.Minute, date.Second);
+            }
+            
+            return text;
+        }
+
+        public override string VisitIdentifierExpression(CalcParser.IdentifierExpressionContext context)
+        {
+            return context.GetText();
+        }
+
+        private string TranslateArgument(Argument arg)
+        {
             if (arg.IsDate)
             {
                 DateTime date = arg.ToDate().Value;
@@ -148,17 +168,6 @@ namespace Workflow.Expressions
             }
 
             return arg.ToString();
-        }
-
-        public override string VisitLiteral(CalcParser.LiteralContext context)
-        {
-            Argument arg = new Argument(context.GetText());
-            return arg.ToString();
-        }
-
-        public override string VisitIdentifierExpression(CalcParser.IdentifierExpressionContext context)
-        {
-            return context.GetText();
-        }
+        } 
     }
 }
