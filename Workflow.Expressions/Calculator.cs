@@ -7,13 +7,13 @@ namespace Workflow.Expressions
     {
         private readonly CalcVisitor _visitor;
 
-        public Calculator(IDataResolver resolver)
+        public Calculator(IMetadataResolver resolver)
         {
-            this.DataResolver = resolver;
+            this.MetadataResolver = resolver;
             this._visitor = new CalcVisitor(resolver);
         }
 
-        public IDataResolver DataResolver { get; set; }
+        public IMetadataResolver MetadataResolver { get; set; }
 
         public Argument Calculate(string expression)
         {

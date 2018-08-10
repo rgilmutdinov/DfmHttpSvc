@@ -1,10 +1,8 @@
 ﻿namespace Workflow.Expressions.Resolvers
 {
-    public interface IDataResolver
+    public interface IMetadataResolver
     {
         Argument ResolveVariable(string variableName);
         Argument ResolveFieldValue(string fieldName);
-
-        string ResolveField(string fieldName);
     }
 }

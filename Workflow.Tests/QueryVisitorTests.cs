@@ -1,6 +1,10 @@
 ﻿using Antlr4.Runtime;
+using DFMServer;
+using NSubstitute;
 using NUnit.Framework;
 using Workflow.Expressions;
+using Workflow.Expressions.Resolvers;
+using FieldInfo = DfmServer.Managed.FieldInfo;
 
 namespace Workflow.Tests
 {
@@ -134,5 +138,188 @@ namespace Workflow.Tests
 
             Assert.AreEqual(expectedQuery, query);
         }
+
+        [Test]
+        [TestCase("1 + $FIELD(F1)", "(1+XF1)")]
+        [TestCase("$FIELD(F1)+$FIELD(F2)+$FIELD(F3)", "((XF1+XF2)+XF3)")]
+        [TestCase("$FIELD(F1) - 3 * $FIELD(F2)", "(XF1-(3*XF2))")]
+        public void TestStringFieldExpressions(string expr, string expectedQuery)
+        {
+            Setup(expr);
+
+            CalcParser.ExpressionContext context = this._calcParser.expression();
+
+            IDbResolver dbResolver = Substitute.For<IDbResolver>();
+
+            dbResolver
+                .ResolveField(Arg.Any<string>())
+                .Returns(callinfo => "X" + callinfo.ArgAt<string>(0));
+
+            QueryVisitor visitor = new QueryVisitor(dbResolver);
+
+            string query = visitor.Visit(context);
+            Assert.AreEqual(expectedQuery, query);
+        }
+
+        [Test]
+        [TestCase("1 + $FIELD(F1)", "(1+CAST(XF1 AS INT))")]
+        [TestCase("$FIELD(F1)+$FIELD(F2)+$FIELD(F3)", "((CAST(XF1 AS INT)+CAST(XF2 AS INT))+CAST(XF3 AS INT))")]
+        [TestCase("$FIELD(F1) - 3 * $FIELD(F2)", "(CAST(XF1 AS INT)-(3*CAST(XF2 AS INT)))")]
+        public void TestIntFieldExpressionsMssql(string expr, string expectedQuery)
+        {
+            Setup(expr);
+
+            CalcParser.ExpressionContext context = this._calcParser.expression();
+
+            DbTranslator translator = new MssqlTranslator();
+            IDbResolver dbResolver = Substitute.For<IDbResolver>();
+
+            dbResolver
+                .ResolveField(Arg.Any<string>())
+                .Returns(callinfo => translator.FieldToInt(
+                    new FieldInfo {Name = callinfo.ArgAt<string>(0), Type = DFM_FIELD_TYPE.DFM_FT_INTEGER }
+                ));
+
+            QueryVisitor visitor = new QueryVisitor(dbResolver);
+
+            string query = visitor.Visit(context);
+            Assert.AreEqual(expectedQuery, query);
+        }
+
+        [Test]
+        [TestCase("1 + $FIELD(F1)", "(1+CAST(XF1 AS INTEGER))")]
+        [TestCase("$FIELD(F1)+$FIELD(F2)+$FIELD(F3)", "((CAST(XF1 AS INTEGER)+CAST(XF2 AS INTEGER))+CAST(XF3 AS INTEGER))")]
+        [TestCase("$FIELD(F1) - 3 * $FIELD(F2)", "(CAST(XF1 AS INTEGER)-(3*CAST(XF2 AS INTEGER)))")]
+        public void TestIntFieldExpressionsFirebird(string expr, string expectedQuery)
+        {
+            Setup(expr);
+
+            CalcParser.ExpressionContext context = this._calcParser.expression();
+
+            DbTranslator translator = new FirebirdTranslator();
+            IDbResolver dbResolver = Substitute.For<IDbResolver>();
+
+            dbResolver
+                .ResolveField(Arg.Any<string>())
+                .Returns(callinfo => translator.FieldToInt(
+                    new FieldInfo { Name = callinfo.ArgAt<string>(0), Type = DFM_FIELD_TYPE.DFM_FT_INTEGER }
+                ));
+
+            QueryVisitor visitor = new QueryVisitor(dbResolver);
+
+            string query = visitor.Visit(context);
+            Assert.AreEqual(expectedQuery, query);
+        }
+
+        [Test]
+        [TestCase("1 + $FIELD(F1)", "(1+TO_NUMBER(XF1))")]
+        [TestCase("$FIELD(F1)+$FIELD(F2)+$FIELD(F3)", "((TO_NUMBER(XF1)+TO_NUMBER(XF2))+TO_NUMBER(XF3))")]
+        [TestCase("$FIELD(F1) - 3 * $FIELD(F2)", "(TO_NUMBER(XF1)-(3*TO_NUMBER(XF2)))")]
+        public void TestIntFieldExpressionsOracle(string expr, string expectedQuery)
+        {
+            Setup(expr);
+
+            CalcParser.ExpressionContext context = this._calcParser.expression();
+
+            DbTranslator translator = new OracleTranslator();
+            IDbResolver dbResolver = Substitute.For<IDbResolver>();
+
+            dbResolver
+                .ResolveField(Arg.Any<string>())
+                .Returns(callinfo => translator.FieldToInt(
+                    new FieldInfo { Name = callinfo.ArgAt<string>(0), Type = DFM_FIELD_TYPE.DFM_FT_INTEGER }
+                ));
+
+            QueryVisitor visitor = new QueryVisitor(dbResolver);
+
+            string query = visitor.Visit(context);
+            Assert.AreEqual(expectedQuery, query);
+        }
+
+        [Test]
+        [TestCase("$FLDLEN(F1) - 3 * $FLDLEN(F2)", "(LEN(XF1)-(3*LEN(XF2)))")]
+        public void TestStringFldlenExpressionsMssql(string expr, string expectedQuery)
+        {
+            Setup(expr);
+
+            CalcParser.ExpressionContext context = this._calcParser.expression();
+
+            DbTranslator translator = new MssqlTranslator();
+            IDbResolver dbResolver = Substitute.For<IDbResolver>();
+
+            dbResolver
+                .ResolveFldlen(Arg.Any<string>())
+                .Returns(callinfo => translator.FieldLength(
+                    new FieldInfo { Name = callinfo.ArgAt<string>(0), Type = DFM_FIELD_TYPE.DFM_FT_STRING }
+                ));
+
+            QueryVisitor visitor = new QueryVisitor(dbResolver);
+
+            string query = visitor.Visit(context);
+            Assert.AreEqual(expectedQuery, query);
+        }
+
+        [Test]
+        [TestCase("$FLDLEN(F1) - 3 * $FLDLEN(F2)", "(LENGTH(XF1)-(3*LENGTH(XF2)))")]
+        public void TestStringFldlenExpressionsOracle(string expr, string expectedQuery)
+        {
+            Setup(expr);
+
+            CalcParser.ExpressionContext context = this._calcParser.expression();
+
+            DbTranslator translator = new OracleTranslator();
+            IDbResolver dbResolver = Substitute.For<IDbResolver>();
+
+            dbResolver
+                .ResolveFldlen(Arg.Any<string>())
+                .Returns(callinfo => translator.FieldLength(
+                    new FieldInfo { Name = callinfo.ArgAt<string>(0), Type = DFM_FIELD_TYPE.DFM_FT_STRING }
+                ));
+
+            QueryVisitor visitor = new QueryVisitor(dbResolver);
+
+            string query = visitor.Visit(context);
+            Assert.AreEqual(expectedQuery, query);
+        }
+
+        [Test]
+        [TestCase("$FLDLEN(F1) - 3 * $FLDLEN(F2)", "(CHAR_LENGTH(XF1)-(3*CHAR_LENGTH(XF2)))")]
+        public void TestStringFldlenExpressionsFirebird(string expr, string expectedQuery)
+        {
+            Setup(expr);
+
+            CalcParser.ExpressionContext context = this._calcParser.expression();
+
+            DbTranslator translator = new FirebirdTranslator();
+            IDbResolver dbResolver = Substitute.For<IDbResolver>();
+
+            dbResolver
+                .ResolveFldlen(Arg.Any<string>())
+                .Returns(callinfo => translator.FieldLength(
+                    new FieldInfo { Name = callinfo.ArgAt<string>(0), Type = DFM_FIELD_TYPE.DFM_FT_STRING }
+                ));
+
+            QueryVisitor visitor = new QueryVisitor(dbResolver);
+
+            string query = visitor.Visit(context);
+            Assert.AreEqual(expectedQuery, query);
+        }
+
+        //[Test]
+        //[TestCase("$VAR(SYSTIME)")]
+        //public void TestQueryVariablesMssql(string expr, string expectedQuery)
+        //{
+        //    Setup(expr);
+
+        //    CalcParser.ExpressionContext context = this._calcParser.expression();
+        //    DbTranslator translator = new MssqlTranslator();
+
+        //    DbResolver dbResolver = new DbResolver(translator);
+
+        //    QueryVisitor visitor = new QueryVisitor(new TestMetadataResolver(), dbResolver);
+        //    string query = visitor.Visit(context);
+
+        //    Assert.AreEqual(expectedQuery, query);
+        //}
     }
 }

@@ -27,8 +27,8 @@ namespace Workflow.Tests
         [TestCase("$NORMD(DATSTRFLD)-$NORMD(DATSTRFLD)", 0)]
         public void TestCalculatorWithIntegerResult(string expression, int expectedResult)
         {
-            TestResolver resolver = new TestResolver();
-            Calculator calc = new Calculator(resolver);
+            TestMetadataResolver metadataResolver = new TestMetadataResolver();
+            Calculator calc = new Calculator(metadataResolver);
 
             Argument result = calc.Calculate(expression);
             Assert.True(result.IsInteger);
@@ -42,8 +42,8 @@ namespace Workflow.Tests
         [TestCase("6.0 / $FIELD(DBLFLD1)", 4.0)]
         public void TestCalculatorWithDoubleResult(string expression, double expectedResult)
         {
-            TestResolver resolver = new TestResolver();
-            Calculator calc = new Calculator(resolver);
+            TestMetadataResolver metadataResolver = new TestMetadataResolver();
+            Calculator calc = new Calculator(metadataResolver);
 
             Argument result = calc.Calculate(expression);
             Assert.True(result.IsDouble);
@@ -60,8 +60,8 @@ namespace Workflow.Tests
         [TestCase("$NORMD(DATSTRFLD)", "2016-02-02")]
         public void TestCalculatorWithDateResult(string expression, string expectedResult)
         {
-            TestResolver resolver = new TestResolver();
-            Calculator calc = new Calculator(resolver);
+            TestMetadataResolver metadataResolver = new TestMetadataResolver();
+            Calculator calc = new Calculator(metadataResolver);
 
             Argument result = calc.Calculate(expression);
             Assert.True(result.IsDate);
@@ -71,9 +71,9 @@ namespace Workflow.Tests
         [Test]
         public void TestReservedKeywordsWrongUsage()
         {
-            TestResolver resolver = new TestResolver();
+            TestMetadataResolver metadataResolver = new TestMetadataResolver();
             string expression = "VAR(SYSTIME_YMD)-$FIELD(DATFLD1)";
-            Calculator calc = new Calculator(resolver);
+            Calculator calc = new Calculator(metadataResolver);
 
             Assert.Throws<ArgumentException>(() => calc.Calculate(expression));
         }

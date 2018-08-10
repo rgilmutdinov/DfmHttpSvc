@@ -2,7 +2,7 @@
 
 namespace Workflow.Expressions.Resolvers
 {
-    public class BasicResolver : IDataResolver
+    public class BasicResolver : IMetadataResolver
     {
         private static readonly Lazy<BasicResolver> Lazy = new Lazy<BasicResolver>(() => new BasicResolver());
 
@@ -20,11 +20,6 @@ namespace Workflow.Expressions.Resolvers
         public Argument ResolveFieldValue(string fieldName)
         {
             return Argument.Null;
-        }
-
-        public string ResolveField(string fieldName)
-        {
-            return "X" + fieldName;
         }
     }
 }

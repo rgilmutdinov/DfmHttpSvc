@@ -5,14 +5,20 @@ namespace Workflow.Expressions
 {
     public class QueryVisitor : CalcBaseVisitor<string>
     {
-        private readonly IDataResolver _dataResolver;
+        private readonly IMetadataResolver _metadataResolver;
+        private readonly IDbResolver _dbResolver;
 
-        public QueryVisitor(IDataResolver dataResolver)
+        public QueryVisitor(IMetadataResolver metadataResolver, IDbResolver dbResolver)
         {
-            this._dataResolver = dataResolver;
+            this._metadataResolver = metadataResolver;
+            this._dbResolver = dbResolver;
         }
 
-        public QueryVisitor() : this(BasicResolver.Instance)
+        public QueryVisitor() : this(BasicResolver.Instance, new BasicDbResolver())
+        {
+        }
+
+        public QueryVisitor(IDbResolver dbResolver) : this(BasicResolver.Instance, dbResolver)
         {
         }
 
@@ -109,7 +115,32 @@ namespace Workflow.Expressions
         public override string VisitFieldExpression(CalcParser.FieldExpressionContext context)
         {
             string fieldName = Visit(context.expression());
-            return this._dataResolver.ResolveField(fieldName);
+            return this._dbResolver.ResolveField(fieldName);
+        }
+
+        public override string VisitFldlenExpression(CalcParser.FldlenExpressionContext context)
+        {
+            string fieldName = Visit(context.expression());
+            return this._dbResolver.ResolveFldlen(fieldName);
+        }
+
+        public override string VisitVarExpression(CalcParser.VarExpressionContext context)
+        {
+            string variableName = Visit(context.expression());
+            Argument arg = this._metadataResolver.ResolveVariable(variableName);
+
+            return this._dbResolver.ResolveArg(arg);
+        }
+
+        public override string VisitLiteral(CalcParser.LiteralContext context)
+        {
+            Argument arg = new Argument(context.GetText());
+            return arg.ToString();
+        }
+
+        public override string VisitIdentifierExpression(CalcParser.IdentifierExpressionContext context)
+        {
+            return context.GetText();
         }
     }
 }

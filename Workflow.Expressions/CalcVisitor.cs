@@ -7,8 +7,8 @@ namespace Workflow.Expressions
 {
     public class CalcVisitor : CalcBaseVisitor<Argument>
     {
-        private readonly IDataResolver _resolver;
-        public CalcVisitor(IDataResolver resolver)
+        private readonly IMetadataResolver _resolver;
+        public CalcVisitor(IMetadataResolver resolver)
         {
             this._resolver = resolver;
         }

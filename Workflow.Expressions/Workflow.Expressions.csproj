@@ -37,6 +37,10 @@
     <Reference Include="Antlr4.Runtime, Version=4.6.0.0, Culture=neutral, PublicKeyToken=09abb75b9ed49849, processorArchitecture=MSIL">
       <HintPath>..\packages\Antlr4.Runtime.4.6.4\lib\net45\Antlr4.Runtime.dll</HintPath>
     </Reference>
+    <Reference Include="Interop.DFMServer">
+      <HintPath>..\..\DfmHttpSvc\Interops\Interop.DFMServer.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -52,8 +56,10 @@
     <Compile Include="Calculator.cs" />
     <Compile Include="CalcVisitor.cs" />
     <Compile Include="DateUtils.cs" />
+    <Compile Include="DbTranslator.cs" />
     <Compile Include="Resolvers\BasicResolver.cs" />
-    <Compile Include="Resolvers\IDataResolver.cs" />
+    <Compile Include="Resolvers\IDbResolver.cs" />
+    <Compile Include="Resolvers\IMetadataResolver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QueryVisitor.cs" />
     <Compile Include="ThrowExceptionErrorListener.cs" />
@@ -64,6 +70,12 @@
       <CustomToolNamespace>Workflow.Expressions</CustomToolNamespace>
     </Antlr4>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DfmServer.Managed\DfmServer.Managed.csproj">
+      <Project>{4b758f10-0e08-4c2e-8c4a-29c88178836b}</Project>
+      <Name>DfmServer.Managed</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
