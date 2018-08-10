@@ -143,19 +143,24 @@ namespace Workflow.Tests
         [TestCase("1 + $FIELD(F1)", "(1+XF1)")]
         [TestCase("$FIELD(F1)+$FIELD(F2)+$FIELD(F3)", "((XF1+XF2)+XF3)")]
         [TestCase("$FIELD(F1) - 3 * $FIELD(F2)", "(XF1-(3*XF2))")]
-        public void TestStringFieldExpressions(string expr, string expectedQuery)
+        public void TestIntFieldExpressionsMssql(string expr, string expectedQuery)
         {
             Setup(expr);
 
             CalcParser.ExpressionContext context = this._calcParser.expression();
 
-            IDbResolver dbResolver = Substitute.For<IDbResolver>();
+            DbTranslator translator = new MssqlTranslator();
+            IMetadataResolver resolver = Substitute.For<IMetadataResolver>();
+            
+            resolver
+                .GetField(Arg.Any<string>())
+                .Returns(callinfo => new FieldInfo
+                {
+                    Name = callinfo.ArgAt<string>(0),
+                    Type = DFM_FIELD_TYPE.DFM_FT_INTEGER
+                });
 
-            dbResolver
-                .ResolveField(Arg.Any<string>())
-                .Returns(callinfo => "X" + callinfo.ArgAt<string>(0));
-
-            QueryVisitor visitor = new QueryVisitor(dbResolver);
+            QueryVisitor visitor = new QueryVisitor(resolver, translator);
 
             string query = visitor.Visit(context);
             Assert.AreEqual(expectedQuery, query);
@@ -165,22 +170,25 @@ namespace Workflow.Tests
         [TestCase("1 + $FIELD(F1)", "(1+CAST(XF1 AS INT))")]
         [TestCase("$FIELD(F1)+$FIELD(F2)+$FIELD(F3)", "((CAST(XF1 AS INT)+CAST(XF2 AS INT))+CAST(XF3 AS INT))")]
         [TestCase("$FIELD(F1) - 3 * $FIELD(F2)", "(CAST(XF1 AS INT)-(3*CAST(XF2 AS INT)))")]
-        public void TestIntFieldExpressionsMssql(string expr, string expectedQuery)
+        public void TestStringFieldExpressionsMssql(string expr, string expectedQuery)
         {
             Setup(expr);
 
             CalcParser.ExpressionContext context = this._calcParser.expression();
 
             DbTranslator translator = new MssqlTranslator();
-            IDbResolver dbResolver = Substitute.For<IDbResolver>();
 
-            dbResolver
-                .ResolveField(Arg.Any<string>())
-                .Returns(callinfo => translator.FieldToInt(
-                    new FieldInfo {Name = callinfo.ArgAt<string>(0), Type = DFM_FIELD_TYPE.DFM_FT_INTEGER }
-                ));
+            IMetadataResolver resolver = Substitute.For<IMetadataResolver>();
 
-            QueryVisitor visitor = new QueryVisitor(dbResolver);
+            resolver
+                .GetField(Arg.Any<string>())
+                .Returns(callinfo => new FieldInfo
+                {
+                    Name = callinfo.ArgAt<string>(0),
+                    Type = DFM_FIELD_TYPE.DFM_FT_STRING
+                });
+
+            QueryVisitor visitor = new QueryVisitor(resolver, translator);
 
             string query = visitor.Visit(context);
             Assert.AreEqual(expectedQuery, query);
@@ -190,22 +198,25 @@ namespace Workflow.Tests
         [TestCase("1 + $FIELD(F1)", "(1+CAST(XF1 AS INTEGER))")]
         [TestCase("$FIELD(F1)+$FIELD(F2)+$FIELD(F3)", "((CAST(XF1 AS INTEGER)+CAST(XF2 AS INTEGER))+CAST(XF3 AS INTEGER))")]
         [TestCase("$FIELD(F1) - 3 * $FIELD(F2)", "(CAST(XF1 AS INTEGER)-(3*CAST(XF2 AS INTEGER)))")]
-        public void TestIntFieldExpressionsFirebird(string expr, string expectedQuery)
+        public void TestStringFieldExpressionsFirebird(string expr, string expectedQuery)
         {
             Setup(expr);
 
             CalcParser.ExpressionContext context = this._calcParser.expression();
 
             DbTranslator translator = new FirebirdTranslator();
-            IDbResolver dbResolver = Substitute.For<IDbResolver>();
 
-            dbResolver
-                .ResolveField(Arg.Any<string>())
-                .Returns(callinfo => translator.FieldToInt(
-                    new FieldInfo { Name = callinfo.ArgAt<string>(0), Type = DFM_FIELD_TYPE.DFM_FT_INTEGER }
-                ));
+            IMetadataResolver resolver = Substitute.For<IMetadataResolver>();
 
-            QueryVisitor visitor = new QueryVisitor(dbResolver);
+            resolver
+                .GetField(Arg.Any<string>())
+                .Returns(callinfo => new FieldInfo
+                {
+                    Name = callinfo.ArgAt<string>(0),
+                    Type = DFM_FIELD_TYPE.DFM_FT_STRING
+                });
+
+            QueryVisitor visitor = new QueryVisitor(resolver, translator);
 
             string query = visitor.Visit(context);
             Assert.AreEqual(expectedQuery, query);
@@ -215,22 +226,24 @@ namespace Workflow.Tests
         [TestCase("1 + $FIELD(F1)", "(1+TO_NUMBER(XF1))")]
         [TestCase("$FIELD(F1)+$FIELD(F2)+$FIELD(F3)", "((TO_NUMBER(XF1)+TO_NUMBER(XF2))+TO_NUMBER(XF3))")]
         [TestCase("$FIELD(F1) - 3 * $FIELD(F2)", "(TO_NUMBER(XF1)-(3*TO_NUMBER(XF2)))")]
-        public void TestIntFieldExpressionsOracle(string expr, string expectedQuery)
+        public void TestStringFieldExpressionsOracle(string expr, string expectedQuery)
         {
             Setup(expr);
 
             CalcParser.ExpressionContext context = this._calcParser.expression();
 
             DbTranslator translator = new OracleTranslator();
-            IDbResolver dbResolver = Substitute.For<IDbResolver>();
+            IMetadataResolver resolver = Substitute.For<IMetadataResolver>();
 
-            dbResolver
-                .ResolveField(Arg.Any<string>())
-                .Returns(callinfo => translator.FieldToInt(
-                    new FieldInfo { Name = callinfo.ArgAt<string>(0), Type = DFM_FIELD_TYPE.DFM_FT_INTEGER }
-                ));
+            resolver
+                .GetField(Arg.Any<string>())
+                .Returns(callinfo => new FieldInfo
+                {
+                    Name = callinfo.ArgAt<string>(0),
+                    Type = DFM_FIELD_TYPE.DFM_FT_STRING
+                });
 
-            QueryVisitor visitor = new QueryVisitor(dbResolver);
+            QueryVisitor visitor = new QueryVisitor(resolver, translator);
 
             string query = visitor.Visit(context);
             Assert.AreEqual(expectedQuery, query);
@@ -245,15 +258,17 @@ namespace Workflow.Tests
             CalcParser.ExpressionContext context = this._calcParser.expression();
 
             DbTranslator translator = new MssqlTranslator();
-            IDbResolver dbResolver = Substitute.For<IDbResolver>();
+            IMetadataResolver resolver = Substitute.For<IMetadataResolver>();
 
-            dbResolver
-                .ResolveFldlen(Arg.Any<string>())
-                .Returns(callinfo => translator.FieldLength(
-                    new FieldInfo { Name = callinfo.ArgAt<string>(0), Type = DFM_FIELD_TYPE.DFM_FT_STRING }
-                ));
+            resolver
+                .GetField(Arg.Any<string>())
+                .Returns(callinfo => new FieldInfo
+                {
+                    Name = callinfo.ArgAt<string>(0),
+                    Type = DFM_FIELD_TYPE.DFM_FT_STRING
+                });
 
-            QueryVisitor visitor = new QueryVisitor(dbResolver);
+            QueryVisitor visitor = new QueryVisitor(resolver, translator);
 
             string query = visitor.Visit(context);
             Assert.AreEqual(expectedQuery, query);
@@ -268,15 +283,17 @@ namespace Workflow.Tests
             CalcParser.ExpressionContext context = this._calcParser.expression();
 
             DbTranslator translator = new OracleTranslator();
-            IDbResolver dbResolver = Substitute.For<IDbResolver>();
+            IMetadataResolver resolver = Substitute.For<IMetadataResolver>();
 
-            dbResolver
-                .ResolveFldlen(Arg.Any<string>())
-                .Returns(callinfo => translator.FieldLength(
-                    new FieldInfo { Name = callinfo.ArgAt<string>(0), Type = DFM_FIELD_TYPE.DFM_FT_STRING }
-                ));
+            resolver
+                .GetField(Arg.Any<string>())
+                .Returns(callinfo => new FieldInfo
+                {
+                    Name = callinfo.ArgAt<string>(0),
+                    Type = DFM_FIELD_TYPE.DFM_FT_STRING
+                });
 
-            QueryVisitor visitor = new QueryVisitor(dbResolver);
+            QueryVisitor visitor = new QueryVisitor(resolver, translator);
 
             string query = visitor.Visit(context);
             Assert.AreEqual(expectedQuery, query);
@@ -291,35 +308,68 @@ namespace Workflow.Tests
             CalcParser.ExpressionContext context = this._calcParser.expression();
 
             DbTranslator translator = new FirebirdTranslator();
-            IDbResolver dbResolver = Substitute.For<IDbResolver>();
+            IMetadataResolver resolver = Substitute.For<IMetadataResolver>();
 
-            dbResolver
-                .ResolveFldlen(Arg.Any<string>())
-                .Returns(callinfo => translator.FieldLength(
-                    new FieldInfo { Name = callinfo.ArgAt<string>(0), Type = DFM_FIELD_TYPE.DFM_FT_STRING }
-                ));
+            resolver
+                .GetField(Arg.Any<string>())
+                .Returns(callinfo => new FieldInfo
+                {
+                    Name = callinfo.ArgAt<string>(0),
+                    Type = DFM_FIELD_TYPE.DFM_FT_STRING
+                });
 
-            QueryVisitor visitor = new QueryVisitor(dbResolver);
+            QueryVisitor visitor = new QueryVisitor(resolver, translator);
 
             string query = visitor.Visit(context);
             Assert.AreEqual(expectedQuery, query);
         }
 
-        //[Test]
-        //[TestCase("$VAR(SYSTIME)")]
-        //public void TestQueryVariablesMssql(string expr, string expectedQuery)
-        //{
-        //    Setup(expr);
+        [Test]
+        [TestCase("$VAR(SYSTIME)", "CONVERT(datetime, '2013-10-10T00:00:00', 126)")]
+        [TestCase("1 + $VAR(SYSTIME)+1", "((1+CONVERT(datetime, '2013-10-10T00:00:00', 126))+1)")]
+        public void TestQueryVariablesMssql(string expr, string expectedQuery)
+        {
+            Setup(expr);
 
-        //    CalcParser.ExpressionContext context = this._calcParser.expression();
-        //    DbTranslator translator = new MssqlTranslator();
+            CalcParser.ExpressionContext context = this._calcParser.expression();
+            DbTranslator translator = new MssqlTranslator();
 
-        //    DbResolver dbResolver = new DbResolver(translator);
+            QueryVisitor visitor = new QueryVisitor(new TestMetadataResolver(), translator);
+            string query = visitor.Visit(context);
 
-        //    QueryVisitor visitor = new QueryVisitor(new TestMetadataResolver(), dbResolver);
-        //    string query = visitor.Visit(context);
+            Assert.AreEqual(expectedQuery, query);
+        }
 
-        //    Assert.AreEqual(expectedQuery, query);
-        //}
+        [Test]
+        [TestCase("$VAR(SYSTIME)", "CAST('2013-10-10 00:00:00' AS DATE)")]
+        [TestCase("1 + $VAR(SYSTIME)+1", "((1+CAST('2013-10-10 00:00:00' AS DATE))+1)")]
+        public void TestQueryVariablesFirebird(string expr, string expectedQuery)
+        {
+            Setup(expr);
+
+            CalcParser.ExpressionContext context = this._calcParser.expression();
+            DbTranslator translator = new FirebirdTranslator();
+
+            QueryVisitor visitor = new QueryVisitor(new TestMetadataResolver(), translator);
+            string query = visitor.Visit(context);
+
+            Assert.AreEqual(expectedQuery, query);
+        }
+
+        [Test]
+        [TestCase("$VAR(SYSTIME)", "TO_DATE('2013-10-10T00:00:00', 'YYYY-MM-DD\"T\"HH24:MI:SS')")]
+        [TestCase("1 + $VAR(SYSTIME)+1", "((1+TO_DATE('2013-10-10T00:00:00', 'YYYY-MM-DD\"T\"HH24:MI:SS'))+1)")]
+        public void TestQueryVariablesOracle(string expr, string expectedQuery)
+        {
+            Setup(expr);
+
+            CalcParser.ExpressionContext context = this._calcParser.expression();
+            DbTranslator translator = new OracleTranslator();
+
+            QueryVisitor visitor = new QueryVisitor(new TestMetadataResolver(), translator);
+            string query = visitor.Visit(context);
+
+            Assert.AreEqual(expectedQuery, query);
+        }
     }
 }

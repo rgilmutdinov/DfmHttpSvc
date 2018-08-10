@@ -57,8 +57,7 @@
     <Compile Include="CalcVisitor.cs" />
     <Compile Include="DateUtils.cs" />
     <Compile Include="DbTranslator.cs" />
-    <Compile Include="Resolvers\BasicResolver.cs" />
-    <Compile Include="Resolvers\IDbResolver.cs" />
+    <Compile Include="Resolvers\BasicMetadataResolver.cs" />
     <Compile Include="Resolvers\IMetadataResolver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QueryVisitor.cs" />

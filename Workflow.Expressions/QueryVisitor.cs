@@ -1,24 +1,22 @@
 ﻿using System;
+using DFMServer;
 using Workflow.Expressions.Resolvers;
+using FieldInfo = DfmServer.Managed.FieldInfo;
 
 namespace Workflow.Expressions
 {
     public class QueryVisitor : CalcBaseVisitor<string>
     {
         private readonly IMetadataResolver _metadataResolver;
-        private readonly IDbResolver _dbResolver;
+        private readonly DbTranslator _dbTranslator;
 
-        public QueryVisitor(IMetadataResolver metadataResolver, IDbResolver dbResolver)
+        public QueryVisitor(IMetadataResolver metadataResolver, DbTranslator dbTranslator)
         {
             this._metadataResolver = metadataResolver;
-            this._dbResolver = dbResolver;
+            this._dbTranslator = dbTranslator;
         }
 
-        public QueryVisitor() : this(BasicResolver.Instance, new BasicDbResolver())
-        {
-        }
-
-        public QueryVisitor(IDbResolver dbResolver) : this(BasicResolver.Instance, dbResolver)
+        public QueryVisitor() : this(BasicMetadataResolver.Instance, new MssqlTranslator())
         {
         }
 
@@ -115,13 +113,20 @@ namespace Workflow.Expressions
         public override string VisitFieldExpression(CalcParser.FieldExpressionContext context)
         {
             string fieldName = Visit(context.expression());
-            return this._dbResolver.ResolveField(fieldName);
+            FieldInfo fieldInfo = this._metadataResolver.GetField(fieldName);
+            if (fieldInfo.Type != DFM_FIELD_TYPE.DFM_FT_STRING && fieldInfo.Type != DFM_FIELD_TYPE.DFM_FT_MEMO)
+            {
+                return "X" + fieldInfo.Name;
+            }
+            
+            return this._dbTranslator.FieldToInt(fieldInfo);
         }
 
         public override string VisitFldlenExpression(CalcParser.FldlenExpressionContext context)
         {
             string fieldName = Visit(context.expression());
-            return this._dbResolver.ResolveFldlen(fieldName);
+            FieldInfo fieldInfo = this._metadataResolver.GetField(fieldName);
+            return this._dbTranslator.FieldLength(fieldInfo);
         }
 
         public override string VisitVarExpression(CalcParser.VarExpressionContext context)
@@ -129,7 +134,20 @@ namespace Workflow.Expressions
             string variableName = Visit(context.expression());
             Argument arg = this._metadataResolver.ResolveVariable(variableName);
 
-            return this._dbResolver.ResolveArg(arg);
+            if (arg.IsDate)
+            {
+                DateTime date = arg.ToDate().Value;
+                return this._dbTranslator.GetDbDate(date.Year, date.Month, date.Day, date.Hour, date.Minute, date.Second);
+            }
+
+            if (arg.IsTime)
+            {
+                int seconds = arg.ToTime();
+                DateTime dt = DateTime.Today.AddSeconds(seconds);
+                return this._dbTranslator.GetToDbTime(dt.Hour, dt.Minute, dt.Second);
+            }
+
+            return arg.ToString();
         }
 
         public override string VisitLiteral(CalcParser.LiteralContext context)

@@ -13,7 +13,7 @@ namespace Workflow.Expressions
             this._resolver = resolver;
         }
 
-        public CalcVisitor() : this(BasicResolver.Instance)
+        public CalcVisitor() : this(BasicMetadataResolver.Instance)
         {
         }
 

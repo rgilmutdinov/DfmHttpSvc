@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Globalization;
+using DFMServer;
 using Workflow.Expressions;
 using Workflow.Expressions.Resolvers;
+using FieldInfo = DfmServer.Managed.FieldInfo;
 
 namespace Workflow.Tests
 {
@@ -40,6 +42,35 @@ namespace Workflow.Tests
                 case "DATSTRFLD": return new Argument(new DateTime(2016, 02, 02));
                 default: return Argument.Null;
             }
+        }
+
+        public FieldInfo GetField(string fieldName)
+        {
+            switch (fieldName)
+            {
+                case "INTFLD1": return CreateFieldInfo(fieldName, DFM_FIELD_TYPE.DFM_FT_INTEGER);
+                case "INTFLD2": return CreateFieldInfo(fieldName, DFM_FIELD_TYPE.DFM_FT_INTEGER);
+                case "DBLFLD1": return CreateFieldInfo(fieldName, DFM_FIELD_TYPE.DFM_FT_DECIMAL);
+                case "DBLFLD2": return CreateFieldInfo(fieldName, DFM_FIELD_TYPE.DFM_FT_DECIMAL);
+                case "STRFLD1": return CreateFieldInfo(fieldName, DFM_FIELD_TYPE.DFM_FT_STRING);
+                case "STRFLD2": return CreateFieldInfo(fieldName, DFM_FIELD_TYPE.DFM_FT_STRING);
+                case "DATFLD1": return CreateFieldInfo(fieldName, DFM_FIELD_TYPE.DFM_FT_DATE);
+                case "DATFLD2": return CreateFieldInfo(fieldName, DFM_FIELD_TYPE.DFM_FT_DATE);
+                case "DATSTRFLD": return CreateFieldInfo(fieldName, DFM_FIELD_TYPE.DFM_FT_STRING);
+                default:
+                    throw new Exception("Unknown field: " + fieldName);
+            }
+        }
+
+        private FieldInfo CreateFieldInfo(string name, DFM_FIELD_TYPE type)
+        {
+            FieldInfo fieldInfo = new FieldInfo
+            {
+                Name = name,
+                Type = type
+            };
+
+            return fieldInfo;
         }
     }
 }
