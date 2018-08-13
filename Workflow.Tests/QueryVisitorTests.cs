@@ -374,12 +374,115 @@ namespace Workflow.Tests
 
         [Test]
         [TestCase("[2013-10-10]", "CONVERT(datetime, '2013-10-10T00:00:00', 126)")]
+        [TestCase("[2013-10-10]+1", "(CONVERT(datetime, '2013-10-10T00:00:00', 126)+1)")]
         public void TestQueryDatesMssql(string expr, string expectedQuery)
         {
             Setup(expr);
 
             CalcParser.ExpressionContext context = this._calcParser.expression();
             DbTranslator translator = new MssqlTranslator();
+            IMetadataResolver resolver = Substitute.For<IMetadataResolver>();
+
+            QueryVisitor visitor = new QueryVisitor(resolver, translator);
+            string query = visitor.Visit(context);
+
+            Assert.AreEqual(expectedQuery, query);
+        }
+
+        [Test]
+        [TestCase("[2013-10-10]", "TO_DATE('2013-10-10T00:00:00', 'YYYY-MM-DD\"T\"HH24:MI:SS')")]
+        [TestCase("[2013-10-10]+1", "(TO_DATE('2013-10-10T00:00:00', 'YYYY-MM-DD\"T\"HH24:MI:SS')+1)")]
+        public void TestQueryDatesOracle(string expr, string expectedQuery)
+        {
+            Setup(expr);
+
+            CalcParser.ExpressionContext context = this._calcParser.expression();
+            DbTranslator translator = new OracleTranslator();
+            IMetadataResolver resolver = Substitute.For<IMetadataResolver>();
+
+            QueryVisitor visitor = new QueryVisitor(resolver, translator);
+            string query = visitor.Visit(context);
+
+            Assert.AreEqual(expectedQuery, query);
+        }
+
+        [Test]
+        [TestCase("[2013-10-10]", "CAST('2013-10-10 00:00:00' AS DATE)")]
+        [TestCase("[2013-10-10]+1", "(CAST('2013-10-10 00:00:00' AS DATE)+1)")]
+        [TestCase("1+[2013-10-10]+1", "((1+CAST('2013-10-10 00:00:00' AS DATE))+1)")]
+        public void TestQueryDatesFirebird(string expr, string expectedQuery)
+        {
+            Setup(expr);
+
+            CalcParser.ExpressionContext context = this._calcParser.expression();
+            DbTranslator translator = new FirebirdTranslator();
+            IMetadataResolver resolver = Substitute.For<IMetadataResolver>();
+
+            QueryVisitor visitor = new QueryVisitor(resolver, translator);
+            string query = visitor.Visit(context);
+
+            Assert.AreEqual(expectedQuery, query);
+        }
+
+        [Test]
+        [TestCase("$NORMD(STRFLD1)", "CONVERT(datetime, XSTRFLD1, 126)")]
+        [TestCase("[2013-10-10]-$NORMD(DATSTRFLD)", "(CONVERT(datetime, '2013-10-10T00:00:00', 126)-CONVERT(datetime, XDATSTRFLD, 126))")]
+        public void TestNormdMssql(string expr, string expectedQuery)
+        {
+            Setup(expr);
+
+            CalcParser.ExpressionContext context = this._calcParser.expression();
+            DbTranslator translator = new MssqlTranslator();
+            IMetadataResolver resolver = new TestMetadataResolver();
+
+            QueryVisitor visitor = new QueryVisitor(resolver, translator);
+            string query = visitor.Visit(context);
+
+            Assert.AreEqual(expectedQuery, query);
+        }
+
+        [Test]
+        [TestCase("$NORMD(STRFLD1)", "TO_DATE(XSTRFLD1, 'YYYY-MM-DD\"T\"HH24:MI:SS')")]
+        [TestCase("[2013-10-10]-$NORMD(DATSTRFLD)", "(TO_DATE('2013-10-10T00:00:00', 'YYYY-MM-DD\"T\"HH24:MI:SS')-TO_DATE(XDATSTRFLD, 'YYYY-MM-DD\"T\"HH24:MI:SS'))")]
+        public void TestNormdOracle(string expr, string expectedQuery)
+        {
+            Setup(expr);
+
+            CalcParser.ExpressionContext context = this._calcParser.expression();
+            DbTranslator translator = new OracleTranslator();
+            IMetadataResolver resolver = new TestMetadataResolver();
+
+            QueryVisitor visitor = new QueryVisitor(resolver, translator);
+            string query = visitor.Visit(context);
+
+            Assert.AreEqual(expectedQuery, query);
+        }
+
+        [Test]
+        [TestCase("$NORMD(STRFLD1)", "CAST(REPLACE(XSTRFLD1, 'T', ' ') AS DATE)")]
+        [TestCase("[2013-10-10]-$NORMD(DATSTRFLD)", "(CAST('2013-10-10 00:00:00' AS DATE)-CAST(REPLACE(XDATSTRFLD, 'T', ' ') AS DATE))")]
+        public void TestNormdFirebird(string expr, string expectedQuery)
+        {
+            Setup(expr);
+
+            CalcParser.ExpressionContext context = this._calcParser.expression();
+            DbTranslator translator = new FirebirdTranslator();
+            IMetadataResolver resolver = new TestMetadataResolver();
+
+            QueryVisitor visitor = new QueryVisitor(resolver, translator);
+            string query = visitor.Visit(context);
+
+            Assert.AreEqual(expectedQuery, query);
+        }
+
+        [Test]
+        [TestCase("PI + E", "(3.14159265358979+2.71828182845905)")]
+        public void TestMathConstants(string expr, string expectedQuery)
+        {
+            Setup(expr);
+
+            CalcParser.ExpressionContext context = this._calcParser.expression();
+            DbTranslator translator = Substitute.For<DbTranslator>();
             IMetadataResolver resolver = Substitute.For<IMetadataResolver>();
 
             QueryVisitor visitor = new QueryVisitor(resolver, translator);

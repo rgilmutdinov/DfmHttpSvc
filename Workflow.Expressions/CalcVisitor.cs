@@ -190,7 +190,7 @@ namespace Workflow.Expressions
 
         public override Argument VisitUnknownFunctionExpression(CalcParser.UnknownFunctionExpressionContext context)
         {
-            throw new ArgumentException("Unknown function '" + context.GetText());
+            throw new ExpressionException("Unknown function: " + context.GetText());
         }
 
         public override Argument VisitFldlenExpression(CalcParser.FldlenExpressionContext context)
@@ -297,7 +297,7 @@ namespace Workflow.Expressions
                 return arg1.ToDouble() <= arg2.ToDouble() ? new Argument(1.0) : new Argument(0.0);
             }
 
-            throw new ArgumentCastException("Unknown relational operation");
+            throw new ExpressionException("Unknown relational operation: " + context.GetText());
         }
 
         public override Argument VisitConstantExpression(CalcParser.ConstantExpressionContext context)
@@ -312,7 +312,7 @@ namespace Workflow.Expressions
                 return new Argument(Math.PI);
             }
 
-            throw new ArgumentCastException("Unknown constant: " + context.GetText());
+            throw new ExpressionException("Unknown constant: " + context.GetText());
         }
 
         public override Argument VisitEqualityExpression(CalcParser.EqualityExpressionContext context)
@@ -335,7 +335,7 @@ namespace Workflow.Expressions
                 return !Equals(arg1, arg2) ? new Argument(1.0) : new Argument(0.0);
             }
 
-            throw new ArgumentCastException("Unknown equality operation");
+            throw new ExpressionException("Unknown equality operation: " + context.GetText());
         }
 
         public override Argument VisitErrorNode(IErrorNode node)

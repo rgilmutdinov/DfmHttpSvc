@@ -38,7 +38,7 @@ namespace Workflow.Expressions
 
             if (op == null)
             {
-                throw new ArgumentCastException("Unknown additive operation");
+                throw new ExpressionException("Unknown additive operation: " + context.GetText());
             }
 
             return string.Format($"({arg1}{op}{arg2})") ;
@@ -59,7 +59,7 @@ namespace Workflow.Expressions
                 return string.Format($"({arg1}/nullif({arg2}, 0))");
             }
 
-            throw new ArgumentCastException("Unknown multiplicative operation");
+            throw new ExpressionException("Unknown multiplicative operation: " + context.GetText());
         }
 
         public override string VisitUnaryMinusExpression(CalcParser.UnaryMinusExpressionContext context)
@@ -102,7 +102,7 @@ namespace Workflow.Expressions
 
         public override string VisitUnknownFunctionExpression(CalcParser.UnknownFunctionExpressionContext context)
         {
-            throw new ArgumentException("Unknown function '" + context.GetText());
+            throw new ExpressionException("Unknown function: " + context.GetText());
         }
 
         public override string VisitFieldExpression(CalcParser.FieldExpressionContext context)
@@ -124,6 +124,22 @@ namespace Workflow.Expressions
             return this._dbTranslator.FieldLength(fieldInfo);
         }
 
+        public override string VisitNormdExpression(CalcParser.NormdExpressionContext context)
+        {
+            string fieldName = Visit(context.expression());
+            FieldInfo fieldInfo = this._metadataResolver.GetField(fieldName);
+            switch (fieldInfo.Type)
+            {
+                case DFM_FIELD_TYPE.DFM_FT_DATE:
+                    return "X" + fieldName;
+                case DFM_FIELD_TYPE.DFM_FT_MEMO:
+                case DFM_FIELD_TYPE.DFM_FT_STRING:
+                    return this._dbTranslator.FieldToDate(fieldInfo);
+                default:
+                    throw new ExpressionException("$NORMD can be applied for DATE and STRING fields only");
+            }
+        }
+
         public override string VisitVarExpression(CalcParser.VarExpressionContext context)
         {
             string variableName = Visit(context.expression());
@@ -132,19 +148,96 @@ namespace Workflow.Expressions
             return TranslateArgument(arg);
         }
 
+        public override string VisitConstantExpression(CalcParser.ConstantExpressionContext context)
+        {
+            if (context.ConstE() != null)
+            {
+                return new Argument(Math.E).ToString();
+            }
+
+            if (context.ConstPi() != null)
+            {
+                return new Argument(Math.PI).ToString();
+            }
+
+            throw new ExpressionException("Unknown constant: " + context.GetText());
+        }
+
+        public override string VisitRelationalExpression(CalcParser.RelationalExpressionContext context)
+        {
+            string arg1 = Visit(context.expression(0));
+            string arg2 = Visit(context.expression(1));
+
+            if (context.GreaterThan() != null)
+            {
+                return $"({arg1}>{arg2})";
+            }
+
+            if (context.GreaterThanEquals() != null)
+            {
+                return $"({arg1}>={arg2})";
+            }
+
+            if (context.LessThan() != null)
+            {
+                return $"({arg1}<{arg2})";
+            }
+
+            if (context.LessThanEquals() != null)
+            {
+                return $"({arg1}<={arg2})";
+            }
+
+            throw new ExpressionException("Unknown relational expression: " + context.GetText());
+        }
+
+        public override string VisitEqualityExpression(CalcParser.EqualityExpressionContext context)
+        {
+            string arg1 = Visit(context.expression(0));
+            string arg2 = Visit(context.expression(1));
+
+            if (context.Equals_() != null)
+            {
+                return $"({arg1}={arg2})";
+            }
+
+            if (context.NotEquals() != null)
+            {
+                return $"({arg1}<>{arg2})";
+            }
+
+            throw new ExpressionException("Unknown equality expression: " + context.GetText());
+        }
+
         public override string VisitLiteral(CalcParser.LiteralContext context)
         {
             string text = context.GetText();
-            Argument arg = new Argument(text);
+            Argument arg;
 
-            // TODO: fix this            
             if (context.DateLiteral() != null)
             {
-                DateTime date = arg.ToDate().Value;
-                return this._dbTranslator.GetDbDate(date.Year, date.Month, date.Day, date.Hour, date.Minute, date.Second);
+                DateTime? date = DateUtils.MultiParseDate(text);
+                if (!date.HasValue)
+                {
+                    throw new ExpressionException("Incorrect format for a date literal: " + text);
+                }
+
+                arg = new Argument(date.Value);
             }
-            
-            return text;
+            else if (context.IntegerLiteral() != null)
+            {
+                arg = new Argument(int.Parse(text));
+            }
+            else if (context.DecimalLiteral() != null)
+            {
+                arg = new Argument(double.Parse(text));
+            }
+            else
+            {
+                arg = new Argument(text);
+            }
+
+            return TranslateArgument(arg);
         }
 
         public override string VisitIdentifierExpression(CalcParser.IdentifierExpressionContext context)
@@ -162,9 +255,16 @@ namespace Workflow.Expressions
 
             if (arg.IsTime)
             {
-                int seconds = arg.ToTime();
-                DateTime dt = DateTime.Today.AddSeconds(seconds);
-                return this._dbTranslator.GetToDbTime(dt.Hour, dt.Minute, dt.Second);
+                if (DateUtils.TryMultiParseTime(arg.ToString(), out long seconds))
+                {
+                    DateTime dt = DateTime.Today.AddSeconds(seconds);
+                    return this._dbTranslator.GetToDbTime(dt.Hour, dt.Minute, dt.Second);
+                }
+            }
+
+            if (arg.IsDouble)
+            {
+                return arg.ToString(); // fix it
             }
 
             return arg.ToString();

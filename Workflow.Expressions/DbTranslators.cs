@@ -12,6 +12,7 @@ namespace Workflow.Expressions
 
         public abstract string FieldToInt(FieldInfo fieldInfo);
         public abstract string FieldLength(FieldInfo fieldInfo);
+        public abstract string FieldToDate(FieldInfo fieldInfo);
     }
 
     public class MssqlTranslator : DbTranslator
@@ -34,6 +35,11 @@ namespace Workflow.Expressions
         public override string FieldLength(FieldInfo fieldInfo)
         {
             return $"LEN(X{fieldInfo.Name})";
+        }
+
+        public override string FieldToDate(FieldInfo fieldInfo)
+        {
+            return $"CONVERT(datetime, X{fieldInfo.Name}, 126)";
         }
     }
 
@@ -71,6 +77,11 @@ namespace Workflow.Expressions
 
             return $"CHAR_LENGTH(X{fieldInfo.Name})";
         }
+
+        public override string FieldToDate(FieldInfo fieldInfo)
+        {
+            return $"CAST(REPLACE(X{fieldInfo.Name}, 'T', ' ') AS DATE)";
+        }
     }
 
     public class OracleTranslator : DbTranslator
@@ -96,6 +107,11 @@ namespace Workflow.Expressions
         public override string FieldLength(FieldInfo fieldInfo)
         {
             return $"LENGTH(X{fieldInfo.Name})";
+        }
+
+        public override string FieldToDate(FieldInfo fieldInfo)
+        {
+            return $"TO_DATE(X{fieldInfo.Name}, 'YYYY-MM-DD\"T\"HH24:MI:SS')";
         }
     }
 }
