@@ -75,7 +75,7 @@ namespace Workflow.Tests
             string expression = "VAR(SYSTIME_YMD)-$FIELD(DATFLD1)";
             Calculator calc = new Calculator(metadataResolver);
 
-            Assert.Throws<ArgumentException>(() => calc.Calculate(expression));
+            Assert.Throws<ExpressionException>(() => calc.Calculate(expression));
         }
     }
 }
