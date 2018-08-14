@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="HyperVolumeConfiguration.cs" />
+    <Compile Include="HyperVolumeConfigurationException.cs" />
     <Compile Include="HyperVolumeInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
