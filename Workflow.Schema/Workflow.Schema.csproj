@@ -86,13 +86,13 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>
-      $(ProjectDir)Generator\XmlSchemaClassGenerator.Console.exe --output=$(ProjectDir)Generated -a -r -0 -n "|wf_common.xsd=WFSchema.WFCommon" $(ProjectDir)Schemas\wf_common.xsd
-      $(ProjectDir)Generator\XmlSchemaClassGenerator.Console.exe --output=$(ProjectDir)Generated -a -r -0 -n "|pdfprint_configuration.xsd=WFSchema.PDFPrint" -n "|wf_common.xsd=WFSchema.WFCommon" $(ProjectDir)Schemas\pdfprint_configuration.xsd
-      $(ProjectDir)Generator\XmlSchemaClassGenerator.Console.exe --output=$(ProjectDir)Generated -a -r -0 -n "|hv_configuration.xsd=WFSchema.HVConfig" -n "|wf_common.xsd=WFSchema.WFCommon" $(ProjectDir)Schemas\hv_configuration.xsd
-      $(ProjectDir)Generator\XmlSchemaClassGenerator.Console.exe --output=$(ProjectDir)Generated -a -r -0 -n "|ha_configuration.xsd=WFSchema.HAConfig" -n "|wf_common.xsd=WFSchema.WFCommon" $(ProjectDir)Schemas\ha_configuration.xsd
-      $(ProjectDir)Generator\XmlSchemaClassGenerator.Console.exe --output=$(ProjectDir)Generated -a -r -0 -n "|hv_serialization.xsd=WFSchema.HVSerialization" $(ProjectDir)Schemas\hv_serialization.xsd
-      $(ProjectDir)Generator\XmlSchemaClassGenerator.Console.exe --output=$(ProjectDir)Generated -a -r -0 -n "|attachmentprint_configuration.xsd=WFSchema.AttachmentPrint" -n "|wf_common.xsd=WFSchema.WFCommon" $(ProjectDir)Schemas\attachmentprint_configuration.xsd
-      $(ProjectDir)Generator\XmlSchemaClassGenerator.Console.exe --output=$(ProjectDir)Generated -a -r -0 -n "|qhv_configuration.xsd=WFSchema.Questionnaire" $(ProjectDir)Schemas\qhv_configuration.xsd
-    </PreBuildEvent>
+      $(ProjectDir)Generator\XmlSchemaClassGenerator.Console.exe --output=$(ProjectDir)Generated -r -0 -a -n "|wf_common.xsd=WFSchema.WFCommon" $(ProjectDir)Schemas\wf_common.xsd
+      $(ProjectDir)Generator\XmlSchemaClassGenerator.Console.exe --output=$(ProjectDir)Generated -r -0 -a -n "|pdfprint_configuration.xsd=WFSchema.PDFPrint" -n "|wf_common.xsd=WFSchema.WFCommon" $(ProjectDir)Schemas\pdfprint_configuration.xsd
+      $(ProjectDir)Generator\XmlSchemaClassGenerator.Console.exe --output=$(ProjectDir)Generated -r -0 -a -n "|hv_configuration.xsd=WFSchema.HVConfig" -n "|wf_common.xsd=WFSchema.WFCommon" $(ProjectDir)Schemas\hv_configuration.xsd
+      $(ProjectDir)Generator\XmlSchemaClassGenerator.Console.exe --output=$(ProjectDir)Generated -r -0 -a -n "|ha_configuration.xsd=WFSchema.HAConfig" -n "|wf_common.xsd=WFSchema.WFCommon" $(ProjectDir)Schemas\ha_configuration.xsd
+      $(ProjectDir)Generator\XmlSchemaClassGenerator.Console.exe --output=$(ProjectDir)Generated -r -0 -a -n "|hv_serialization.xsd=WFSchema.HVSerialization" $(ProjectDir)Schemas\hv_serialization.xsd
+      $(ProjectDir)Generator\XmlSchemaClassGenerator.Console.exe --output=$(ProjectDir)Generated -r -0 -a -n "|attachmentprint_configuration.xsd=WFSchema.AttachmentPrint" -n "|wf_common.xsd=WFSchema.WFCommon" $(ProjectDir)Schemas\attachmentprint_configuration.xsd
+      $(ProjectDir)Generator\XmlSchemaClassGenerator.Console.exe --output=$(ProjectDir)Generated -r -0 -a -n "|qhv_configuration.xsd=WFSchema.Questionnaire" $(ProjectDir)Schemas\qhv_configuration.xsd
+</PreBuildEvent>
   </PropertyGroup>
 </Project>
