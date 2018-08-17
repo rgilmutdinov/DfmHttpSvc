@@ -10,6 +10,8 @@ namespace Workflow.Expressions
         public abstract string GetDbDate(int year, int month, int day, int hour, int minute, int second);
         public abstract string GetToDbTime(int hour, int minute, int second);
 
+        public abstract string CastToInt(string clause);
+
         public abstract string FieldToInt(FieldInfo fieldInfo);
         public abstract string FieldLength(FieldInfo fieldInfo);
         public abstract string FieldToDate(FieldInfo fieldInfo);
@@ -25,6 +27,11 @@ namespace Workflow.Expressions
         public override string GetToDbTime(int hour, int minute, int second)
         {
             return $"CONVERT(datetime, '{hour:D2}:{minute:D2}:{second:D2}')";
+        }
+
+        public override string CastToInt(string clause)
+        {
+            return $"CAST({clause} as INT)";
         }
 
         public override string FieldToInt(FieldInfo fieldInfo)
@@ -56,6 +63,11 @@ namespace Workflow.Expressions
             DateTime dt = new DateTime(now.Year, now.Month, now.Day, hour, minute, second);
 
             return dt.TimeOfDay.TotalDays.ToString(CultureInfo.InvariantCulture);
+        }
+
+        public override string CastToInt(string clause)
+        {
+            return $"CAST({clause} as INTEGER)";
         }
 
         public override string FieldToInt(FieldInfo fieldInfo)
@@ -97,6 +109,11 @@ namespace Workflow.Expressions
             DateTime dt = new DateTime(now.Year, now.Month, now.Day, hour, minute, second);
 
             return dt.TimeOfDay.TotalDays.ToString(CultureInfo.InvariantCulture);
+        }
+
+        public override string CastToInt(string clause)
+        {
+            return $"FLOOR({clause})";
         }
 
         public override string FieldToInt(FieldInfo fieldInfo)

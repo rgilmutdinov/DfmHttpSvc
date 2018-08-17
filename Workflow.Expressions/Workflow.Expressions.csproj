@@ -58,6 +58,7 @@
     <Compile Include="DateUtils.cs" />
     <Compile Include="DbTranslators.cs" />
     <Compile Include="ExpressionException.cs" />
+    <Compile Include="Query.cs" />
     <Compile Include="Resolvers\BasicMetadataResolver.cs" />
     <Compile Include="Resolvers\IMetadataResolver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

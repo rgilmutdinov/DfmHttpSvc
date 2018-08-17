@@ -426,7 +426,7 @@ namespace Workflow.Tests
 
         [Test]
         [TestCase("$NORMD(STRFLD1)", "CONVERT(datetime, XSTRFLD1, 126)")]
-        [TestCase("[2013-10-10]-$NORMD(DATSTRFLD)", "(CONVERT(datetime, '2013-10-10T00:00:00', 126)-CONVERT(datetime, XDATSTRFLD, 126))")]
+        [TestCase("[2013-10-10]-$NORMD(DATSTRFLD)", "CAST((CONVERT(datetime, '2013-10-10T00:00:00', 126)-CONVERT(datetime, XDATSTRFLD, 126)) as INT)")]
         public void TestNormdMssql(string expr, string expectedQuery)
         {
             Setup(expr);
@@ -443,7 +443,7 @@ namespace Workflow.Tests
 
         [Test]
         [TestCase("$NORMD(STRFLD1)", "TO_DATE(XSTRFLD1, 'YYYY-MM-DD\"T\"HH24:MI:SS')")]
-        [TestCase("[2013-10-10]-$NORMD(DATSTRFLD)", "(TO_DATE('2013-10-10T00:00:00', 'YYYY-MM-DD\"T\"HH24:MI:SS')-TO_DATE(XDATSTRFLD, 'YYYY-MM-DD\"T\"HH24:MI:SS'))")]
+        [TestCase("[2013-10-10]-$NORMD(DATSTRFLD)", "FLOOR((TO_DATE('2013-10-10T00:00:00', 'YYYY-MM-DD\"T\"HH24:MI:SS')-TO_DATE(XDATSTRFLD, 'YYYY-MM-DD\"T\"HH24:MI:SS')))")]
         public void TestNormdOracle(string expr, string expectedQuery)
         {
             Setup(expr);
@@ -460,7 +460,7 @@ namespace Workflow.Tests
 
         [Test]
         [TestCase("$NORMD(STRFLD1)", "CAST(REPLACE(XSTRFLD1, 'T', ' ') AS DATE)")]
-        [TestCase("[2013-10-10]-$NORMD(DATSTRFLD)", "(CAST('2013-10-10 00:00:00' AS DATE)-CAST(REPLACE(XDATSTRFLD, 'T', ' ') AS DATE))")]
+        [TestCase("[2013-10-10]-$NORMD(DATSTRFLD)", "CAST((CAST('2013-10-10 00:00:00' AS DATE)-CAST(REPLACE(XDATSTRFLD, 'T', ' ') AS DATE)) as INTEGER)")]
         public void TestNormdFirebird(string expr, string expectedQuery)
         {
             Setup(expr);

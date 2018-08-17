@@ -5,7 +5,7 @@ using FieldInfo = DfmServer.Managed.FieldInfo;
 
 namespace Workflow.Expressions
 {
-    public class QueryVisitor : CalcBaseVisitor<string>
+    public class QueryVisitor : CalcBaseVisitor<Query>
     {
         private readonly IMetadataResolver _metadataResolver;
         private readonly DbTranslator _dbTranslator;
@@ -20,200 +20,321 @@ namespace Workflow.Expressions
         {
         }
 
-        public override string VisitAdditiveExpression(CalcParser.AdditiveExpressionContext context)
+        public override Query VisitAdditiveExpression(CalcParser.AdditiveExpressionContext context)
         {
-            string arg1 = Visit(context.expression(0));
-            string arg2 = Visit(context.expression(1));
+            Query q1 = Visit(context.expression(0));
+            Query q2 = Visit(context.expression(1));
 
-            string op = null;
             if (context.Plus() != null)
             {
-                op = "+";
+                ResultType type = ResultType.Undefined;
+                if (q1.ExpectedResult == ResultType.Number)
+                {
+                    if (q2.ExpectedResult == ResultType.Number)
+                    {
+                        type = ResultType.Number;
+                    }
+                    else if (q2.ExpectedResult == ResultType.Date)
+                    {
+                        type = ResultType.Date;
+                    }
+                }
+
+                if (q1.ExpectedResult == ResultType.Date)
+                {
+                    if (q2.ExpectedResult == ResultType.Number)
+                    {
+                        type = ResultType.Date;
+                    }
+                }
+
+                return new Query($"({q1}+{q2})", type);
             }
 
             if (context.Minus() != null)
             {
-                op = "-";
+                ResultType type = ResultType.Undefined;
+                if (q1.ExpectedResult == ResultType.Number && q2.ExpectedResult == ResultType.Number)
+                {
+                    type = ResultType.Number;
+                }
+
+                if (q1.ExpectedResult == ResultType.Date)
+                {
+                    if (q2.ExpectedResult == ResultType.Date)
+                    {
+                        type = ResultType.Number;
+                    }
+                    else if (q2.ExpectedResult == ResultType.Number)
+                    {
+                        type = ResultType.Date;
+                    }
+                }
+
+                string queryText = $"({q1}-{q2})";
+
+                if (q1.ExpectedResult == ResultType.Date && q2.ExpectedResult == ResultType.Date)
+                {
+                    queryText = this._dbTranslator.CastToInt(queryText);
+                }
+
+                return new Query(queryText, type);
             }
 
-            if (op == null)
-            {
-                throw new ExpressionException("Unknown additive operation: " + context.GetText());
-            }
-
-            return string.Format($"({arg1}{op}{arg2})") ;
+            throw new ExpressionException("Unknown additive operation: " + context.GetText());
         }
 
-        public override string VisitMultiplicativeExpression(CalcParser.MultiplicativeExpressionContext context)
+        public override Query VisitMultiplicativeExpression(CalcParser.MultiplicativeExpressionContext context)
         {
-            string arg1 = Visit(context.expression(0));
-            string arg2 = Visit(context.expression(1));
+            Query q1 = Visit(context.expression(0));
+            Query q2 = Visit(context.expression(1));
+
+            ResultType type = ResultType.Undefined;
+
+            if (q1.ExpectedResult == ResultType.Number && q2.ExpectedResult == ResultType.Number)
+            {
+                type = ResultType.Number;
+            }
 
             if (context.Multiply() != null)
             {
-                return string.Format($"({arg1}*{arg2})");
+                return new Query($"({q1}*{q2})", type);
             }
 
             if (context.Divide() != null)
             {
-                return string.Format($"({arg1}/nullif({arg2}, 0))");
+                return new Query($"({q1}/nullif({q2}, 0))", type);
             }
 
             throw new ExpressionException("Unknown multiplicative operation: " + context.GetText());
         }
 
-        public override string VisitUnaryMinusExpression(CalcParser.UnaryMinusExpressionContext context)
+        public override Query VisitUnaryMinusExpression(CalcParser.UnaryMinusExpressionContext context)
         {
-            string arg = Visit(context.expression());
-            return string.Format($"(-{arg})");
+            Query q = Visit(context.expression());
+            return new Query($"(-{q})", ResultType.Number);
         }
 
-        public override string VisitPowerExpression(CalcParser.PowerExpressionContext context)
+        public override Query VisitPowerExpression(CalcParser.PowerExpressionContext context)
         {
-            string arg1 = Visit(context.expression(0));
-            string arg2 = Visit(context.expression(1));
+            Query q1 = Visit(context.expression(0));
+            Query q2 = Visit(context.expression(1));
 
-            return string.Format($"({arg1}^{arg2})");
+            ResultType type = ResultType.Undefined;
+            if (q1.ExpectedResult == ResultType.Number && q2.ExpectedResult == ResultType.Number)
+            {
+                type = ResultType.Number;
+            }
+
+            return new Query($"({q1}^{q2})", type);
         }
 
-        public override string VisitAbsExpression(CalcParser.AbsExpressionContext context)
+        public override Query VisitAbsExpression(CalcParser.AbsExpressionContext context)
         {
-            string arg = Visit(context.expression());
-            return string.Format($"ABS({arg})");
+            Query q = Visit(context.expression());
+
+            ResultType type = ResultType.Undefined;
+            if (q.ExpectedResult == ResultType.Number)
+            {
+                type = ResultType.Number;
+            }
+
+            return new Query($"ABS({q})", type);
         }
 
-        public override string VisitSqrtExpression(CalcParser.SqrtExpressionContext context)
+        public override Query VisitSqrtExpression(CalcParser.SqrtExpressionContext context)
         {
-            string arg = Visit(context.expression());
-            return string.Format($"SQRT({arg})");
+            Query q = Visit(context.expression());
+
+            ResultType type = ResultType.Undefined;
+            if (q.ExpectedResult == ResultType.Number)
+            {
+                type = ResultType.Number;
+            }
+
+            return new Query($"SQRT({q})", type);
         }
 
-        public override string VisitSgnExpression(CalcParser.SgnExpressionContext context)
+        public override Query VisitSgnExpression(CalcParser.SgnExpressionContext context)
         {
-            string arg = Visit(context.expression());
-            return string.Format($"SGN({arg})");
+            Query q = Visit(context.expression());
+
+            ResultType type = ResultType.Undefined;
+            if (q.ExpectedResult == ResultType.Number)
+            {
+                type = ResultType.Number;
+            }
+
+            return new Query($"SGN({q})", type);
         }
         
-        public override string VisitParenthesisExpression(CalcParser.ParenthesisExpressionContext context)
+        public override Query VisitParenthesisExpression(CalcParser.ParenthesisExpressionContext context)
         {
-            string arg = Visit(context.expression());
-            return string.Format($"({arg})");
+            Query q = Visit(context.expression());
+            return new Query($"({q})", q.ExpectedResult);
         }
 
-        public override string VisitUnknownFunctionExpression(CalcParser.UnknownFunctionExpressionContext context)
+        public override Query VisitUnknownFunctionExpression(CalcParser.UnknownFunctionExpressionContext context)
         {
             throw new ExpressionException("Unknown function: " + context.GetText());
         }
 
-        public override string VisitFieldExpression(CalcParser.FieldExpressionContext context)
+        public override Query VisitFieldExpression(CalcParser.FieldExpressionContext context)
         {
-            string fieldName = Visit(context.expression());
+            Query fieldQuery = Visit(context.expression());
+            string fieldName = fieldQuery.Text;
             FieldInfo fieldInfo = this._metadataResolver.GetField(fieldName);
+
+            ResultType type = ResultType.Number;
+            string queryText;
             if (fieldInfo.Type != DFM_FIELD_TYPE.DFM_FT_STRING && fieldInfo.Type != DFM_FIELD_TYPE.DFM_FT_MEMO)
             {
-                return "X" + fieldInfo.Name;
+                if (fieldInfo.Type == DFM_FIELD_TYPE.DFM_FT_DATE)
+                {
+                    type = ResultType.Date;
+                }
+
+                queryText = "X" + fieldInfo.Name;
             }
-            
-            return this._dbTranslator.FieldToInt(fieldInfo);
+            else
+            {
+                queryText = this._dbTranslator.FieldToInt(fieldInfo);
+            }
+
+            return new Query(queryText, type);
         }
 
-        public override string VisitFldlenExpression(CalcParser.FldlenExpressionContext context)
+        public override Query VisitFldlenExpression(CalcParser.FldlenExpressionContext context)
         {
-            string fieldName = Visit(context.expression());
+            Query fieldQuery = Visit(context.expression());
+            string fieldName = fieldQuery.Text;
+
             FieldInfo fieldInfo = this._metadataResolver.GetField(fieldName);
-            return this._dbTranslator.FieldLength(fieldInfo);
+            string queryText = this._dbTranslator.FieldLength(fieldInfo);
+
+            return new Query(queryText, ResultType.Number);
         }
 
-        public override string VisitNormdExpression(CalcParser.NormdExpressionContext context)
+        public override Query VisitNormdExpression(CalcParser.NormdExpressionContext context)
         {
-            string fieldName = Visit(context.expression());
+            Query fieldQuery = Visit(context.expression());
+            string fieldName = fieldQuery.Text;
+
             FieldInfo fieldInfo = this._metadataResolver.GetField(fieldName);
+
+            string queryText;
             switch (fieldInfo.Type)
             {
                 case DFM_FIELD_TYPE.DFM_FT_DATE:
-                    return "X" + fieldName;
+                    queryText = "X" + fieldName;
+                    break;
                 case DFM_FIELD_TYPE.DFM_FT_MEMO:
                 case DFM_FIELD_TYPE.DFM_FT_STRING:
-                    return this._dbTranslator.FieldToDate(fieldInfo);
+                    queryText = this._dbTranslator.FieldToDate(fieldInfo);
+                    break;
                 default:
                     throw new ExpressionException("$NORMD can be applied for DATE and STRING fields only");
             }
+
+            return new Query(queryText, ResultType.Date);
         }
 
-        public override string VisitVarExpression(CalcParser.VarExpressionContext context)
+        public override Query VisitVarExpression(CalcParser.VarExpressionContext context)
         {
-            string variableName = Visit(context.expression());
+            Query variableQuery = Visit(context.expression());
+            string variableName = variableQuery.Text;
+
             Argument arg = this._metadataResolver.ResolveVariable(variableName);
 
-            return TranslateArgument(arg);
+            ResultType type = ResultType.String;
+            if (arg.IsDate)
+            {
+                type = ResultType.Date;
+            }
+
+            if (arg.IsDouble)
+            {
+                type = ResultType.Number;
+            }
+
+            string queryText = TranslateArgument(arg);
+
+            return new Query(queryText, type);
         }
 
-        public override string VisitConstantExpression(CalcParser.ConstantExpressionContext context)
+        public override Query VisitConstantExpression(CalcParser.ConstantExpressionContext context)
         {
+            Argument arg = null;
             if (context.ConstE() != null)
             {
-                return new Argument(Math.E).ToString();
+                arg = new Argument(Math.E);
             }
 
             if (context.ConstPi() != null)
             {
-                return new Argument(Math.PI).ToString();
+                arg = new Argument(Math.PI);
             }
 
-            throw new ExpressionException("Unknown constant: " + context.GetText());
+            if (arg == null)
+            {
+                throw new ExpressionException("Unknown constant: " + context.GetText());
+            }
+
+            return new Query(arg.ToString(), ResultType.Number);
         }
 
-        public override string VisitRelationalExpression(CalcParser.RelationalExpressionContext context)
+        public override Query VisitRelationalExpression(CalcParser.RelationalExpressionContext context)
         {
-            string arg1 = Visit(context.expression(0));
-            string arg2 = Visit(context.expression(1));
-
+            Query q1 = Visit(context.expression(0));
+            Query q2 = Visit(context.expression(1));
+            
             if (context.GreaterThan() != null)
             {
-                return $"({arg1}>{arg2})";
+                return new Query($"({q1}>{q2})", ResultType.Number);
             }
 
             if (context.GreaterThanEquals() != null)
             {
-                return $"({arg1}>={arg2})";
+                return new Query($"({q1}>={q2})", ResultType.Number);
             }
 
             if (context.LessThan() != null)
             {
-                return $"({arg1}<{arg2})";
+                return new Query($"({q1}<{q2})", ResultType.Number);
             }
 
             if (context.LessThanEquals() != null)
             {
-                return $"({arg1}<={arg2})";
+                return new Query($"({q1}<={q2})", ResultType.Number);
             }
 
             throw new ExpressionException("Unknown relational expression: " + context.GetText());
         }
 
-        public override string VisitEqualityExpression(CalcParser.EqualityExpressionContext context)
+        public override Query VisitEqualityExpression(CalcParser.EqualityExpressionContext context)
         {
-            string arg1 = Visit(context.expression(0));
-            string arg2 = Visit(context.expression(1));
+            Query q1 = Visit(context.expression(0));
+            Query q2 = Visit(context.expression(1));
 
             if (context.Equals_() != null)
             {
-                return $"({arg1}={arg2})";
+                return new Query($"({q1}={q2})", ResultType.Number);
             }
 
             if (context.NotEquals() != null)
             {
-                return $"({arg1}<>{arg2})";
+                return new Query($"({q1}<>{q2})", ResultType.Number);
             }
 
             throw new ExpressionException("Unknown equality expression: " + context.GetText());
         }
 
-        public override string VisitLiteral(CalcParser.LiteralContext context)
+        public override Query VisitLiteral(CalcParser.LiteralContext context)
         {
             string text = context.GetText();
             Argument arg;
 
+            ResultType type;
             if (context.DateLiteral() != null)
             {
                 DateTime? date = DateUtils.MultiParseDate(text);
@@ -223,26 +344,32 @@ namespace Workflow.Expressions
                 }
 
                 arg = new Argument(date.Value);
+                type = ResultType.Date;
             }
             else if (context.IntegerLiteral() != null)
             {
                 arg = new Argument(int.Parse(text));
+                type = ResultType.Number;
             }
             else if (context.DecimalLiteral() != null)
             {
                 arg = new Argument(double.Parse(text));
+                type = ResultType.Number;
             }
             else
             {
                 arg = new Argument(text);
+                type = ResultType.String;
             }
 
-            return TranslateArgument(arg);
+            string queryText = TranslateArgument(arg);
+            return new Query(queryText, type);
         }
 
-        public override string VisitIdentifierExpression(CalcParser.IdentifierExpressionContext context)
+        public override Query VisitIdentifierExpression(CalcParser.IdentifierExpressionContext context)
         {
-            return context.GetText();
+            string identifier = context.GetText();            
+            return new Query(identifier, ResultType.String);
         }
 
         private string TranslateArgument(Argument arg)
