@@ -251,11 +251,11 @@ namespace DfmServer.Managed
 
             return new AttachmentInfo
             {
-                Name = attachmentName,
-                Author = authorUsername,
-                Extension      = extension,
-                CreationDate   = creationDate,
-                SizeInBytes    = sizeInBytes
+                Name         = attachmentName,
+                Author       = authorUsername,
+                Extension    = extension,
+                CreationDate = creationDate,
+                SizeInBytes  = sizeInBytes
             };
         }
 
