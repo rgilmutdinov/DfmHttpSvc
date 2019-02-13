@@ -1,3 +1,5 @@
+import 'es6-promise/auto';
+
 import 'bootstrap'; // otherwise navbar is not working
 import jquery from 'jquery';
 

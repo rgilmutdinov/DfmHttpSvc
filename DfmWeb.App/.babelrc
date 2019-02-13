@@ -1,4 +1,10 @@
 {
-  "presets": ["env"],
-  "plugins": ["transform-es2015-arrow-functions", "transform-object-rest-spread"]
+  "presets": [
+    "@babel/preset-env"
+  ],
+  "plugins": [
+    "@babel/plugin-transform-arrow-functions",
+    "@babel/plugin-proposal-object-rest-spread",
+    "@babel/plugin-transform-new-target"
+  ]
 }
