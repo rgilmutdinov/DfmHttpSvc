@@ -71,7 +71,7 @@ namespace Workflow.Schema {
         ///			&lt;xs:element name=&quot;data&quot; type=&quot;xs:string&quot;/&gt;
         ///		&lt;/xs:sequence&gt;
         ///	&lt;/xs:complexType&gt;
-        ///        &lt;xs:complexType name=&quot;PageTex [rest of string was truncated]&quot;;.
+        ///        &lt;xs:complexType nam [rest of string was truncated]&quot;;.
         /// </summary>
         public static string attachmentprint_configuration {
             get {
@@ -123,7 +123,7 @@ namespace Workflow.Schema {
         ///			&lt;xs:element name=&quot;precision&quot; type=&quot;xs:int&quot;/&gt;
         ///			&lt;xs:element name=&quot;dateFormat&quot; type=&quot;xs:int&quot;/&gt;
         ///			&lt;xs:element name=&quot;autofill&quot; type=&quot;xs:string&quot;/&gt;
-        ///			&lt;xs:element name=&quot;updatable&quot; type=&quot;xs:boolean&quot; [rest of string was truncated]&quot;;.
+        ///			&lt;xs:element name=&quot;updatable&quot; type=&quot;xs [rest of string was truncated]&quot;;.
         /// </summary>
         public static string hv_serialization {
             get {
@@ -158,7 +158,7 @@ namespace Workflow.Schema {
         ///    &lt;xs:element name=&quot;questioningMode&quot; type=&quot;QuestioningMode&quot;/&gt;
         ///    &lt;xs:element name=&quot;modeAllQuestions&quot; type=&quot;ModeAllQuestions&quot; substitutionGroup=&quot;questioningMode&quot;/&gt;
         ///    &lt;xs:element name=&quot;modeSubsetOfQuestions&quot; type=&quot;ModeSubsetOfQuestions&quot; substitutionGroup=&quot;questioningMode&quot;/&gt;
-        ///    &lt;xs:compl [rest of string was truncated]&quot;;.
+        ///    &lt;xs [rest of string was truncated]&quot;;.
         /// </summary>
         public static string qhv_configuration {
             get {

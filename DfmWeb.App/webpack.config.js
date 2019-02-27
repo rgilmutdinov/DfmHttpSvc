@@ -9,6 +9,11 @@ module.exports = (env) => {
     return [{
         stats: { modules: false },
         entry: { 'app': ['babel-polyfill', './App/app.js', './App/app.css'] },
+        devServer: {
+            historyApiFallback: {
+                disableDotRule: true
+            }
+        },
         resolve: {
             extensions: ['.js', '.vue', '.json'],
             alias: {

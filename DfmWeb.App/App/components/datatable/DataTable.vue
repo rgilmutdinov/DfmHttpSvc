@@ -69,8 +69,8 @@
                                         <textarea v-if="col.isText"
                                                   class="cell-edit form-control form-control-sm"
                                                   v-model="editValue"
-                                                  @keydown.tab.stop.prevent="moveNext"
-                                                  @keydown.esc.prevent="refuseChanges"
+                                                  @keydown.tab.stop.prevent.exact="moveNext"
+                                                  @keydown.esc.prevent.exact="refuseChanges"
                                                   @keydown.enter.ctrl="commitChanges"
                                                   @blur="commitChanges"
                                                   autofocus v-select />

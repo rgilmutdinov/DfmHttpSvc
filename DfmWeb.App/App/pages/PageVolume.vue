@@ -29,13 +29,13 @@
                     </div>
                 </div>
 
-                <template slot="th_timestamp" slot-scope="{ row }">
+                <template slot="th_timestamp">
                     {{ $t('pageVolume.dateModified') }}
                 </template>
-                <template slot="th_docaddtime" slot-scope="{ row }">
+                <template slot="th_docaddtime">
                     {{ $t('pageVolume.dateCreated') }}
                 </template>
-                <template slot="th_attachments" slot-scope="{ row }">
+                <template slot="th_attachments">
                     <i class="fas fa-paperclip fa-fw black"></i>
                 </template>
 
